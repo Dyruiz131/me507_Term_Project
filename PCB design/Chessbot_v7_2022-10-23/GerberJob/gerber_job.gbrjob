@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2022-10-23T23:50:31Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.6.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.67,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "Chessbot_v7"
+        },
+        "Owner": "Sam Hudson <shudso02@calpoly.edu>",
+        "Size": {
+            "X": 59.67,
+            "Y": 82.22
+        }
+    }
+}
