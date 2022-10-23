@@ -257,6 +257,114 @@ Content created by various authors including CR, JR, cadsoft.de, and adafruit.co
 <pad name="P38" x="11.43" y="21.59" drill="1" diameter="1.778"/>
 <rectangle x1="-10.16" y1="15.24" x2="10.16" y2="22.86" layer="39"/>
 </package>
+<package name="0402" urn="urn:adsk.eagle:footprint:23186/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+Metric Code Size 1005</description>
+<wire x1="-0.425" y1="0.2" x2="0.425" y2="0.2" width="0.1016" layer="51"/>
+<wire x1="0.425" y1="-0.2" x2="-0.425" y2="-0.2" width="0.1016" layer="51"/>
+<smd name="1" x="-0.6" y="0" dx="0.925" dy="0.74" layer="1"/>
+<smd name="2" x="0.6" y="0" dx="0.925" dy="0.74" layer="1"/>
+<text x="-0.5" y="0.425" size="1.016" layer="25">&gt;NAME</text>
+<text x="-0.5" y="-1.45" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-0.5" y1="-0.25" x2="-0.225" y2="0.25" layer="51"/>
+<rectangle x1="0.225" y1="-0.25" x2="0.5" y2="0.25" layer="51"/>
+</package>
+<package name="0603" urn="urn:adsk.eagle:footprint:23187/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+Metric Code Size 1608</description>
+<wire x1="-0.725" y1="0.35" x2="0.725" y2="0.35" width="0.1016" layer="51"/>
+<wire x1="0.725" y1="-0.35" x2="-0.725" y2="-0.35" width="0.1016" layer="51"/>
+<smd name="1" x="-0.875" y="0" dx="1.05" dy="1.08" layer="1"/>
+<smd name="2" x="0.875" y="0" dx="1.05" dy="1.08" layer="1"/>
+<text x="-0.8" y="0.65" size="1.016" layer="25">&gt;NAME</text>
+<text x="-0.8" y="-1.65" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-0.8" y1="-0.4" x2="-0.45" y2="0.4" layer="51"/>
+<rectangle x1="0.45" y1="-0.4" x2="0.8" y2="0.4" layer="51"/>
+</package>
+<package name="0805" urn="urn:adsk.eagle:footprint:23188/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+Metric Code Size 2012</description>
+<wire x1="-0.925" y1="0.6" x2="0.925" y2="0.6" width="0.1016" layer="51"/>
+<wire x1="0.925" y1="-0.6" x2="-0.925" y2="-0.6" width="0.1016" layer="51"/>
+<smd name="1" x="-1" y="0" dx="1.3" dy="1.6" layer="1"/>
+<smd name="2" x="1" y="0" dx="1.3" dy="1.6" layer="1"/>
+<text x="-1" y="0.875" size="1.016" layer="25">&gt;NAME</text>
+<text x="-1" y="-1.9" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-1" y1="-0.65" x2="-0.5" y2="0.65" layer="51"/>
+<rectangle x1="0.5" y1="-0.65" x2="1" y2="0.65" layer="51"/>
+</package>
+<package name="1206" urn="urn:adsk.eagle:footprint:23189/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+Metric Code Size 3216</description>
+<wire x1="-1.525" y1="0.75" x2="1.525" y2="0.75" width="0.1016" layer="51"/>
+<wire x1="1.525" y1="-0.75" x2="-1.525" y2="-0.75" width="0.1016" layer="51"/>
+<smd name="1" x="-1.5" y="0" dx="1.5" dy="2" layer="1"/>
+<smd name="2" x="1.5" y="0" dx="1.5" dy="2" layer="1"/>
+<text x="-1.6" y="1.1" size="1.016" layer="25">&gt;NAME</text>
+<text x="-1.6" y="-2.1" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-1.6" y1="-0.8" x2="-1.1" y2="0.8" layer="51"/>
+<rectangle x1="1.1" y1="-0.8" x2="1.6" y2="0.8" layer="51"/>
+</package>
+<package name="1210" urn="urn:adsk.eagle:footprint:23190/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+Metric Code Size 3225</description>
+<wire x1="-1.525" y1="1.175" x2="1.525" y2="1.175" width="0.1016" layer="51"/>
+<wire x1="1.525" y1="-1.175" x2="-1.525" y2="-1.175" width="0.1016" layer="51"/>
+<smd name="1" x="-1.5" y="0" dx="1.5" dy="2.9" layer="1"/>
+<smd name="2" x="1.5" y="0" dx="1.5" dy="2.9" layer="1"/>
+<text x="-1.6" y="1.55" size="1.016" layer="25">&gt;NAME</text>
+<text x="-1.6" y="-2.575" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-1.6" y1="-1.25" x2="-1.1" y2="1.25" layer="51"/>
+<rectangle x1="1.1" y1="-1.25" x2="1.6" y2="1.25" layer="51"/>
+</package>
+<package name="1812" urn="urn:adsk.eagle:footprint:23191/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+Metric Code Size 4532</description>
+<wire x1="-2.175" y1="1.525" x2="2.175" y2="1.525" width="0.1016" layer="51"/>
+<wire x1="2.175" y1="-1.525" x2="-2.175" y2="-1.525" width="0.1016" layer="51"/>
+<smd name="1" x="-2.05" y="0" dx="1.8" dy="3.7" layer="1"/>
+<smd name="2" x="2.05" y="0" dx="1.8" dy="3.7" layer="1"/>
+<text x="-2.25" y="1.95" size="1.016" layer="25">&gt;NAME</text>
+<text x="-2.25" y="-2.975" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-2.25" y1="-1.6" x2="-1.65" y2="1.6" layer="51"/>
+<rectangle x1="1.65" y1="-1.6" x2="2.25" y2="1.6" layer="51"/>
+</package>
+<package name="1825" urn="urn:adsk.eagle:footprint:23192/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+Metric Code Size 4564</description>
+<wire x1="-1.525" y1="3.125" x2="1.525" y2="3.125" width="0.1016" layer="51"/>
+<wire x1="1.525" y1="-3.125" x2="-1.525" y2="-3.125" width="0.1016" layer="51"/>
+<smd name="1" x="-1.5" y="0" dx="1.8" dy="6.9" layer="1"/>
+<smd name="2" x="1.5" y="0" dx="1.8" dy="6.9" layer="1"/>
+<text x="-1.6" y="3.55" size="1.016" layer="25">&gt;NAME</text>
+<text x="-1.6" y="-4.625" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-1.6" y1="-3.2" x2="-1.1" y2="3.2" layer="51"/>
+<rectangle x1="1.1" y1="-3.2" x2="1.6" y2="3.2" layer="51"/>
+</package>
+<package name="2220" urn="urn:adsk.eagle:footprint:23193/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+&lt;p&gt;Metric Code Size 5650</description>
+<wire x1="-2.725" y1="2.425" x2="2.725" y2="2.425" width="0.1016" layer="51"/>
+<wire x1="2.725" y1="-2.425" x2="-2.725" y2="-2.425" width="0.1016" layer="51"/>
+<smd name="1" x="-2.55" y="0" dx="1.85" dy="5.5" layer="1"/>
+<smd name="2" x="2.55" y="0" dx="1.85" dy="5.5" layer="1"/>
+<text x="-2.8" y="2.95" size="1.016" layer="25">&gt;NAME</text>
+<text x="-2.8" y="-3.975" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-2.8" y1="-2.5" x2="-2.2" y2="2.5" layer="51"/>
+<rectangle x1="2.2" y1="-2.5" x2="2.8" y2="2.5" layer="51"/>
+</package>
+<package name="2225" urn="urn:adsk.eagle:footprint:23194/1" locally_modified="yes">
+<description>&lt;b&gt;Surface Mount Device&lt;/b&gt;&lt;p&gt;
+&lt;p&gt;Metric Code Size 5664</description>
+<wire x1="-2.725" y1="3.075" x2="2.725" y2="3.075" width="0.1016" layer="51"/>
+<wire x1="2.725" y1="-3.075" x2="-2.725" y2="-3.075" width="0.1016" layer="51"/>
+<smd name="1" x="-2.55" y="0" dx="1.85" dy="6.8" layer="1"/>
+<smd name="2" x="2.55" y="0" dx="1.85" dy="6.8" layer="1"/>
+<text x="-2.8" y="3.6" size="1.016" layer="25">&gt;NAME</text>
+<text x="-2.8" y="-4.575" size="1.016" layer="27">&gt;VALUE</text>
+<rectangle x1="-2.8" y1="-3.15" x2="-2.2" y2="3.15" layer="51"/>
+<rectangle x1="2.2" y1="-3.15" x2="2.8" y2="3.15" layer="51"/>
+</package>
 </packages>
 <symbols>
 <symbol name="KEEYEES_ESP32">
@@ -363,6 +471,20 @@ Content created by various authors including CR, JR, cadsoft.de, and adafruit.co
 <wire x1="139.7" y1="35.56" x2="139.7" y2="0" width="0.1016" layer="94"/>
 <wire x1="139.7" y1="35.56" x2="0" y2="35.56" width="0.1016" layer="94"/>
 <text x="2.54" y="30.48" size="2.54" layer="94">Notes:</text>
+</symbol>
+<symbol name="BEAD">
+<pin name="1" x="-5.08" y="0" visible="off" length="short"/>
+<pin name="2" x="5.08" y="0" visible="off" length="short" rot="R180"/>
+<wire x1="0" y1="3.175" x2="2.54" y2="1.905" width="0.1524" layer="94"/>
+<wire x1="2.54" y1="1.905" x2="1.5875" y2="0" width="0.1524" layer="94"/>
+<wire x1="1.5875" y1="0" x2="0" y2="-3.175" width="0.1524" layer="94"/>
+<wire x1="0" y1="-3.175" x2="-2.54" y2="-1.905" width="0.1524" layer="94"/>
+<wire x1="-2.54" y1="-1.905" x2="-1.5875" y2="0" width="0.1524" layer="94"/>
+<wire x1="-1.5875" y1="0" x2="0" y2="3.175" width="0.1524" layer="94"/>
+<wire x1="-2.54" y1="0" x2="-1.5875" y2="0" width="0.1524" layer="94"/>
+<wire x1="2.54" y1="0" x2="1.5875" y2="0" width="0.1524" layer="94"/>
+<text x="-3.81" y="3.81" size="1.778" layer="95">&gt;NAME</text>
+<text x="-3.81" y="-6.35" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -473,6 +595,95 @@ Content created by various authors including CR, JR, cadsoft.de, and adafruit.co
 </gates>
 <devices>
 <device name="">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="BEAD" prefix="B" uservalue="yes">
+<description>&lt;b&gt;Ferrite Bead&lt;/b&gt;</description>
+<gates>
+<gate name="G$1" symbol="BEAD" x="0" y="0"/>
+</gates>
+<devices>
+<device name="0402" package="0402">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="0603" package="0603">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="0805" package="0805">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="1206" package="1206">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="1210" package="1210">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="1812" package="1812">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="1825" package="1825">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="2220" package="2220">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="2225" package="2225">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -20376,6 +20587,7 @@ Source: &lt;a href="https://assets.nexperia.com/documents/data-sheet/PMV16XN.pdf
 <part name="STEPPER2" library="Connector" library_urn="urn:adsk.eagle:library:16378166" deviceset="PINHD-1X4" device="" package3d_urn="urn:adsk.eagle:package:22407/2"/>
 <part name="TCRT5000" library="Connector" library_urn="urn:adsk.eagle:library:16378166" deviceset="PINHD-2X2" device="" package3d_urn="urn:adsk.eagle:package:22455/2"/>
 <part name="ELECTROMAGNET" library="Connector" library_urn="urn:adsk.eagle:library:16378166" deviceset="PINHD-1X2" device="" package3d_urn="urn:adsk.eagle:package:22435/2"/>
+<part name="B1" library="ME507" deviceset="BEAD" device="0805"/>
 </parts>
 <sheets>
 <sheet>
@@ -20457,8 +20669,8 @@ https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-u
 <instance part="SUPPLY14" gate="G$1" x="25.4" y="172.72" smashed="yes">
 <attribute name="VALUE" x="25.4" y="177.165" size="1.778" layer="96" rot="R180" align="center"/>
 </instance>
-<instance part="SUPPLY15" gate="G$1" x="86.36" y="149.86" smashed="yes" rot="MR0">
-<attribute name="VALUE" x="86.36" y="154.305" size="1.778" layer="96" rot="MR180" align="center"/>
+<instance part="SUPPLY15" gate="G$1" x="86.36" y="162.56" smashed="yes" rot="MR0">
+<attribute name="VALUE" x="86.36" y="167.005" size="1.778" layer="96" rot="MR180" align="center"/>
 </instance>
 <instance part="SUPPLY16" gate="G$1" x="76.2" y="104.14" smashed="yes">
 <attribute name="VALUE" x="75.819" y="100.203" size="1.778" layer="96" align="bottom-center"/>
@@ -20603,6 +20815,10 @@ https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-u
 <instance part="ELECTROMAGNET" gate="G$1" x="233.68" y="161.544" smashed="yes">
 <attribute name="NAME" x="222.25" y="169.799" size="1.778" layer="95"/>
 <attribute name="VALUE" x="222.25" y="156.464" size="1.778" layer="96"/>
+</instance>
+<instance part="B1" gate="G$1" x="86.36" y="154.94" smashed="yes" rot="R90">
+<attribute name="NAME" x="82.55" y="151.13" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="92.71" y="151.13" size="1.778" layer="96" rot="R90"/>
 </instance>
 </instances>
 <busses>
@@ -20853,24 +21069,6 @@ https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-u
 <wire x1="30.48" y1="129.54" x2="30.48" y2="127" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="SUPPLY15" gate="G$1" pin="VCC"/>
-<pinref part="LED1" gate="G$1" pin="A"/>
-<wire x1="86.36" y1="134.62" x2="86.36" y2="149.86" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="149.86" x2="99.06" y2="149.86" width="0.1524" layer="91"/>
-<wire x1="99.06" y1="149.86" x2="99.06" y2="144.78" width="0.1524" layer="91"/>
-<junction x="86.36" y="149.86"/>
-<pinref part="C3" gate="G$1" pin="1"/>
-<wire x1="66.04" y1="147.32" x2="66.04" y2="149.86" width="0.1524" layer="91"/>
-<wire x1="66.04" y1="149.86" x2="86.36" y2="149.86" width="0.1524" layer="91"/>
-<pinref part="U$2" gate="G$1" pin="VCC"/>
-<wire x1="76.2" y1="129.54" x2="76.2" y2="134.62" width="0.1524" layer="91"/>
-<pinref part="R8" gate="G$1" pin="2"/>
-<wire x1="76.2" y1="134.62" x2="86.36" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="134.62" x2="88.9" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="88.9" y1="134.62" x2="88.9" y2="132.08" width="0.1524" layer="91"/>
-<junction x="86.36" y="134.62"/>
-</segment>
-<segment>
 <pinref part="R6" gate="G$1" pin="2"/>
 <pinref part="SUPPLY25" gate="G$1" pin="VCC"/>
 <wire x1="215.9" y1="119.38" x2="215.9" y2="121.92" width="0.1524" layer="91"/>
@@ -20901,6 +21099,30 @@ https://howtomechatronics.com/tutorials/arduino/stepper-motors-and-arduino-the-u
 <junction x="153.67" y="90.932"/>
 <pinref part="C5" gate="G$1" pin="1"/>
 <wire x1="176.53" y1="90.932" x2="176.53" y2="88.392" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="LED1" gate="G$1" pin="A"/>
+<wire x1="86.36" y1="134.62" x2="86.36" y2="149.86" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="149.86" x2="86.36" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="149.86" x2="99.06" y2="144.78" width="0.1524" layer="91"/>
+<pinref part="C3" gate="G$1" pin="1"/>
+<wire x1="66.04" y1="147.32" x2="66.04" y2="149.86" width="0.1524" layer="91"/>
+<pinref part="U$2" gate="G$1" pin="VCC"/>
+<wire x1="76.2" y1="129.54" x2="76.2" y2="134.62" width="0.1524" layer="91"/>
+<pinref part="R8" gate="G$1" pin="2"/>
+<wire x1="76.2" y1="134.62" x2="86.36" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="134.62" x2="88.9" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="134.62" x2="88.9" y2="132.08" width="0.1524" layer="91"/>
+<junction x="86.36" y="134.62"/>
+<wire x1="66.04" y1="149.86" x2="86.36" y2="149.86" width="0.1524" layer="91"/>
+<junction x="86.36" y="149.86"/>
+<wire x1="86.36" y1="149.86" x2="99.06" y2="149.86" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="1"/>
+<junction x="86.36" y="149.86"/>
+<pinref part="B1" gate="G$1" pin="2"/>
+<pinref part="SUPPLY15" gate="G$1" pin="VCC"/>
+<wire x1="86.36" y1="162.56" x2="86.36" y2="160.02" width="0.1524" layer="91"/>
+<junction x="86.36" y="160.02"/>
 </segment>
 </net>
 <net name="N$14" class="0">
