@@ -19,21 +19,20 @@
  * @param XLIM_PIN Pin for x limit switch
  * @param YLIM_PIN Pin for y limit switch
  */
-Mover::Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN)
+Mover::Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN)
 {
     motor1 = m1;
     motor2 = m2;
     state = 0; // Start state = 0
-    uint16_t motor1Pos = 0;
-    uint16_t motor2Pos = 0;
+    uint16_t xStep = 0;
+    uint16_t yStep = 0;
     bool scanBoard = false;
     uint8_t xLimPin = XLIM_PIN;
     uint8_t yLimPin = YLIM_PIN;
+    uint8_t solenoidPin = SOLENOID_PIN;
 }
 /**
  * @brief Method called for multitasking. This controls the Mover FSM.
- *
- * @param params Void pointer for FreeRTOS setup
  */
 void Mover::run() // Method for FSM
 {
@@ -41,7 +40,7 @@ void Mover::run() // Method for FSM
     {
     case 0:
     {
-        zeroPos();
+        origin();
         break;
     }
     case 1:
@@ -105,8 +104,38 @@ void Mover::setState(uint8_t newState)
     state = newState;
 }
 
-void Mover::zeroPos() // State 0
+void Mover::origin() // State 0
 {
+    /* Check x axis */
+    while (1)
+    {
+        if (!digitalRead(xLimPin)) // If x lim switch is hit, stop moving.
+        {
+            xStep = 0; // Set x position to 0
+            break;     // End while loop
+        }
+        else
+        {
+            // Move left 1 step
+            motor1.Velocity_MAX(-1, 1);
+            motor2.Velocity_MAX(-1, 1);
+        }
+    }
+    /* Check y axis */
+    while (1)
+    {
+        if (!digitalRead(yLimPin)) // If y lim switch is hit, stop moving.
+        {
+            yStep = 0; // Set y position to 0
+            break;     // End while loop
+        }
+        else
+        {
+            // Move down 1 step
+            motor1.Velocity_MAX(1, 1);
+            motor2.Velocity_MAX(-1, 1);
+        }
+    }
 }
 void waiting();                                   // State 1
 void movePiece(int16_t moveFrom, int16_t moveTo); // State 2

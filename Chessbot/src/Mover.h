@@ -16,21 +16,22 @@
 
 class Mover
 {
-protected:
+private:
     Motor motor1;
     Motor motor2;
     uint8_t state;
-    uint16_t motor1Pos;
-    uint16_t motor2Pos;
+    uint16_t xStep;
+    uint16_t yStep;
     bool scanBoard;
     uint8_t xLimPin;
     uint8_t yLimPin;
+    uint8_t solenoidPin;
 
 public:
-    Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN); // Constructor
-    void run();                                                    // Method for FSM
+    Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN); // Constructor
+    void run();                                                                          // Method for FSM
     void setState(uint8_t newState);
-    void zeroPos();                                   // State 0
+    void origin();                                    // State 0
     void waiting();                                   // State 1
     void movePiece(int16_t moveFrom, int16_t moveTo); // State 2
     void grabPiece();                                 // State 3

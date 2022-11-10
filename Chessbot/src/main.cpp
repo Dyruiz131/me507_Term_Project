@@ -16,7 +16,7 @@
 
 Motor motor_1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1, MS_1_1, MS_2_1);
 Motor motor_2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2, MS_1_2, MS_2_2);
-Mover mainMover(motor_1, motor_2, 12, 13);
+Mover mainMover(motor_1, motor_2, 12, 13, 14);
 void task_motor1(void *p_params)
 {
   while (true)

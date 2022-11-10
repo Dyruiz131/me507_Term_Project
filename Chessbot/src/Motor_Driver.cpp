@@ -26,7 +26,10 @@ Motor::Motor(uint8_t enable_pin, uint8_t step_pin, uint8_t direction_pin, uint8_
     pinMode(MS1_PIN, OUTPUT);
     pinMode(MS2_PIN, OUTPUT);
 }
-
+/**
+ * @brief Default consturctor for a new Motor object (needed for Mover class dependency)
+ * 
+ */
 Motor::Motor()
 {
     ENABLE_PIN = NULL;
