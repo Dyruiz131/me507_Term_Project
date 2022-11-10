@@ -93,6 +93,10 @@ void Motor::Velocity (float velocity, uint16_t Steps, Share<bool>& flag)
 
     for (i=0; i < 2*Steps; i++)
     {
+      if (flag.get() == true)
+      {
+        break;
+      } 
       digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
       delayMicroseconds(delay_time);
     }
