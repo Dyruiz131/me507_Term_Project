@@ -16,14 +16,19 @@
 
 class Mover
 {
-private:
+protected:
     Motor motor1;
     Motor motor2;
     uint8_t state;
+    uint16_t motor1Pos;
+    uint16_t motor2Pos;
+    bool scanBoard;
+    uint8_t xLimPin;
+    uint8_t yLimPin;
 
 public:
-    Mover(Motor *motor1, Motor *motor2, uint8_t startState); // Constructor
-    void start(void *params);                                // Method for FSM
+    Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN); // Constructor
+    void run();                                                    // Method for FSM
     void setState(uint8_t newState);
     void zeroPos();                                   // State 0
     void waiting();                                   // State 1
@@ -34,6 +39,8 @@ public:
     void yGridMove(int16_t y);                        // State 6
     void gridToCenter();                              // State 7
     void releasePiece();                              // State 8
+    void limSwitchRedirection();                      // State 9
+    void scanBoard();                                 // State 10
 };
 
 #endif // _MOVER_TASK_H

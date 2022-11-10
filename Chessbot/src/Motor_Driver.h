@@ -25,6 +25,7 @@ uint8_t MS1_PIN;
 uint8_t MS2_PIN;
 
     Motor (uint8_t enable_pin, uint8_t step_pin, uint8_t direction_pin, uint8_t MS1_pin, uint8_t MS2_pin);
+    Motor ();
 
     void enable (bool enable_motor);
 
