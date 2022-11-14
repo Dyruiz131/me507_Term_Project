@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "Mover.h"
 #include "Motor_Driver.h" 								// Step on rising edge
 #include "taskshare.h"                    // Header for inter-task shared data
 #include "taskqueue.h"                    // Header for inter-task data queues
@@ -23,7 +24,8 @@ Share<bool> Motor2_Done ("Motor2");
 
 Motor motor_1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1, MS_1_1, MS_2_1);
 Motor motor_2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2, MS_1_2, MS_2_2);
-void task_motor1 (void* p_params)
+Mover mainMover(motor_1, motor_2, 12, 13, 14);
+void task_motor1(void *p_params)
 {
   while (true)
   {
@@ -32,12 +34,20 @@ void task_motor1 (void* p_params)
   }
 }
 
-void task_motor2 (void* p_params)
+void task_motor2(void *p_params)
 {
   while (true)
   {
     motor_2.Velocity(-300,600, Motor2_Done);
     delay(1000);
+  }
+}
+void mover_task(void *p_params)
+{
+  while (true)
+  {
+    mainMover.run();
+    vTaskDelay(100); // Task period
   }
 }
 
@@ -92,11 +102,15 @@ void setup() {
     xTaskCreate (task_kill, "Task Kill", 2048, NULL, 1, NULL);
 }
 
+  xTaskCreate(mover_task, "Mover Task", 4096, NULL, 2, NULL);
+  xTaskCreate(task_motor1, "Task Motor1", 2048, NULL, 1, NULL);
+  xTaskCreate(task_motor2, "Task Motor2", 2048, NULL, 1, NULL);
+}
 
-void loop() 
+void loop()
 {
   // put your main code here, to run repeatedly:
   // motor_1.Velocity_MAX(1,1000);
   // motor_2.Velocity(-300,600);
-  vTaskDelay (60000);
+  vTaskDelay(60000);
 }
