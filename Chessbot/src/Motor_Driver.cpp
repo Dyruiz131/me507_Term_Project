@@ -7,6 +7,8 @@
 
 #include <Arduino.h>
 #include "Motor_Driver.h"
+#include "shares.h"
+#include "taskshare.h"
 
 /** This constructor creates an motor object.
  *  @param i2c An I2C object, created as TwoWire(params)
@@ -64,7 +66,7 @@ void Motor::enable(bool motor_enable)
 /** This method returns the scaled and corrected angle measured by the AS5600.
  *  @return Our best estimate of the actual angle, in a 12-bit integer
  */
-void Motor::Velocity_MAX(int8_t Dir, uint16_t Steps)
+void Motor::Velocity_MAX (int8_t Dir, uint16_t Steps, Share<bool>& flag)
 {
     if (Dir == 1)
     {
@@ -77,14 +79,16 @@ void Motor::Velocity_MAX(int8_t Dir, uint16_t Steps)
     int i = 0;
     for (i = 0; i < 2 * Steps; i++)
     {
-        digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
-        delay(1);
+
+      if (flag.get() == true)
+      {
+        break;
+      }  
+      digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
+      delay(1);
+
     }
 }
-
-/** This method gets and returns the contents of the AS5600's status register.
- */
-void Motor::Velocity(float velocity, uint16_t Steps)
 {
     if (velocity >= 0)
     {
@@ -100,7 +104,11 @@ void Motor::Velocity(float velocity, uint16_t Steps)
 
     for (i = 0; i < 2 * Steps; i++)
     {
-        digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
-        delayMicroseconds(delay_time);
+      if (flag.get() == true)
+      {
+        break;
+      } 
+      digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
+      delayMicroseconds(delay_time);
     }
 }
