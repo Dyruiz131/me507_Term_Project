@@ -30,7 +30,7 @@ Motor::Motor(uint8_t enable_pin, uint8_t step_pin, uint8_t direction_pin, uint8_
 }
 /**
  * @brief Default consturctor for a new Motor object (needed for Mover class dependency)
- * 
+ *
  */
 Motor::Motor()
 {
@@ -66,7 +66,7 @@ void Motor::enable(bool motor_enable)
 /** This method returns the scaled and corrected angle measured by the AS5600.
  *  @return Our best estimate of the actual angle, in a 12-bit integer
  */
-void Motor::Velocity_MAX (int8_t Dir, uint16_t Steps, Share<bool>& flag)
+void Motor::Velocity_MAX(int8_t Dir, uint16_t Steps, Share<bool> &flag)
 {
     if (Dir == 1)
     {
@@ -80,15 +80,15 @@ void Motor::Velocity_MAX (int8_t Dir, uint16_t Steps, Share<bool>& flag)
     for (i = 0; i < 2 * Steps; i++)
     {
 
-      if (flag.get() == true)
-      {
-        break;
-      }  
-      digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
-      delay(1);
-
+        if (flag.get() == true)
+        {
+            break;
+        }
+        digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
+        delay(1);
     }
 }
+void Motor::Velocity(float velocity, uint16_t Steps, Share<bool> &flag)
 {
     if (velocity >= 0)
     {
@@ -104,11 +104,11 @@ void Motor::Velocity_MAX (int8_t Dir, uint16_t Steps, Share<bool>& flag)
 
     for (i = 0; i < 2 * Steps; i++)
     {
-      if (flag.get() == true)
-      {
-        break;
-      } 
-      digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
-      delayMicroseconds(delay_time);
+        if (flag.get() == true)
+        {
+            break;
+        }
+        digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
+        delayMicroseconds(delay_time);
     }
 }
