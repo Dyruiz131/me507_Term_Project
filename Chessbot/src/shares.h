@@ -14,9 +14,20 @@
 #include "taskqueue.h"
 #include "taskshare.h"
 
-
-// A share which holds a counter of how many times a simulated event occurred
-extern Share<bool> Motor1_Done;
-extern Share<bool> Motor2_Done;
-
+extern Share<bool> Stop_Motor1;
+extern Share<bool> Stop_Motor2;
+extern Share<bool> Begin_Move;
+extern Queue<float> Directions_Queue;
+extern Share<uint16_t> Steps1;
+extern Share<uint16_t> Steps2;
+extern Share<float> Avel1;
+extern Share<float> Avel2;
+extern Share<bool> Piece_Detect;
+extern Share<bool> Scan_Board;
+extern Share<bool> Motor1_Start;
+extern Share<bool> Motor2_Start;
+extern Share<bool> Motor1Max_Start;
+extern Share<bool> Motor2Max_Start;
+extern Share<int8_t> Motor1_dir;
+extern Share<int8_t> Motor2_dir;
 #endif // _SHARES_H_

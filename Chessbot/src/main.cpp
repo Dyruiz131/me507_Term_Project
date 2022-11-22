@@ -19,17 +19,18 @@
 
 #define BUTTON_PIN 15
 
-Share<bool> Motor1_Done("Motor1");
-Share<bool> Motor2_Done("Motor2");
+Share<bool> Stop_Motor1("Stop_Motor1");
+Share<bool> Stop_Motor2("Stop_Motor2");
 
 Motor motor_1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1, MS_1_1, MS_2_1);
 Motor motor_2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2, MS_1_2, MS_2_2);
 Mover mainMover(motor_1, motor_2, 12, 13, 14);
+
 void task_motor1(void *p_params)
 {
   while (true)
   {
-    motor_1.Velocity_MAX(1, 1000, Motor1_Done);
+    motor_1.Velocity_MAX(1, 1000, Stop_Motor1);
     delay(1000);
   }
 }
@@ -38,7 +39,7 @@ void task_motor2(void *p_params)
 {
   while (true)
   {
-    motor_2.Velocity(-300, 600, Motor2_Done);
+    motor_2.Velocity(-300, 600, Stop_Motor2);
     delay(1000);
   }
 }
@@ -58,14 +59,14 @@ void task_kill(void *p_params)
     if (digitalRead(BUTTON_PIN) == 0)
     {
       Serial << "button was pressed, state low: 0";
-      Motor1_Done.put(true);
-      Motor2_Done.put(true);
+      Stop_Motor1.put(true);
+      Stop_Motor2.put(true);
       delay(100);
     }
     else
     {
-      Motor1_Done.put(false);
-      Motor2_Done.put(false);
+      Stop_Motor1.put(false);
+      Stop_Motor2.put(false);
       delay(100);
     }
   }

@@ -26,22 +26,31 @@ private:
     uint8_t xLimPin;
     uint8_t yLimPin;
     uint8_t solenoidPin;
-
+    float omega_Max; //steps per second
+    float pitch;     //mm/deg
+    float step_size;  //deg/step
+    float x_coordinate_from;
+    float y_coordinate_from;
+    float x_coordinate_to;
+    float y_coordinate_to;
+    float origin_x;
+    float origin_y;
+    
 public:
     Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN); // Constructor
     void run();                                                                          // Method for FSM
     void setState(uint8_t newState);
     void origin();                                    // State 0
     void waiting();                                   // State 1
-    void movePiece(int16_t moveFrom, int16_t moveTo); // State 2
+    void movePiece(float moveFromx, float moveFromy); // State 2
     void grabPiece();                                 // State 3
     void squareOrigin();                              // State 4
-    void xGridMove(int16_t x);                        // State 5
-    void yGridMove(int16_t y);                        // State 6
+    void xGridMove(uint16_t x_to, uint16_t x_from);                        // State 5
+    void yGridMove(uint16_t y_to, uint16_t y_from);                        // State 6
     void gridToCenter();                              // State 7
     void releasePiece();                              // State 8
     void limSwitchRedirection();                      // State 9
-    void scanBoard();                                 // State 10
+    void scan_Board();                                 // State 10
 };
 
 #endif // _MOVER_TASK_H

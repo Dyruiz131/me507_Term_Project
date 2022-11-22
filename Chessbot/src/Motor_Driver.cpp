@@ -68,6 +68,8 @@ void Motor::enable(bool motor_enable)
  */
 void Motor::Velocity_MAX(int8_t Dir, uint16_t Steps, Share<bool> &flag)
 {
+    flag.put(false);
+
     if (Dir == 1)
     {
         digitalWrite(DIRECTION_PIN, HIGH);
@@ -87,9 +89,12 @@ void Motor::Velocity_MAX(int8_t Dir, uint16_t Steps, Share<bool> &flag)
         digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
         delay(1);
     }
+    flag.put(true);
 }
 void Motor::Velocity(float velocity, uint16_t Steps, Share<bool> &flag)
 {
+    flag.put(false);
+    
     if (velocity >= 0)
     {
         digitalWrite(DIRECTION_PIN, HIGH);
@@ -111,4 +116,5 @@ void Motor::Velocity(float velocity, uint16_t Steps, Share<bool> &flag)
         digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
         delayMicroseconds(delay_time);
     }
+    flag.put(true);
 }
