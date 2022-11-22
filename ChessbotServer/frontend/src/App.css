@@ -1,0 +1,102 @@
+/* Colour Scheme */
+:root{
+  --dark-olive-green: #606c38ff;
+  --kombu-green: #283618ff;
+  --cornsilk: #fefae0ff;
+  --earth-yellow: #dda15eff;
+  --liver-dogs: #bc6c25ff;
+}
+
+html{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100%;
+  /* This always makes the scrollbar visible to stop the navigation 
+  buttons moving when the scroll bar appears/disappears */
+  overflow-y: scroll;
+}
+/* -----All pages----- */
+/* Full width body with background colour */
+body{
+  background-color:var(--cornsilk);
+  width: 100%;
+  padding: 0 0 1rem 0;
+  margin: 0;
+  color: var(--kombu-green);
+  
+}
+a, a:active, a:visited, a:hover{
+  text-decoration: underline;
+  color:var(--cornsilk);
+  font-weight: normal;
+  padding: 0 10px;
+}
+
+/* Main rounded content box with background colour */
+main{
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 5rem;
+}
+
+
+/* -----Homepage----- */
+h1 a, h1 a:active, h1 a:visited, h1 a:hover{
+  text-decoration: none;
+  color:var(--cornsilk);
+}
+
+.flex-container{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+.flex-content{
+  flex-basis: 100px;
+  flex-grow: 1;
+  background-color:beige;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  padding: 0 20px 20px 20px;
+}
+.flex-image{
+  width: 150px;
+  border: 3px solid;
+  border-color: var(--kombu-green);
+  border-radius: 10px;
+}
+
+/* -----Recipe pages----- */
+
+.recipe-container{
+  display: flex;
+  flex-wrap: wrap;
+}
+.recipe-content{
+  flex-basis: 500px;
+  flex-grow: 1;
+}
+.recipe-image{
+  width: 350px;
+  border: 5px solid;
+  border-color: var(--kombu-green);
+  border-radius: 10px;
+  margin: 10px;
+}
+
+h2{
+  background-color: var(--earth-yellow);
+  padding: 0 3px;
+  border-radius: 5px;
+}
+
+/* Recipe form */
+.recipe-form{
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 5rem;
+}
+input{
+  display: flex;
+  flex-direction: row;
+  margin: 1rem 5rem;
+}
