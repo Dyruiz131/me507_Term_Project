@@ -50,7 +50,7 @@ public:
     void gridToCenter();                              // State 7
     void releasePiece();                              // State 8
     void limSwitchRedirection();                      // State 9
-    void scan_Board();                                 // State 10
+    void scan_Board();                                // State 10
 };
 
 #endif // _MOVER_TASK_H

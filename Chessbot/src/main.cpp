@@ -4,6 +4,7 @@
 #include "taskshare.h"    // Header for inter-task shared data
 #include "taskqueue.h"    // Header for inter-task data queues
 #include "shares.h"       // Header for shares used in this project
+#include "Task_Motor.h"
 
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled
 #define STEP_PIN_1 33 // Step on rising edge
@@ -21,28 +22,62 @@
 
 Share<bool> Stop_Motor1("Stop_Motor1");
 Share<bool> Stop_Motor2("Stop_Motor2");
+Share<bool> Begin_Move("Begin_Move");
+Queue<float> Directions_Queue(4, "Directions");
+Share<uint16_t> Steps1("Num_of_Step_1");
+Share<uint16_t> Steps2("Num_of_Step_2");
+Share<float> Avel1("Steps/sec1");
+Share<float> Avel2("Steps/sec2");
+Share<int8_t> Motor1_dir("Direction_1");
+Share<int8_t> Motor2_dir("Direction_2");
+Share<bool> Motor1_Start("Motor1_Start");
+Share<bool> Motor2_Start("Motor2_Start");
+Share<bool> Motor1Max_Start("Motor1Max_Start");
+Share<bool> Motor2Max_Start("Motor2Max_Start");
+Share<bool> Scan_Board("Scan_Board");
 
 Motor motor_1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1, MS_1_1, MS_2_1);
 Motor motor_2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2, MS_1_2, MS_2_2);
 Mover mainMover(motor_1, motor_2, 12, 13, 14);
+Task_Motor task_motor1(motor_1, Stop_Motor1, Motor1_dir, Avel1, Steps1, Motor1_Start, Motor1Max_Start);
+Task_Motor task_motor2(motor_2, Stop_Motor2, Motor2_dir, Avel2, Steps2, Motor2_Start, Motor2Max_Start);
 
-void task_motor1(void *p_params)
+// void task_motor1(void *p_params)
+// {
+//   while (true)
+//   {
+//     motor_1.Velocity_MAX(1, 1000, Stop_Motor1);
+//     delay(1000);
+//   }
+// }
+
+// void task_motor2(void *p_params)
+// {
+//   while (true)
+//   {
+//     motor_2.Velocity(-300, 600, Stop_Motor2);
+//     delay(1000);
+//   }
+// }
+
+void motor_task1(void *p_params)
 {
   while (true)
   {
-    motor_1.Velocity_MAX(1, 1000, Stop_Motor1);
-    delay(1000);
+    task_motor1.run();
+    vTaskDelay(100); // Task period
   }
 }
 
-void task_motor2(void *p_params)
+void motor_task2(void *p_params)
 {
   while (true)
   {
-    motor_2.Velocity(-300, 600, Stop_Motor2);
-    delay(1000);
+    task_motor2.run();
+    vTaskDelay(100); // Task period
   }
 }
+
 void mover_task(void *p_params)
 {
   while (true)
@@ -91,21 +126,22 @@ void setup()
   digitalWrite(MS_2_1, LOW);
   digitalWrite(MS_1_2, HIGH);
   digitalWrite(MS_2_2, LOW);
+
   // Motor motor_1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1, MS_1_1, MS_2_1);
   // Motor motor_2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2, MS_1_2, MS_2_2);
 
-  motor_1.enable(true);
-  motor_2.enable(true);
+  // motor_1.enable(true);
+  // motor_2.enable(true);
   // motor_1.Velocity_MAX(1,1000);
   // motor_2.Velocity(-300,600);
 
-  xTaskCreate(task_motor1, "Task Motor1", 2048, NULL, 1, NULL);
-  xTaskCreate(task_motor2, "Task Motor2", 2048, NULL, 1, NULL);
+  xTaskCreate(motor_task1, "Task Motor1", 2048, NULL, 1, NULL);
+  xTaskCreate(motor_task2, "Task Motor2", 2048, NULL, 1, NULL);
   xTaskCreate(task_kill, "Task Kill", 2048, NULL, 1, NULL);
 
   xTaskCreate(mover_task, "Mover Task", 4096, NULL, 2, NULL);
-  xTaskCreate(task_motor1, "Task Motor1", 2048, NULL, 1, NULL);
-  xTaskCreate(task_motor2, "Task Motor2", 2048, NULL, 1, NULL);
+  // xTaskCreate(task_motor1, "Task Motor1", 2048, NULL, 1, NULL);
+  // xTaskCreate(task_motor2, "Task Motor2", 2048, NULL, 1, NULL);
 }
 
 void loop()

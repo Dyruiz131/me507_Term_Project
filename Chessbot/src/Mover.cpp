@@ -11,6 +11,7 @@
 #include "taskshare.h"
 #include "Motor_Driver.h"
 #include "Mover.h"
+#include "shares.h"
 /**
  * @brief Construct a new Mover object
  *
@@ -21,21 +22,6 @@
  */
 #define Solenoid_Pin 11
 
-Share<bool> Stop_Motor1("Stop_Motor1");
-Share<bool> Stop_Motor2("Stop_Motor2");
-Share<bool> Begin_Move("Begin_Move");
-Queue<float> Directions_Queue(4, "Directions");
-Share<uint16_t> Steps1("Num_of_Step_1");
-Share<uint16_t> Steps2("Num_of_Step_2");
-Share<float> Avel1("Steps/sec1");
-Share<float> Avel2("Steps/sec2");
-Share<int8_t> Motor1_dir("Direction_1");
-Share<int8_t> Motor2_dir("Direction_2");
-Share<bool> Motor1_Start("Motor1_Start");
-Share<bool> Motor2_Start("Motor2_Start");
-Share<bool> Motor1Max_Start("Motor1Max_Start");
-Share<bool> Motor2Max_Start("Motor2Max_Start");
-Share<bool> Scan_Board("Scan_Board");
 Mover::Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN)
 {
     motor1 = m1;
@@ -193,6 +179,7 @@ void Mover::run() // Method for FSM
             {
                 break;
             }
+            delay(10);
 
         }
         scanBoard = true;
@@ -242,7 +229,7 @@ void Mover::origin() // State 0
 }
 void Mover::waiting()                             // State 1
 {
-    delay(50);
+    
 }
 
 void Mover::movePiece(float move_From_x, float move_From_y) // State 2
