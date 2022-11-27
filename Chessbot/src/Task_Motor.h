@@ -33,7 +33,7 @@ public:
     void Waiting();
     void Motor_run(); // Method for velocity specific motor actuation
     void Motor_Max_run(); // Method for Max velocity motor actuation
-  
+    
 };
 
 #endif // _TASK_MOTOR_H

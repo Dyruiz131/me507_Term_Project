@@ -5,6 +5,7 @@
 #include "taskqueue.h"    // Header for inter-task data queues
 #include "shares.h"       // Header for shares used in this project
 #include "Task_Motor.h"
+#include "Task_ScanBoard.h"
 
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled
 #define STEP_PIN_1 33 // Step on rising edge
@@ -41,6 +42,7 @@ Motor motor_2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2, MS_1_2, MS_2_2);
 Mover mainMover(motor_1, motor_2, 12, 13, 14);
 Task_Motor task_motor1(motor_1, Stop_Motor1, Motor1_dir, Avel1, Steps1, Motor1_Start, Motor1Max_Start);
 Task_Motor task_motor2(motor_2, Stop_Motor2, Motor2_dir, Avel2, Steps2, Motor2_Start, Motor2Max_Start);
+Task_ScanBoard scanboard;
 
 // void task_motor1(void *p_params)
 // {
@@ -87,6 +89,14 @@ void mover_task(void *p_params)
   }
 }
 
+void task_scanboard(void *p_params)
+{
+  while (true)
+  {
+    scanboard.run();
+    vTaskDelay(100); // Task period
+  }
+}
 void task_kill(void *p_params)
 {
   while (true)
@@ -138,8 +148,8 @@ void setup()
   xTaskCreate(motor_task1, "Task Motor1", 2048, NULL, 1, NULL);
   xTaskCreate(motor_task2, "Task Motor2", 2048, NULL, 1, NULL);
   xTaskCreate(task_kill, "Task Kill", 2048, NULL, 1, NULL);
-
   xTaskCreate(mover_task, "Mover Task", 4096, NULL, 2, NULL);
+  xTaskCreate(task_scanboard, "Scan Task", 4096, NULL, 2, NULL);
   // xTaskCreate(task_motor1, "Task Motor1", 2048, NULL, 1, NULL);
   // xTaskCreate(task_motor2, "Task Motor2", 2048, NULL, 1, NULL);
 }
