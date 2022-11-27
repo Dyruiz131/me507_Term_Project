@@ -60,6 +60,21 @@ APIHandler::APIHandler(const char *wifiSSID, const char *pass)
     Serial.println(WiFi.localIP());
 }
 
+APIHandler::APIHandler()
+{
+    Serial.begin(115200);
+    WiFi.begin(ssid, password);
+    Serial.println("Connecting");
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("");
+    Serial.print("Connected to WiFi network with IP Address: ");
+    Serial.println(WiFi.localIP());
+}
+
 /**
  * @brief Sends a GET request to a specified server
  *

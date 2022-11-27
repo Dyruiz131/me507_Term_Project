@@ -12,6 +12,7 @@
 #include "Motor_Driver.h"
 #include "Mover.h"
 #include "shares.h"
+#include "APIHandler.h"
 /**
  * @brief Construct a new Mover object
  *
@@ -22,10 +23,11 @@
  */
 #define Solenoid_Pin 11
 
-Mover::Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN)
+Mover::Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api)
 {
     motor1 = m1;
     motor2 = m2;
+    server = api;
     state = 0; // Start state = 0
     uint16_t xStep = 0;
     uint16_t yStep = 0;
@@ -43,6 +45,7 @@ Mover::Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOL
     x_coordinate_to = 0;
     y_coordinate_to = 0;
 }
+
 /**
  * @brief Method called for multitasking. This controls the Mover FSM.
  */

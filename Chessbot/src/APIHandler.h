@@ -24,6 +24,7 @@ private:
 
 public:
     APIHandler(const char *wifiSSID, const char *pass);
+    APIHandler(); //Default constructor
     void sendMove(String from, String to);
     String getFen();
     char getTurn();

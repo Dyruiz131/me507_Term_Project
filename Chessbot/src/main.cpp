@@ -6,6 +6,7 @@
 #include "shares.h"       // Header for shares used in this project
 #include "Task_Motor.h"
 #include "Task_ScanBoard.h"
+#include "APIHandler.h"
 
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled
 #define STEP_PIN_1 33 // Step on rising edge
@@ -20,6 +21,9 @@
 #define MS_2_2 17
 
 #define BUTTON_PIN 15
+#define XLIM_PIN 12
+#define YLIM_PIN 13
+#define SOLENOID_PIN 14
 
 Share<bool> Stop_Motor1("Stop_Motor1");
 Share<bool> Stop_Motor2("Stop_Motor2");
@@ -37,11 +41,23 @@ Share<bool> Motor1Max_Start("Motor1Max_Start");
 Share<bool> Motor2Max_Start("Motor2Max_Start");
 Share<bool> Scan_Board("Scan_Board");
 
+// API setup for dependency injection into Mover object
+const char *ssid = "SSID";
+const char *password = "PASSWORD";
+APIHandler apiHandler(ssid, password);
+
+// Motor setup
 Motor motor_1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1, MS_1_1, MS_2_1);
 Motor motor_2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2, MS_1_2, MS_2_2);
-Mover mainMover(motor_1, motor_2, 12, 13, 14);
+
+// Dependency injection for board
+Mover mainMover(motor_1, motor_2, XLIM_PIN, YLIM_PIN, SOLENOID_PIN, apiHandler);
+
+// Create motor task objects
 Task_Motor task_motor1(motor_1, Stop_Motor1, Motor1_dir, Avel1, Steps1, Motor1_Start, Motor1Max_Start);
 Task_Motor task_motor2(motor_2, Stop_Motor2, Motor2_dir, Avel2, Steps2, Motor2_Start, Motor2Max_Start);
+
+// Create scan board task object
 Task_ScanBoard scanboard;
 
 // void task_motor1(void *p_params)
@@ -62,6 +78,7 @@ Task_ScanBoard scanboard;
 //   }
 // }
 
+/* Define tasks for FreeRTOS */
 void motor_task1(void *p_params)
 {
   while (true)
@@ -116,6 +133,13 @@ void task_kill(void *p_params)
     }
   }
 }
+
+/* End of task definitions for FreeRTOS*/
+
+/**
+ * @brief Main program that sets up FreeRTOS tasks and starts the scheduler
+ *
+ */
 void setup()
 {
   Serial.begin(115200); // Init used serial port
@@ -154,6 +178,10 @@ void setup()
   // xTaskCreate(task_motor2, "Task Motor2", 2048, NULL, 1, NULL);
 }
 
+/**
+ * @brief Loop that runs every 60000 ms to keep FreeRTOS from crashing
+ *
+ */
 void loop()
 {
   vTaskDelay(60000);
