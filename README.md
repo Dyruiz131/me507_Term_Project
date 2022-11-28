@@ -11,10 +11,4 @@ https://me507-chessbot.netlify.app
 The website controls a custom built API, which the ESP32 communicates with to manage changes to the board.
 
 The webserver project can be found here:
-https://github.com/sam-hud/ME507-ChessBotServer
-The webserver uses the following tools:
- - Node.js
- - React
- - Chess.js
- - react-chessboard
- - Express.js
+[ME507-ChessBotServer](https://github.com/sam-hud/ME507-ChessBotServer)
