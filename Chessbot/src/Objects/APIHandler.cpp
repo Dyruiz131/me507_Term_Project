@@ -212,7 +212,7 @@ boolean APIHandler::getMoveStatus()
 }
 
 /**
- * @brief Sets the current move stat from the server
+ * @brief Sets the current move status from the server
  *
  */
 void APIHandler::sendMoveStatus(boolean status)

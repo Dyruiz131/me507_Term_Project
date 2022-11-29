@@ -12,14 +12,13 @@
 #include <Arduino.h>
 #include "taskqueue.h"
 #include "taskshare.h"
-#include "Motor_Driver.h"
-#include "APIHandler.h"
+#include "Objects/MotorDriver.h"
+#include "Objects/APIHandler.h"
 
-class Mover
+class Controller
 {
 private:
-    Motor motor1;
-    Motor motor2;
+
     APIHandler server;
     uint8_t state;
     uint16_t xStep;
@@ -39,8 +38,8 @@ private:
     float origin_y;
 
 public:
-    Mover(Motor m1, Motor m2, uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api); // Constructor
-    void run();                                                                          // Method for FSM
+    Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api); // Constructor
+    void run();                                                                                               // Method for FSM
     void setState(uint8_t newState);
     void origin();                                    // State 0
     void waiting();                                   // State 1
