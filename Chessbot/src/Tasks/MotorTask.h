@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include "taskqueue.h"
 #include "taskshare.h"
-#include "Objects/MotorDriver.h"
+#include "objects/MotorDriver.h"
 
 class MotorTask
 {

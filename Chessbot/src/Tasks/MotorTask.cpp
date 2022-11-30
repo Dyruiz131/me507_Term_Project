@@ -9,8 +9,8 @@
 #include <Arduino.h>
 #include "taskqueue.h"
 #include "taskshare.h"
-#include "Objects/MotorDriver.h"
-#include "Tasks/MotorTask.h"
+#include "objects/MotorDriver.h"
+#include "tasks/MotorTask.h"
 #include "shares.h"
 
 MotorTask::MotorTask(Motor m, Share<bool> &stopM, Share<int8_t> &dir, Share<float> &vel, Share<uint16_t> &st, Share<bool> &startM, Share<bool> &startMMax)

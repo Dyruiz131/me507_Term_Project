@@ -9,12 +9,10 @@
 #include <Arduino.h>
 #include "taskqueue.h"
 #include "taskshare.h"
-#include "Objects/MotorDriver.h"
-#include "Tasks/ControllerTask.h"
+#include "objects/MotorDriver.h"
+#include "tasks/ControllerTask.h"
 #include "shares.h"
-#include "Objects/APIHandler.h"
-
-#define Solenoid_Pin 11
+#include "objects/APIHandler.h"
 
 Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api)
 {
@@ -241,7 +239,7 @@ void Controller::movePiece(float moveFromX, float moveFromY) // State 2
 }
 void Controller::grabPiece() // State 3
 {
-    digitalWrite(Solenoid_Pin, HIGH);
+    digitalWrite(solenoidPin, HIGH);
 }
 
 void Controller::squareOrigin() // State 4
@@ -315,7 +313,7 @@ void Controller::gridToCenter() // State 7
 }
 void Controller::releasePiece() // State 8
 {
-    digitalWrite(Solenoid_Pin, LOW);
+    digitalWrite(solenoidPin, LOW);
 }
 
 void Controller::runScan()

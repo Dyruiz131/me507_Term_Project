@@ -12,8 +12,8 @@
 #include <Arduino.h>
 #include "taskqueue.h"
 #include "taskshare.h"
-#include "Objects/MotorDriver.h"
-#include "Objects/APIHandler.h"
+#include "objects/MotorDriver.h"
+#include "objects/APIHandler.h"
 
 class Controller
 {

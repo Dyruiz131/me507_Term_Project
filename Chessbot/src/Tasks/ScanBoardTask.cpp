@@ -9,7 +9,7 @@
 #include <Arduino.h>
 #include "taskqueue.h"
 #include "taskshare.h"
-#include "Tasks/ScanBoardTask.h"
+#include "tasks/ScanBoardTask.h"
 #include "shares.h"
 
 /**
