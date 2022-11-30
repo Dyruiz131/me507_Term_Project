@@ -6,8 +6,8 @@
  * @date 2022-11-23
  */
 
-#ifndef _MOTORTASK_H
-#define _MOTORTASK_H
+#ifndef _MOTOR_TASK_H
+#define _MOTOR_TASK_H
 
 #include <Arduino.h>
 #include "taskqueue.h"
@@ -36,4 +36,4 @@ public:
     void runMotorMax(); // Method for Max velocity motor actuation
 };
 
-#endif // _MOTORTASK_H
+#endif // _MOTOR_TASK_H

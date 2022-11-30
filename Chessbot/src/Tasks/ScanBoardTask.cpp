@@ -7,23 +7,8 @@
  */
 
 #include <Arduino.h>
-#include "taskqueue.h"
-#include "taskshare.h"
 #include "tasks/ScanBoardTask.h"
 #include "shares.h"
-
-/**
- *
- * @brief Construct a new Controller object
- *
- * @param motor1 Motor 1 object
- * @param Stop_Motor1 Share object used as a flag for stopping the motor
- * @param direction1 Share object used to indicate direction of the motor
- * @param velocity1 Share object used to input velocity for motor function
- * @param steps1 Share object used to input number of steps for motor function
- * @param Motor_start1 Share object used as a flag to progress FSM to state 1
- * @param MotorMax_Start1 Share object used as a flag to progress FSM to state 2
- */
 
 #define Light_Pin 10
 ScanBoardTask::ScanBoardTask()
@@ -36,9 +21,6 @@ ScanBoardTask::ScanBoardTask()
     length_array_piece = 64;
 }
 
-/**
- * @brief Method called for multitasking. This controls the Controller FSM.
- */
 void ScanBoardTask::run() // Method for FSM
 {
 
@@ -46,7 +28,6 @@ void ScanBoardTask::run() // Method for FSM
     {
     case 0:
     {
-        waiting();
         if (scanBoard.get() == true)
         {
             state = 1;
@@ -61,10 +42,6 @@ void ScanBoardTask::run() // Method for FSM
         break;
     }
     }
-}
-
-void ScanBoardTask::waiting() // waiting
-{
 }
 void ScanBoardTask::Scan() // State 2
 {

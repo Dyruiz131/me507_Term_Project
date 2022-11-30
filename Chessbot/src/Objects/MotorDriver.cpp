@@ -1,4 +1,4 @@
-/** @file Motor_Driver.cpp
+/** @file MotorDriver.cpp
  *  @author Dylan Ruiz, created original file
  *  @author Sam Hudson
  *  @author Scott Dunn
@@ -8,12 +8,8 @@
 #include <Arduino.h>
 #include "objects/MotorDriver.h"
 #include "shares.h"
-#include "taskshare.h"
 
-/** This constructor creates an motor object.
- *  @param i2c An I2C object, created as TwoWire(params)
- *  @param address The address to use for the AS5600, default
- */
+
 Motor::Motor(uint8_t en, uint8_t step, uint8_t dir)
 {
     ENABLE_PIN = en;
@@ -24,6 +20,7 @@ Motor::Motor(uint8_t en, uint8_t step, uint8_t dir)
     pinMode(ENABLE_PIN, OUTPUT);
     pinMode(STEP_PIN, OUTPUT);
     pinMode(DIRECTION_PIN, OUTPUT);
+    digitalWrite(ENABLE_PIN, LOW); // Enable motor
 }
 /**
  * @brief Default consturctor for a new Motor object (needed for motor task class dependency)
@@ -39,23 +36,12 @@ Motor::Motor()
     pinMode(ENABLE_PIN, OUTPUT);
     pinMode(STEP_PIN, OUTPUT);
     pinMode(DIRECTION_PIN, OUTPUT);
+    digitalWrite(ENABLE_PIN, LOW); // Enable motor
 }
 
-void Motor::enable(bool motor_enable)
+void Motor::startMax(int8_t Dir, uint16_t Steps, Share<bool> &stopFlag)
 {
-    if (motor_enable = true)
-    {
-        digitalWrite(ENABLE_PIN, LOW);
-    }
-    else if (motor_enable = false)
-    {
-        digitalWrite(ENABLE_PIN, HIGH);
-    }
-}
-
-void Motor::maxVelocity(int8_t Dir, uint16_t Steps, Share<bool> &flag)
-{
-    flag.put(false);
+    stopFlag.put(false); // Start motor
 
     if (Dir == 1)
     {
@@ -69,18 +55,18 @@ void Motor::maxVelocity(int8_t Dir, uint16_t Steps, Share<bool> &flag)
     for (i = 0; i < 2 * Steps; i++)
     {
 
-        if (flag.get() == true)
+        if (stopFlag.get() == true)
         {
             break;
         }
         digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
         delay(1);
     }
-    flag.put(true);
+    stopFlag.put(true); // Stop motor
 }
-void Motor::velocity(float velocity, uint16_t Steps, Share<bool> &flag)
+void Motor::start(float velocity, uint16_t Steps, Share<bool> &stopFlag)
 {
-    flag.put(false);
+    stopFlag.put(false); //Start motor
 
     if (velocity >= 0)
     {
@@ -96,12 +82,12 @@ void Motor::velocity(float velocity, uint16_t Steps, Share<bool> &flag)
 
     for (i = 0; i < 2 * Steps; i++)
     {
-        if (flag.get() == true)
+        if (stopFlag.get() == true)
         {
             break;
         }
         digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
         delayMicroseconds(delay_time);
     }
-    flag.put(true);
+    stopFlag.put(true); // Stop motor
 }

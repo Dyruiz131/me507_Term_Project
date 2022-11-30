@@ -7,71 +7,55 @@
  */
 
 #include <Arduino.h>
-#include "taskqueue.h"
-#include "taskshare.h"
 #include "objects/MotorDriver.h"
 #include "tasks/MotorTask.h"
 #include "shares.h"
 
-MotorTask::MotorTask(Motor m, Share<bool> &stopM, Share<int8_t> &dir, Share<float> &vel, Share<uint16_t> &st, Share<bool> &startM, Share<bool> &startMMax)
+MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<bool> &startMotor, Share<bool> &startMotorMax)
 {
-    motor = m;
-    stopMotor = stopM;
-    direction = dir;
-    velocity = vel;
-    steps = st;
-    startMotor = startM;
-    startMotorMax = startMMax;
+    motor = motor;
+    stopMotor = stopMotor;
+    direction = direction;
+    velocity = velocity;
+    steps = steps;
+    startMotor = startMotor;
+    startMotorMax = startMotorMax;
     state = 0; // Start state = 0
-    motor.enable(true);
 }
 
-/**
- * @brief Method called for multitasking. This controls the Controller FSM.
- */
 void MotorTask::run() // Method for FSM
 {
-
     switch (state)
     {
-    case 0:
+    case 0: //Check if the motor should start
     {
-        waiting();
-        if (startMotor.get() == true)
+        if (startMotor.get())
         {
-            state = 1; //
+            state = 1;
             startMotor.put(false);
         }
-        else if (startMotorMax.get() == true)
+        else if (startMotorMax.get())
         {
-            state = 2; // Scan Board State
+            state = 2;
             startMotorMax.put(false);
+        }
+        else // Stay in state 0
+        {
+            state = 0;
         }
         break;
     }
-    case 1:
+    case 1: //Run motor with specific velocity
     {
-        runMotor();
+        motor.start(velocity.get(), steps.get(), stopMotor);
         state = 0;
         break;
     }
-    case 2:
+    case 2: //Run motor at max velocity
     {
-        runMotorMax();
+        motor.startMax(direction.get(), steps.get(), stopMotor);
         state = 0;
         break;
     }
     }
-}
-
-void MotorTask::waiting() // Waiting
-{
-}
-void MotorTask::runMotor() // State 2
-{
-    motor.velocity(velocity.get(), steps.get(), stopMotor);
-}
-void MotorTask::runMotorMax() // State 3
-{
-    motor.maxVelocity(direction.get(), steps.get(), stopMotor);
 }

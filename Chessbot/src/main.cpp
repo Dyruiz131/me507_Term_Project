@@ -7,6 +7,7 @@
 #include "Tasks/MotorTask.h"
 #include "Tasks/ScanBoardTask.h"
 #include "Objects/APIHandler.h"
+#include "wifi.h"
 
 // Motor 1 pins
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled
@@ -29,7 +30,7 @@
 Share<bool> stopMotor1("stopMotor1");
 Share<bool> stopMotor2("stopMotor2");
 Share<bool> beginMove("beginMove");
-Queue<float> directionsQueue(4, "directionsQueue");
+Queue<float> directionsQueue(8, "directionsQueue");
 Share<uint16_t> steps1("No. of steps1");
 Share<uint16_t> steps2("No. of steps2");
 Share<float> aVel1("Steps/sec1");
@@ -42,10 +43,34 @@ Share<bool> startMaxMotor1("Start Max Motor1");
 Share<bool> startMaxMotor2("Start Max Motor2");
 Share<bool> scanBoard("Scan Board");
 
+// WiFi credentials (ssid and password is ignored by git for security)
+const char *ssid = WIFI_SSID;         // Import SSID from wifi.h
+const char *password = WIFI_PASSWORD; // Import password from wifi.h
+const char *SSLCertificate =          // SSL Certificate (API uses HTTPS)
+    "-----BEGIN CERTIFICATE-----\n"
+    "MIIDdzCCAl+gAwIBAgIEAgAAuTANBgkqhkiG9w0BAQUFADBaMQswCQYDVQQGEwJJ \n"
+    "RTESMBAGA1UEChMJQmFsdGltb3JlMRMwEQYDVQQLEwpDeWJlclRydXN0MSIwIAYD \n"
+    "VQQDExlCYWx0aW1vcmUgQ3liZXJUcnVzdCBSb290MB4XDTAwMDUxMjE4NDYwMFoX \n"
+    "DTI1MDUxMjIzNTkwMFowWjELMAkGA1UEBhMCSUUxEjAQBgNVBAoTCUJhbHRpbW9y \n"
+    "ZTETMBEGA1UECxMKQ3liZXJUcnVzdDEiMCAGA1UEAxMZQmFsdGltb3JlIEN5YmVy \n"
+    "VHJ1c3QgUm9vdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKMEuyKr \n"
+    "mD1X6CZymrV51Cni4eiVgLGw41uOKymaZN+hXe2wCQVt2yguzmKiYv60iNoS6zjr \n"
+    "IZ3AQSsBUnuId9Mcj8e6uYi1agnnc+gRQKfRzMpijS3ljwumUNKoUMMo6vWrJYeK \n"
+    "mpYcqWe4PwzV9/lSEy/CG9VwcPCPwBLKBsua4dnKM3p31vjsufFoREJIE9LAwqSu \n"
+    "XmD+tqYF/LTdB1kC1FkYmGP1pWPgkAx9XbIGevOF6uvUA65ehD5f/xXtabz5OTZy \n"
+    "dc93Uk3zyZAsuT3lySNTPx8kmCFcB5kpvcY67Oduhjprl3RjM71oGDHweI12v/ye \n"
+    "jl0qhqdNkNwnGjkCAwEAAaNFMEMwHQYDVR0OBBYEFOWdWTCCR1jMrPoIVDaGezq1 \n"
+    "BE3wMBIGA1UdEwEB/wQIMAYBAf8CAQMwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3 \n"
+    "DQEBBQUAA4IBAQCFDF2O5G9RaEIFoN27TyclhAO992T9Ldcw46QQF+vaKSm2eT92 \n"
+    "9hkTI7gQCvlYpNRhcL0EYWoSihfVCr3FvDB81ukMJY2GQE/szKN+OMY3EU/t3Wgx \n"
+    "jkzSswF07r51XgdIGn9w/xZchMB5hbgF/X++ZRGjD8ACtPhSNzkE1akxehi/oCr0 \n"
+    "Epn3o0WC4zxe9Z2etciefC7IpJ5OCBRLbf1wbWsaY71k5h+3zvDyny67G7fyUIhz \n"
+    "ksLi4xaNmjICq44Y3ekQEe5+NauQrz4wlHrQMz2nZQ/1/I6eYs9HRCwBXbsdtTLS \n"
+    "R9I4LtD+gdwyah617jzV/OeBHRnDJELqYzmp\n"
+    "-----END CERTIFICATE-----\n";
+
 // API setup for dependency injection into Controller object
-const char *ssid = "SSID";
-const char *password = "PASSWORD";
-APIHandler apiHandler(ssid, password);
+APIHandler apiHandler(ssid, password, SSLCertificate);
 
 // Motor setup
 Motor motor1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1);
@@ -98,6 +123,7 @@ void defScanTask(void *p_params)
     vTaskDelay(100); // Task period
   }
 }
+
 void defKillTask(void *p_params)
 {
   while (true)
@@ -115,10 +141,7 @@ void defKillTask(void *p_params)
     vTaskDelay(100); // Task period
   }
 }
-
-/* End of task definitions for FreeRTOS*/
-
-
+/* End of task definitions for FreeRTOS tasks*/
 
 /* Setup and begin multitasking */
 
@@ -145,12 +168,4 @@ void setup()
   xTaskCreate(defControllerTask, "Controller Task", 4096, NULL, 2, NULL);
   xTaskCreate(defScanTask, "Scan Task", 4096, NULL, 2, NULL);
 }
-
-/**
- * @brief Loop that runs every 60000 ms to keep FreeRTOS from crashing
- *
- */
-void loop()
-{
-  vTaskDelay(60000);
-}
+void loop();

@@ -7,12 +7,10 @@
  */
 
 #include <Arduino.h>
-#include "taskqueue.h"
-#include "taskshare.h"
-#include "objects/MotorDriver.h"
-#include "tasks/ControllerTask.h"
 #include "shares.h"
 #include "objects/APIHandler.h"
+#include "objects/MotorDriver.h"
+#include "tasks/ControllerTask.h"
 
 Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api)
 {
@@ -32,10 +30,14 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
     yCoordinateFrom = 0;
     xCoordinateTo = 0;
     yCoordinateTo = 0;
+    takePiece = 0;
+    xPieceGraveyard = 0;
+    yPieceGraveyard = 0;
+    boardScanned = false;
 }
 
 /**
- * @brief Method called for multitasking. This controls the Mover FSM.
+ * @brief Method called for multitasking.
  */
 void Controller::run() // Method for FSM
 {
@@ -44,7 +46,7 @@ void Controller::run() // Method for FSM
     case 0:
     {
         origin();
-        if (scanBoard.get() == true)
+        if (boardScanned) // If board has been scanned
         {
             state = 1; // Wait State
         }
@@ -66,23 +68,23 @@ void Controller::run() // Method for FSM
     }
     case 2:
     {
-        xCoordinateFrom = directionsQueue.get();
-        yCoordinateFrom = directionsQueue.get();
-        xCoordinateTo = directionsQueue.get();
-        yCoordinateTo = directionsQueue.get();
-        movePiece(xCoordinateFrom, yCoordinateFrom);
-        while (true)
-        {
-            if (stopMotor1.get() == true, stopMotor2.get() == true)
-            {
-                stopMotor1.put(false);
-                stopMotor2.put(false);
-                state = 3;
-                break;
-            }
-            delay(10);
+        takePiece = directionsQueue.get();       // First val defines if piece needs taking first
+        xCoordinateFrom = directionsQueue.get(); // Second val defines x coordinate of piece to move
+        yCoordinateFrom = directionsQueue.get(); // Third val defines y coordinate of piece to move
+        xCoordinateTo = directionsQueue.get();   // Fourth val defines x coordinate of piece to move to
+        yCoordinateTo = directionsQueue.get();   // Fifth val defines y coordinate of piece to move to
+        if (takePiece == 1)
+        { // If piece needs taking
+            state = 10;
+            break;
         }
-        break;
+        else
+        {
+            movePiece(xCoordinateFrom, yCoordinateFrom); // Move to piece
+            waitMotorStop();
+            state = 3;
+            break;
+        }
     }
     case 3:
     {
@@ -93,70 +95,65 @@ void Controller::run() // Method for FSM
     case 4:
     {
         squareOrigin();
-        while (true)
-        {
-            if (stopMotor1.get() == true, stopMotor2.get() == true)
-            {
-                stopMotor1.put(false);
-                stopMotor2.put(false);
-                state = 5;
-                break;
-            }
-            delay(10);
-        }
+        waitMotorStop();
+        state = 5;
         break;
     }
     case 5:
     {
-        xGridMove(xCoordinateTo, xCoordinateFrom);
-        while (true)
+        if (takePiece)
         {
-            if (stopMotor1.get() == true, stopMotor2.get() == true)
-            {
-                stopMotor1.put(false);
-                stopMotor2.put(false);
-                state = 6;
-                break;
-            }
-            delay(10);
+            xGridMove(xPieceGraveyard, xCoordinateTo);
+            waitMotorStop();
+            state = 6;
+            break;
         }
-        break;
+        else
+        {
+
+            xGridMove(xCoordinateTo, xCoordinateFrom);
+            waitMotorStop();
+            state = 6;
+            break;
+        }
     }
     case 6:
     {
-        yGridMove(yCoordinateTo, yCoordinateFrom);
-        while (true)
+        if (takePiece)
         {
-            if (stopMotor1.get() == true, stopMotor2.get() == true)
-            {
-                stopMotor1.put(false);
-                stopMotor2.put(false);
-                state = 7;
-                break;
-            }
-            delay(10);
+            yGridMove(yPieceGraveyard, yCoordinateTo);
+            waitMotorStop();
+            state = 7;
+            break;
         }
-        break;
+        else
+        {
+
+            yGridMove(yCoordinateTo, yCoordinateFrom);
+            waitMotorStop();
+            state = 7;
+            break;
+        }
     }
     case 7:
     {
         gridToCenter();
-        while (true)
-        {
-            if (stopMotor1.get() == true, stopMotor2.get() == true)
-            {
-                stopMotor1.put(false);
-                stopMotor2.put(false);
-                state = 8;
-                break;
-            }
-            delay(10);
-        }
+        waitMotorStop();
+        state = 8;
         break;
     }
     case 8:
     {
         releasePiece();
+        if (takePiece == 1)
+        {
+            boardScanned = true;
+        }
+        else
+        {
+            boardScanned = false;
+        }
+        takePiece = 0;
         state = 0;
         break;
     }
@@ -174,9 +171,24 @@ void Controller::run() // Method for FSM
         state = 0;
         break;
     }
+    case 10:
+    {
+        movePiece(xCoordinateTo, yCoordinateTo);
+        while (true)
+        {
+            if (stopMotor1.get() && stopMotor2.get())
+            {
+                stopMotor1.put(false);
+                stopMotor2.put(false);
+                break;
+            }
+            delay(10);
+        }
+        state = 3;
+        break;
+    }
     }
 }
-
 void Controller::setState(uint8_t newState)
 {
     state = newState;
@@ -195,6 +207,8 @@ void Controller::origin() // State 0
         else
         {
             // Move left 1 step
+            steps1.put(1);
+            steps2.put(1);
             dirMotor1.put(1);
             dirMotor2.put(-1);
             startMaxMotor1.put(true);
@@ -212,6 +226,8 @@ void Controller::origin() // State 0
         else
         {
             // Move down 1 step
+            steps1.put(1);
+            steps2.put(1);
             dirMotor1.put(1);
             dirMotor2.put(-1);
             startMaxMotor1.put(true);
@@ -316,7 +332,12 @@ void Controller::releasePiece() // State 8
     digitalWrite(solenoidPin, LOW);
 }
 
-void Controller::runScan()
+void waitMotorStop()
 {
-    scanBoard.put(true);
+    while (!(stopMotor1.get() && stopMotor2.get()))
+    {
+        delay(10);
+    }
+    stopMotor1.put(false);
+    stopMotor2.put(false);
 }

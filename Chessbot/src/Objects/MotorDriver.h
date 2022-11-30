@@ -1,9 +1,8 @@
-/** @file Motor_Driver.h
- *  This file contains a method which prints an array.
- *
- *  @author Dylan Ruiz
- *  @date   2022-Oct-26 Original file
-
+/** @file MotorDriver.cpp
+ *  @author Dylan Ruiz, created original file
+ *  @author Sam Hudson
+ *  @author Scott Dunn
+ *  @date 2022-Oct-29 Original file by Dylan Ruiz
  */
 
 #ifndef _MOTOR_DRIVER_H_
@@ -22,14 +21,10 @@ public:
     uint8_t DIRECTION_PIN;
 
     Motor(uint8_t enable_pin, uint8_t step_pin, uint8_t direction_pin);
-
     Motor(); // Default constructor
 
-    void enable(bool enable_motor);
-
-    void maxVelocity(int8_t Dir, uint16_t Steps, Share<bool> &flag);
-
-    void velocity(float velocity, uint16_t Steps, Share<bool> &flag);
+    void startMax(int8_t dir, uint16_t steps, Share<bool> &stopFlag);
+    void start(float velocity, uint16_t steps, Share<bool> &stopFlag);
 };
 
 #endif // _MOTOR_DRIVER_H_

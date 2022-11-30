@@ -1,13 +1,13 @@
 /**
  * @file Mover.h
  * @author Sam Hudson
- * @brief Mover task that manages the chess board movements
+ * @brief Controller task that manages the chess board movements
  * @version 1.0
  * @date 2022-11-10
  */
 
-#ifndef _MOVER_H
-#define _MOVER_H
+#ifndef _CONTROLLER_TASK_H_
+#define _CONTROLLER_TASK_H
 
 #include <Arduino.h>
 #include "taskqueue.h"
@@ -34,6 +34,10 @@ private:
     float yCoordinateTo;
     float xOrigin;
     float yOrigin;
+    float takePiece;
+    float xPieceGraveyard;
+    float yPieceGraveyard;
+    bool boardScanned;
 
 public:
     Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api); // Constructor
@@ -52,4 +56,4 @@ public:
     void runScan();                                   // State 10
 };
 
-#endif // _MOVER_H
+#endif // _CONTROLLER_TASK_H_

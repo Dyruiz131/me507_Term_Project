@@ -6,8 +6,8 @@
  * @date 2022-11-26
  */
 
-#ifndef _TASK_SCANBOARD_H
-#define _TASK_SCANBOARD_H
+#ifndef _SCAN_BOARD_TASK_H
+#define _SCAN_BOARD_TASK_H
 
 #include <Arduino.h>
 #include "taskqueue.h"
@@ -31,10 +31,10 @@ private:
     int length_array_piece;
 
 public:
-    ScanBoardTask(void); // Constructor
+    ScanBoardTask(); // Constructor
     void run();          // Method for FSM
     void waiting();
     void Scan();
 };
 
-#endif // _TASK_SCANBOARD_H
+#endif // _SCAN_BOARD_TASK_H
