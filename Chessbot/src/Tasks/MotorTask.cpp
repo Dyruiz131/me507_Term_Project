@@ -11,21 +11,7 @@
 #include "taskshare.h"
 #include "Objects/MotorDriver.h"
 #include "Tasks/MotorTask.h"
-
-#define Solenoid_Pin 11
-
-/**
- *
- * @brief Construct a new Motor Task object
- *
- * @param motor1 Motor object
- * @param stopMotor1 Share object used as a flag for stopping the motor
- * @param direction1 Share object used to indicate direction of the motor
- * @param velocity1 Share object used to input velocity for motor function
- * @param steps1 Share object used to input number of steps for motor function
- * @param Motor_start1 Share object used as a flag to progress FSM to state 1
- * @param MotorMax_Start1 Share object used as a flag to progress FSM to state 2
- */
+#include "shares.h"
 
 MotorTask::MotorTask(Motor m, Share<bool> &stopM, Share<int8_t> &dir, Share<float> &vel, Share<uint16_t> &st, Share<bool> &startM, Share<bool> &startMMax)
 {

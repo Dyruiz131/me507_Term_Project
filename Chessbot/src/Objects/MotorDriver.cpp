@@ -6,7 +6,7 @@
  */
 
 #include <Arduino.h>
-#include "MotorDriver.h"
+#include "Objects/MotorDriver.h"
 #include "shares.h"
 #include "taskshare.h"
 
@@ -31,9 +31,9 @@ Motor::Motor(uint8_t en, uint8_t step, uint8_t dir)
  */
 Motor::Motor()
 {
-    ENABLE_PIN = NULL;
-    STEP_PIN = NULL;
-    DIRECTION_PIN = NULL;
+    ENABLE_PIN = 0;
+    STEP_PIN = 0;
+    DIRECTION_PIN = 0;
 
     // Setup pins
     pinMode(ENABLE_PIN, OUTPUT);

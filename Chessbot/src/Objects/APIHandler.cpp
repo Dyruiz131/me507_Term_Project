@@ -63,7 +63,7 @@ APIHandler::APIHandler(const char *wifiSSID, const char *pass)
 APIHandler::APIHandler()
 {
     Serial.begin(115200);
-    WiFi.begin(ssid, password);
+    WiFi.begin("ssid", "password");
     Serial.println("Connecting");
     while (WiFi.status() != WL_CONNECTED)
     {

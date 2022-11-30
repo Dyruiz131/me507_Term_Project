@@ -23,7 +23,6 @@ private:
     uint8_t state;
     uint16_t xStep;
     uint16_t yStep;
-    bool scanBoard;
     uint8_t xLimPin;
     uint8_t yLimPin;
     uint8_t solenoidPin;
@@ -51,7 +50,7 @@ public:
     void gridToCenter();                              // State 7
     void releasePiece();                              // State 8
     void limSwitchRedirection();                      // State 9
-    void scan_Board();                                // State 10
+    void runScan();                                // State 10
 };
 
 #endif // _MOVER_H
