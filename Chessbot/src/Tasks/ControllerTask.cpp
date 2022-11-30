@@ -25,15 +25,15 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
     uint8_t xLimPin = XLIM_PIN;
     uint8_t yLimPin = YLIM_PIN;
     uint8_t solenoidPin = SOLENOID_PIN;
-    omega_Max = 500;     // steps per second
-    pitch = 1 / 9;       // mm/deg
-    step_size = .9;      // deg/step
-    float origin_x = -5; // mm to origin of square x-direction
-    float origin_y = -5; // mm to origin of square y-direction
-    x_coordinate_from = 0;
-    y_coordinate_from = 0;
-    x_coordinate_to = 0;
-    y_coordinate_to = 0;
+    omegaMax = 500; // steps per second
+    pitch = 1 / 9;  // mm/deg
+    stepSize = .9;  // deg/step
+    xOrigin = -5;   // mm to origin of square x-direction
+    yOrigin = -5;   // mm to origin of square y-direction
+    xCoordinateFrom = 0;
+    yCoordinateFrom = 0;
+    xCoordinateTo = 0;
+    yCoordinateTo = 0;
 }
 
 /**
@@ -68,11 +68,11 @@ void Controller::run() // Method for FSM
     }
     case 2:
     {
-        x_coordinate_from = directionsQueue.get();
-        y_coordinate_from = directionsQueue.get();
-        x_coordinate_to = directionsQueue.get();
-        y_coordinate_to = directionsQueue.get();
-        movePiece(x_coordinate_from, y_coordinate_from);
+        xCoordinateFrom = directionsQueue.get();
+        yCoordinateFrom = directionsQueue.get();
+        xCoordinateTo = directionsQueue.get();
+        yCoordinateTo = directionsQueue.get();
+        movePiece(xCoordinateFrom, yCoordinateFrom);
         while (true)
         {
             if (stopMotor1.get() == true, stopMotor2.get() == true)
@@ -110,7 +110,7 @@ void Controller::run() // Method for FSM
     }
     case 5:
     {
-        xGridMove(x_coordinate_to, x_coordinate_from);
+        xGridMove(xCoordinateTo, xCoordinateFrom);
         while (true)
         {
             if (stopMotor1.get() == true, stopMotor2.get() == true)
@@ -126,7 +126,7 @@ void Controller::run() // Method for FSM
     }
     case 6:
     {
-        yGridMove(y_coordinate_to, y_coordinate_from);
+        yGridMove(yCoordinateTo, yCoordinateFrom);
         while (true)
         {
             if (stopMotor1.get() == true, stopMotor2.get() == true)
@@ -225,17 +225,17 @@ void Controller::waiting() // State 1
 {
 }
 
-void Controller::movePiece(float move_From_x, float move_From_y) // State 2
+void Controller::movePiece(float moveFromX, float moveFromY) // State 2
 {
-    float Dx = move_From_x; // mm
-    float Dy = move_From_y; // mm
-    float omega_Lesser = -omega_Max * (2 * Dy / Dx - 1) / (2 * Dy / Dx + 1);
-    uint16_t Num_Step_G = 2 * Dy / ((1 + ((Dy - 0.5 * Dx) / (Dy + 0.5 * Dx))) * step_size * pitch); // Num of steps for greater motor
-    uint16_t Num_Step_L = 2 * Dy / (step_size * pitch) - Num_Step_G;
-    aVel1.put(omega_Lesser);
-    steps1.put(Num_Step_L);
+    float Dx = moveFromX; // mm
+    float Dy = moveFromY; // mm
+    float omegaLesser = -omegaMax * (2 * Dy / Dx - 1) / (2 * Dy / Dx + 1);
+    uint16_t numStepsG = 2 * Dy / ((1 + ((Dy - 0.5 * Dx) / (Dy + 0.5 * Dx))) * stepSize * pitch); // Num of steps for greater motor
+    uint16_t numStepsL = 2 * Dy / (stepSize * pitch) - numStepsG;
+    aVel1.put(omegaLesser);
+    steps1.put(numStepsL);
     dirMotor2.put(1);
-    steps2.put(Num_Step_G);
+    steps2.put(numStepsG);
     startMotor1.put(true);
     startMaxMotor2.put(true);
 }
@@ -246,23 +246,23 @@ void Controller::grabPiece() // State 3
 
 void Controller::squareOrigin() // State 4
 {
-    float omega_Lesser = omega_Max * (2 * origin_y / origin_x - 1) / (2 * origin_y / origin_x + 1);
-    uint16_t Num_Step_G = 2 * origin_y / ((1 + ((origin_y - 0.5 * origin_x) / (origin_y + 0.5 * origin_x))) * step_size * pitch); // Num of steps for greater motor
-    uint16_t Num_Step_L = 2 * origin_y / (step_size * pitch) - Num_Step_G;
-    aVel1.put(omega_Lesser);
-    steps1.put(Num_Step_L);
+    float omegaLesser = omegaMax * (2 * yOrigin / xOrigin - 1) / (2 * yOrigin / xOrigin + 1);
+    uint16_t numStepsG = 2 * yOrigin / ((1 + ((yOrigin - 0.5 * xOrigin) / (yOrigin + 0.5 * xOrigin))) * stepSize * pitch); // Num of steps for greater motor
+    uint16_t numStepsL = 2 * yOrigin / (stepSize * pitch) - numStepsG;
+    aVel1.put(omegaLesser);
+    steps1.put(numStepsL);
     dirMotor2.put(-1);
-    steps2.put(Num_Step_G);
+    steps2.put(numStepsG);
     startMotor1.put(true);
     startMaxMotor2.put(true);
 }
 
-void Controller::xGridMove(uint16_t x_to, uint16_t x_from) // State 5
+void Controller::xGridMove(uint16_t xTo, uint16_t xFrom) // State 5
 {
-    int16_t x_move = x_to - x_from; // mm
-    uint16_t Num_Step = x_move / (pitch * step_size);
+    int16_t xMove = xTo - xFrom; // mm
+    uint16_t numSteps = xMove / (pitch * stepSize);
     int8_t direction = 0;
-    if (x_move < 0)
+    if (xMove < 0)
     {
         direction = -1;
     }
@@ -270,46 +270,46 @@ void Controller::xGridMove(uint16_t x_to, uint16_t x_from) // State 5
     {
         direction = 1;
     }
-    steps1.put(Num_Step);
-    steps2.put(Num_Step);
+    steps1.put(numSteps);
+    steps2.put(numSteps);
     dirMotor1.put(direction);
     dirMotor2.put(direction);
     startMaxMotor1.put(true);
     startMaxMotor2.put(true);
 }
 
-void Controller::yGridMove(uint16_t y_to, uint16_t y_from) // State 6
+void Controller::yGridMove(uint16_t yTo, uint16_t yFrom) // State 6
 {
-    int16_t y_move = y_to - y_from; // mm
-    uint16_t Num_Step = y_move / (pitch * step_size);
-    int8_t direction_1 = 0;
-    int8_t direction_2 = 0;
-    if (y_move < 0)
+    int16_t yMove = yTo - yFrom; // mm
+    uint16_t numSteps = yMove / (pitch * stepSize);
+    int8_t direction1 = 0;
+    int8_t direction2 = 0;
+    if (yMove < 0)
     {
-        direction_1 = 1;
-        direction_2 = -1;
+        direction1 = 1;
+        direction2 = -1;
     }
     else
     {
-        direction_1 = -1;
-        direction_2 = 1;
+        direction1 = -1;
+        direction2 = 1;
     }
-    steps1.put(Num_Step);
-    steps2.put(Num_Step);
-    dirMotor1.put(direction_1);
-    dirMotor2.put(direction_2);
+    steps1.put(numSteps);
+    steps2.put(numSteps);
+    dirMotor1.put(direction1);
+    dirMotor2.put(direction2);
     startMaxMotor1.put(true);
     startMaxMotor2.put(true);
 }
 void Controller::gridToCenter() // State 7
 {
-    float omega_Lesser = -omega_Max * (2 * origin_y / origin_x - 1) / (2 * origin_y / origin_x + 1);
-    uint16_t Num_Step_G = 2 * origin_y / ((1 + ((origin_y - 0.5 * origin_x) / (origin_y + 0.5 * origin_x))) * step_size * pitch); // Num of steps for greater motor
-    uint16_t Num_Step_L = 2 * origin_y / (step_size * pitch) - Num_Step_G;
-    aVel1.put(omega_Lesser);
-    steps1.put(Num_Step_L);
+    float omegaLesser = -omegaMax * (2 * yOrigin / xOrigin - 1) / (2 * yOrigin / xOrigin + 1);
+    uint16_t numStepsG = 2 * yOrigin / ((1 + ((yOrigin - 0.5 * xOrigin) / (yOrigin + 0.5 * xOrigin))) * stepSize * pitch); // Num of steps for greater motor
+    uint16_t numStepsL = 2 * yOrigin / (stepSize * pitch) - numStepsG;
+    aVel1.put(omegaLesser);
+    steps1.put(numStepsL);
     dirMotor2.put(1);
-    steps2.put(Num_Step_G);
+    steps2.put(numStepsG);
     startMotor1.put(true);
     startMaxMotor2.put(true);
 }

@@ -18,7 +18,6 @@
 class Controller
 {
 private:
-
     APIHandler server;
     uint8_t state;
     uint16_t xStep;
@@ -26,19 +25,19 @@ private:
     uint8_t xLimPin;
     uint8_t yLimPin;
     uint8_t solenoidPin;
-    float omega_Max; // steps per second
-    float pitch;     // mm/deg
-    float step_size; // deg/step
-    float x_coordinate_from;
-    float y_coordinate_from;
-    float x_coordinate_to;
-    float y_coordinate_to;
-    float origin_x;
-    float origin_y;
+    float omegaMax; // steps per second
+    float pitch;    // mm/deg
+    float stepSize; // deg/step
+    float xCoordinateFrom;
+    float yCoordinateFrom;
+    float xCoordinateTo;
+    float yCoordinateTo;
+    float xOrigin;
+    float yOrigin;
 
 public:
     Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api); // Constructor
-    void run();                                                                                               // Method for FSM
+    void run();                                                                           // Method for FSM
     void setState(uint8_t newState);
     void origin();                                    // State 0
     void waiting();                                   // State 1
@@ -50,7 +49,7 @@ public:
     void gridToCenter();                              // State 7
     void releasePiece();                              // State 8
     void limSwitchRedirection();                      // State 9
-    void runScan();                                // State 10
+    void runScan();                                   // State 10
 };
 
 #endif // _MOVER_H
