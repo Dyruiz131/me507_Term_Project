@@ -63,7 +63,7 @@ APIHandler::APIHandler(const char *wifiSSID, const char *pass)
 APIHandler::APIHandler()
 {
     Serial.begin(115200);
-    WiFi.begin(ssid, password);
+    WiFi.begin("ssid", "password");
     Serial.println("Connecting");
     while (WiFi.status() != WL_CONNECTED)
     {
@@ -212,7 +212,7 @@ boolean APIHandler::getMoveStatus()
 }
 
 /**
- * @brief Sets the current move stat from the server
+ * @brief Sets the current move status from the server
  *
  */
 void APIHandler::sendMoveStatus(boolean status)

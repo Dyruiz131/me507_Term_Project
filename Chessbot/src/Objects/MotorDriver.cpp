@@ -6,7 +6,7 @@
  */
 
 #include <Arduino.h>
-#include "Motor_Driver.h"
+#include "Objects/MotorDriver.h"
 #include "shares.h"
 #include "taskshare.h"
 
@@ -14,43 +14,33 @@
  *  @param i2c An I2C object, created as TwoWire(params)
  *  @param address The address to use for the AS5600, default
  */
-Motor::Motor(uint8_t enable_pin, uint8_t step_pin, uint8_t direction_pin, uint8_t MS1_pin, uint8_t MS2_pin)
+Motor::Motor(uint8_t en, uint8_t step, uint8_t dir)
 {
-    ENABLE_PIN = enable_pin;
-    STEP_PIN = step_pin;
-    DIRECTION_PIN = direction_pin;
-    MS1_PIN = MS1_pin;
-    MS2_PIN = MS2_pin;
+    ENABLE_PIN = en;
+    STEP_PIN = step;
+    DIRECTION_PIN = dir;
 
+    // Setup pins
     pinMode(ENABLE_PIN, OUTPUT);
     pinMode(STEP_PIN, OUTPUT);
     pinMode(DIRECTION_PIN, OUTPUT);
-    pinMode(MS1_PIN, OUTPUT);
-    pinMode(MS2_PIN, OUTPUT);
 }
 /**
- * @brief Default consturctor for a new Motor object (needed for Mover class dependency)
+ * @brief Default consturctor for a new Motor object (needed for motor task class dependency)
  *
  */
 Motor::Motor()
 {
-    ENABLE_PIN = NULL;
-    STEP_PIN = NULL;
-    DIRECTION_PIN = NULL;
-    MS1_PIN = NULL;
-    MS2_PIN = NULL;
+    ENABLE_PIN = 0;
+    STEP_PIN = 0;
+    DIRECTION_PIN = 0;
 
+    // Setup pins
     pinMode(ENABLE_PIN, OUTPUT);
     pinMode(STEP_PIN, OUTPUT);
     pinMode(DIRECTION_PIN, OUTPUT);
-    pinMode(MS1_PIN, OUTPUT);
-    pinMode(MS2_PIN, OUTPUT);
 }
 
-/** This method returns the 'raw' angular position measured by the AS5600.
- *  This unscaled and unmodified angle comes out in a 12-bit number.
- *  @return The unscaled position
- */
 void Motor::enable(bool motor_enable)
 {
     if (motor_enable = true)
@@ -63,10 +53,7 @@ void Motor::enable(bool motor_enable)
     }
 }
 
-/** This method returns the scaled and corrected angle measured by the AS5600.
- *  @return Our best estimate of the actual angle, in a 12-bit integer
- */
-void Motor::Velocity_MAX(int8_t Dir, uint16_t Steps, Share<bool> &flag)
+void Motor::maxVelocity(int8_t Dir, uint16_t Steps, Share<bool> &flag)
 {
     flag.put(false);
 
@@ -91,10 +78,10 @@ void Motor::Velocity_MAX(int8_t Dir, uint16_t Steps, Share<bool> &flag)
     }
     flag.put(true);
 }
-void Motor::Velocity(float velocity, uint16_t Steps, Share<bool> &flag)
+void Motor::velocity(float velocity, uint16_t Steps, Share<bool> &flag)
 {
     flag.put(false);
-    
+
     if (velocity >= 0)
     {
         digitalWrite(DIRECTION_PIN, HIGH);
