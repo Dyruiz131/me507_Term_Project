@@ -55,6 +55,10 @@ public:
     void limSwitchRedirection();                      // State 9
     void runScan();                                   // State 10
     void waitMotorStop();
+    int16_t coordsToVelocityMotor1(float y_coordinate, float x_coordinate);
+    int16_t coordsToVelocityMotor2(float y_coordinate, float x_coordinate);
+    uint16_t coordsToStepsMotor1(float y_coordinate, float x_coordinate);
+    uint16_t coordsToStepsMotor2(float y_coordinate, float x_coordinate);
 };
 
 #endif // _CONTROLLER_TASK_H_

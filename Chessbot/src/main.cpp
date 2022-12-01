@@ -147,4 +147,7 @@ void setup()
   xTaskCreate(defControllerTask, "Controller Task", 4096, NULL, 2, NULL);
   xTaskCreate(defScanTask, "Scan Task", 4096, NULL, 2, NULL);
 }
-void loop();
+void loop()
+{
+delay(60000);
+};
