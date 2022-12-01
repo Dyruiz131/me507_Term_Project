@@ -56,7 +56,7 @@ void Controller::run() // Method for FSM
         }
         case 1: // Check for a move request
         {
-            Serial.println("State 1:");
+            // Serial.println("State 1:");
             grabPiece(); // Release solenoid to stop meltdown
             if (beginMove.get() == true)
             {
@@ -67,7 +67,7 @@ void Controller::run() // Method for FSM
         }
         case 2: // Move to piece
         {
-            Serial.println("State 2:");
+            // Serial.println("State 2:");
             takePiece = directionsQueue.get();       // First val defines if piece needs taking first
             xCoordinateFrom = directionsQueue.get(); // Second val defines x coordinate of piece to move
             yCoordinateFrom = directionsQueue.get(); // Third val defines y coordinate of piece to move

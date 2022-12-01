@@ -128,7 +128,7 @@ String APIHandler::getLatestMove()
     String takeMove = "0";
     if (JSON.typeof(jsonRes) == "undefined")
     {
-        Serial.println("Parsing JSON failed.");
+        // Serial.println("Parsing JSON failed.");
         lastMove = takeMove;
     }
     else

@@ -26,7 +26,7 @@ FetchMove::FetchMove(APIHandler api)
         gridCoordinates[i] = gridCoordinates[i - 1] + 60; // 60mm between each piece
     }
 
-    state = 0;     // Start state = 0
+    state = 0;      // Start state = 0
     lastMove = "0"; // Store last move for comparison
     newMove = "0";  // Store new move for comparison
 }
@@ -64,12 +64,9 @@ void FetchMove::run()
         }
         case 2:
         {
-            Serial.println("Fetch state 2");
+            // Serial.println("Fetch state 2");
             newMove = api.getLatestMove(); // Get latest move
-            Serial.print(
-                "new move:");
-            Serial.println(newMove);
-            if (newMove != lastMove) // If a new move is fetched
+            if (newMove != lastMove)       // If a new move is fetched
             {
                 lastMove = newMove; // Set future evaluations
                 state = 3;
@@ -78,7 +75,7 @@ void FetchMove::run()
         }
         case 3: // Calculate and send coordinates to queue
         {
-            Serial.println("Fetch state 3");
+            // Serial.println("Fetch state 3");
             uint8_t takePiece = newMove.substring(0).toInt(); // If piece needs taking
             char fromCol = newMove.charAt(1);                 // From x
             uint8_t fromRow = newMove.substring(2).toInt();   // From y
