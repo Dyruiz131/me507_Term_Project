@@ -22,6 +22,3 @@
     "ksLi4xaNmjICq44Y3ekQEe5+NauQrz4wlHrQMz2nZQ/1/I6eYs9HRCwBXbsdtTLS \n" \
     "R9I4LtD+gdwyah617jzV/OeBHRnDJELqYzmp\n"                              \
     "-----END CERTIFICATE-----\n"
-
-#define WIFI_SSID2 "CP-IoT-Secure"
-#define WIFI_PASSWORD2 "iuGTgQNpCp"
