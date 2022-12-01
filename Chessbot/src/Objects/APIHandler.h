@@ -6,14 +6,15 @@
  * @date 2022-11-27
  */
 
-#ifndef _APIHANDLER_H_
-#define _APIHANDLER_H_
+#ifndef _API_HANDLER_H_
+#define _API_HANDLER_H_
 
 #include <Arduino.h>
-#include <WiFi.h>
+#include "WiFi.h"
+#include "HTTPClient.h"
+#include "Arduino_JSON.h"
 #include "taskqueue.h"
 #include "taskshare.h"
-#include "PubSubClient.h"
 
 class APIHandler
 {
@@ -23,14 +24,14 @@ private:
     const char *certificate;
 
 public:
-    APIHandler(const char *wifiSSID, const char *pass);
-    APIHandler(); //Default constructor
+    APIHandler(const char *certificate);
+    APIHandler(); // Default constructor
     void sendMove(String from, String to);
-    String getFen();
-    char getTurn();
-    String getLastMove();
-    boolean getMoveStatus();
-    void sendMoveStatus(boolean status);
+    String getLatestMove();
+    bool getMoveStatus();
+    void sendMoveStatus(bool status);
+    bool isNewGame();
+    void newGame();
 };
 
-#endif // _APIHANDLER_H_
+#endif // _API_HANDLER_H_
