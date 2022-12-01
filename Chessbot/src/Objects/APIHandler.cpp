@@ -134,13 +134,21 @@ void APIHandler::sendMove(String from, String to)
  *
  * @return String of the most recent move in the format "e2,e4"
  */
-String APIHandler::getLastMove()
+String APIHandler::getLatestMove()
 {
     String res = sendGET("https://chessbotapi.onrender.com/lastMove", certificate);
     JSONVar jsonRes = JSON.parse(res);
-    String lastMove = jsonRes["lastMove.from"] + "," + jsonRes["lastMove.to"];
+    String takeMove = "0";
+    if (jsonRes["lastMove.captured"])
+    {
+        takeMove = "1";
+    }
+    String from = jsonRes["lastMove.from"];
+    String to = jsonRes["lastMove.to"];
+    String lastMove = takeMove + from + to;
     return lastMove;
 }
+
 /**
  * @brief Gets the current move status from the server
  *
@@ -148,9 +156,9 @@ String APIHandler::getLastMove()
  */
 bool APIHandler::getMoveStatus()
 {
-    String res = sendGET("https://chessbotapi.onrender.com/moveComplete", certificate);
+    String res = sendGET("https://chessbotapi.onrender.com/acceptMoves", certificate);
     JSONVar jsonRes = JSON.parse(res);
-    bool status = jsonRes["moveComplete"];
+    bool status = jsonRes["acceptMoves"];
     return status;
 }
 
@@ -161,8 +169,8 @@ bool APIHandler::getMoveStatus()
  */
 void APIHandler::sendMoveStatus(bool status)
 {
-    String req = "{\"moveComplete\":" + String(status) + "}";
-    sendPOST("https://chessbotapi.onrender.com/moveComplete", certificate, req);
+    String req = "{\"acceptMoves\":" + String(status) + "}";
+    sendPOST("https://chessbotapi.onrender.com/acceptMoves", certificate, req);
 }
 
 /**
@@ -186,5 +194,5 @@ bool APIHandler::isNewGame()
 void APIHandler::newGame()
 {
     String req = "";
-    sendPOST("https://chessbotapi.onrender.com/moveComplete", certificate, req);
+    sendPOST("https://chessbotapi.onrender.com/new", certificate, req);
 }

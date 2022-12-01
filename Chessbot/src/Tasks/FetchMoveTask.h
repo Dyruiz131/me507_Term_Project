@@ -14,16 +14,23 @@
 #include "taskshare.h"
 #include "objects/APIHandler.h"
 
-class FetchMoveTask
+class FetchMove
 {
 private:
     APIHandler api;
     uint8_t state;
+    String lastMove;
+    String newMove;
 
 public:
-    FetchMoveTask(APIHandler api);
-    FetchMoveTask(); // Default constructor
-    void run(); // Method for FSM
+    FetchMove(APIHandler api);
+    FetchMove(); // Default constructor
+    void run();  // Method for FSM
+    void moveDone();
+    void moveFailed();
+    float toCoordinate(char col);
+    float toCoordinate(uint8_t row);
+    float *gridLocations[8];
 };
 
 #endif // _FETCH_MOVE_TASK_H_
