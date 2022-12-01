@@ -30,4 +30,5 @@ extern Share<bool> Motor1Max_Start;
 extern Share<bool> Motor2Max_Start;
 extern Share<int8_t> Motor1_dir;
 extern Share<int8_t> Motor2_dir;
+extern Share<uint32_t> steps_traveled_x;
 #endif // _SHARES_H_

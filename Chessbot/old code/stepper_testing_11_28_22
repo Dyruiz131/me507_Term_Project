@@ -1,12 +1,12 @@
 #include <Arduino.h>
-#include "Mover.h"
+//#include "Mover.h"
 #include "Motor_Driver.h" // Step on rising edge
 #include "taskshare.h"    // Header for inter-task shared data
 #include "taskqueue.h"    // Header for inter-task data queues
 #include "shares.h"       // Header for shares used in this project
 #include "Task_Motor.h"
 #include "Task_ScanBoard.h"
-#include "APIHandler.h"
+//#include "APIHandler.h"
 
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled
 #define STEP_PIN_1 33 // Step on rising edge
@@ -54,85 +54,91 @@ Motor motor_2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2, MS_1_2, MS_2_2);
 Mover mainMover(motor_1, motor_2, XLIM_PIN, YLIM_PIN, SOLENOID_PIN, apiHandler);
 
 // Create motor task objects
-Task_Motor task_motor1(motor_1, Stop_Motor1, Motor1_dir, Avel1, Steps1, Motor1_Start, Motor1Max_Start);
-Task_Motor task_motor2(motor_2, Stop_Motor2, Motor2_dir, Avel2, Steps2, Motor2_Start, Motor2Max_Start);
+//Task_Motor task_motor1(motor_1, Stop_Motor1, Motor1_dir, Avel1, Steps1, Motor1_Start, Motor1Max_Start);
+//Task_Motor task_motor2(motor_2, Stop_Motor2, Motor2_dir, Avel2, Steps2, Motor2_Start, Motor2Max_Start);
 
 // Create scan board task object
-Task_ScanBoard scanboard;
+//Task_ScanBoard scanboard;
 
-// void task_motor1(void *p_params)
-// {
-//   while (true)
-//   {
-//     motor_1.Velocity_MAX(1, 1000, Stop_Motor1);
-//     delay(1000);
-//   }
-// }
+void task_motor1(void *p_params)
+{
+  while (true)
+  {
+    motor_1.Velocity_MAX(1, 1000, Stop_Motor1);
+    delay(1000);
+    while (true)
+    {
+    }
+  }
+}
 
-// void task_motor2(void *p_params)
-// {
-//   while (true)
-//   {
-//     motor_2.Velocity(-300, 600, Stop_Motor2);
-//     delay(1000);
-//   }
-// }
+void task_motor2(void *p_params)
+{
+  while (true)
+  {
+    motor_2.Velocity(-300, 600, Stop_Motor2);
+    delay(1000);
+    while (true)
+    {
+    }
+  }
+}
 
 /* Define tasks for FreeRTOS */
-void motor_task1(void *p_params)
-{
-  while (true)
-  {
-    task_motor1.run();
-    vTaskDelay(100); // Task period
-  }
-}
+// void motor_task1(void *p_params)
+// {
+//   while (true)
+//   {
+//     task_motor1.run();
+//     vTaskDelay(100); // Task period
+//   }
+// }
 
-void motor_task2(void *p_params)
-{
-  while (true)
-  {
-    task_motor2.run();
-    vTaskDelay(100); // Task period
-  }
-}
+// void motor_task2(void *p_params)
+// {
+//   while (true)
+//   {
+//     task_motor2.run();
+//     vTaskDelay(100); // Task period
+//   }
+// }
 
-void mover_task(void *p_params)
-{
-  while (true)
-  {
-    mainMover.run();
-    vTaskDelay(100); // Task period
-  }
-}
+// void mover_task(void *p_params)
+// {
+//   while (true)
+//   {
+//     mainMover.run();
+//     vTaskDelay(100); // Task period
+//   }
+// }
 
-void task_scanboard(void *p_params)
-{
-  while (true)
-  {
-    scanboard.run();
-    vTaskDelay(100); // Task period
-  }
-}
-void task_kill(void *p_params)
-{
-  while (true)
-  {
-    if (digitalRead(BUTTON_PIN) == 0)
-    {
-      Serial << "button was pressed, state low: 0";
-      Stop_Motor1.put(true);
-      Stop_Motor2.put(true);
-      delay(100);
-    }
-    else
-    {
-      Stop_Motor1.put(false);
-      Stop_Motor2.put(false);
-      delay(100);
-    }
-  }
-}
+// void task_scanboard(void *p_params)
+// {
+//   while (true)
+//   {
+//     scanboard.run();
+//     vTaskDelay(100); // Task period
+//   }
+// }
+// void task_kill(void *p_params)
+// {
+//   while (true)
+//   {
+//     if (digitalRead(BUTTON_PIN) == 0)
+//     {
+//       Serial << "button was pressed, state low: 0";
+//       Stop_Motor1.put(true);
+//       Stop_Motor2.put(true);
+//       delay(100);
+//     }
+//     else
+//     {
+//       Stop_Motor1.put(false);
+//       Stop_Motor2.put(false);
+//       delay(100);
+//     }
+//   }
+// }
 
 /* End of task definitions for FreeRTOS*/
 
@@ -169,13 +175,13 @@ void setup()
   // motor_1.Velocity_MAX(1,1000);
   // motor_2.Velocity(-300,600);
 
-  xTaskCreate(motor_task1, "Task Motor1", 2048, NULL, 1, NULL);
-  xTaskCreate(motor_task2, "Task Motor2", 2048, NULL, 1, NULL);
-  xTaskCreate(task_kill, "Task Kill", 2048, NULL, 1, NULL);
-  xTaskCreate(mover_task, "Mover Task", 4096, NULL, 2, NULL);
-  xTaskCreate(task_scanboard, "Scan Task", 4096, NULL, 2, NULL);
-  // xTaskCreate(task_motor1, "Task Motor1", 2048, NULL, 1, NULL);
-  // xTaskCreate(task_motor2, "Task Motor2", 2048, NULL, 1, NULL);
+  //xTaskCreate(motor_task1, "Task Motor1", 2048, NULL, 1, NULL);
+  //xTaskCreate(motor_task2, "Task Motor2", 2048, NULL, 1, NULL);
+  //xTaskCreate(task_kill, "Task Kill", 2048, NULL, 1, NULL);
+  //xTaskCreate(mover_task, "Mover Task", 4096, NULL, 2, NULL);
+  //xTaskCreate(task_scanboard, "Scan Task", 4096, NULL, 2, NULL);
+  xTaskCreate(task_motor1, "Task Motor1", 2048, NULL, 1, NULL);
+  xTaskCreate(task_motor2, "Task Motor2", 2048, NULL, 1, NULL);
 }
 
 /**
