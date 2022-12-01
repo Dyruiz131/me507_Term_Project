@@ -7,7 +7,7 @@
 #include "Tasks/MotorTask.h"
 #include "Tasks/ScanBoardTask.h"
 #include "Objects/APIHandler.h"
-#include "wifi.h"
+#include "wifiPass.h"
 
 // Motor 1 pins
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled

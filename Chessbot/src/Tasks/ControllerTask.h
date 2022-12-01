@@ -54,6 +54,7 @@ public:
     void releasePiece();                              // State 8
     void limSwitchRedirection();                      // State 9
     void runScan();                                   // State 10
+    void waitMotorStop();
 };
 
 #endif // _CONTROLLER_TASK_H_
