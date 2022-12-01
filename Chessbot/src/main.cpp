@@ -100,7 +100,6 @@ void defControllerTask(void *p_params)
 {
   while (true)
   {
-    Serial.println("Controller task run");
     mainController.run();
     vTaskDelay(100); // Task period
   }

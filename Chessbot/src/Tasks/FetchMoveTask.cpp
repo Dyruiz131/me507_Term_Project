@@ -62,13 +62,18 @@ void FetchMove::run()
             state = 0;
             break;
         }
-        case 2:
+        case 2: // Check for new moves
         {
             newMove = api.getLatestMove(); // Get latest move
-            if (newMove != lastMove)
+            if (newMove == lastMove)
             { // If there is a new move
                 state = 3;
             }
+            lastMove = newMove; // Set last move for future comparison
+            Serial.println("lastMove:");
+            Serial.print(lastMove);
+            Serial.println("newMove:");
+            Serial.print(newMove);
             break;
         }
         case 3: // Calculate and send coordinates to queue
