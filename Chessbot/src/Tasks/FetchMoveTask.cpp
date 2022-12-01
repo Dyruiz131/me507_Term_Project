@@ -18,9 +18,16 @@
 FetchMove::FetchMove(APIHandler api)
 {
     this->api = api;
-    state = 0;
-    lastMove = "";
-    newMove = "";
+
+    gridCoordinates[0] = 0.0;
+    for (int i = 0; i < 8; i++)
+    {                             // Create grid coordinates
+        gridCoordinates[i] += 60; // 60mm between each piece
+    }
+
+    state = 0;     // Start state = 0
+    lastMove = ""; // Store last move for comparison
+    newMove = "";  // Store new move for comparison
 }
 
 /**
@@ -66,18 +73,18 @@ void FetchMove::run()
         }
         case 3: // Calculate and send coordinates to queue
         {
-            uint8_t takePiece = newMove.substring(0).toInt();
-            char fromCol = newMove.charAt(1);               // From x
-            uint8_t fromRow = newMove.substring(2).toInt(); // From y
-            char toCol = newMove.charAt(3);
-            uint8_t toRow = newMove.substring(4).toInt();
+            uint8_t takePiece = newMove.substring(0).toInt(); // If piece needs taking
+            char fromCol = newMove.charAt(1);                 // From x
+            uint8_t fromRow = newMove.substring(2).toInt();   // From y
+            char toCol = newMove.charAt(3);                   // To x
+            uint8_t toRow = newMove.substring(4).toInt();     // To y
 
-            directionsQueue.put(takePiece);           // Take Piece Flag
-            directionsQueue.put(colToCoord(fromCol)); // From x
-            directionsQueue.put(rowToCoord(fromRow)); // From y
-            directionsQueue.put(colToCoord(toCol));   // To x
-            directionsQueue.put(rowToCoord(toRow));   // To y
-
+            directionsQueue.put(takePiece);             // Take Piece Flag
+            directionsQueue.put(toCoordinate(fromCol)); // From x
+            directionsQueue.put(toCoordinate(fromRow)); // From y
+            directionsQueue.put(toCoordinate(toCol));   // To x
+            directionsQueue.put(toCoordinate(toRow));   // To y
+            beginMove.put(true);                        // Begin move
             state = 2;
             break;
         }
@@ -97,25 +104,24 @@ void FetchMove::moveFailed()
 
 float FetchMove::toCoordinate(char col)
 {
-    float gridLocations[8] = {30, 90, 150, 210, 270, 330, 390, 450};
     switch (col)
     {
     case 'a':
-        return gridLocations[0];
+        return gridCoordinates[0];
     case 'b':
-        return gridLocations[1];
+        return gridCoordinates[1];
     case 'c':
-        return gridLocations[2];
+        return gridCoordinates[2];
     case 'd':
-        return gridLocations[3];
+        return gridCoordinates[3];
     case 'e':
-        return gridLocations[4];
+        return gridCoordinates[4];
     case 'f':
-        return gridLocations[5];
+        return gridCoordinates[5];
     case 'g':
-        return gridLocations[6];
+        return gridCoordinates[6];
     case 'h':
-        return gridLocations[7];
+        return gridCoordinates[7];
     default:
         return 0;
     }
@@ -123,6 +129,5 @@ float FetchMove::toCoordinate(char col)
 
 float FetchMove::toCoordinate(uint8_t row)
 {
-    float gridLocations[8] = {30, 90, 150, 210, 270, 330, 390, 450};
-    return gridLocations[row - 1];
+    return gridCoordinates[row - 1];
 }

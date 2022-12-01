@@ -21,6 +21,7 @@ private:
     uint8_t state;
     String lastMove;
     String newMove;
+    float gridCoordinates[8];
 
 public:
     FetchMove(APIHandler api);
