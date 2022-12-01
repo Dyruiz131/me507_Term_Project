@@ -332,7 +332,7 @@ void Controller::releasePiece() // State 8
     digitalWrite(solenoidPin, LOW);
 }
 
-void waitMotorStop()
+void Controller::waitMotorStop()
 {
     while (!(stopMotor1.get() && stopMotor2.get()))
     {

@@ -56,5 +56,4 @@ public:
     void runScan();                                   // State 10
     void waitMotorStop();
 };
-
 #endif // _CONTROLLER_TASK_H_

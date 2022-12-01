@@ -13,7 +13,7 @@
 
 /**
  * @brief Construct a new APIHandler::APIHandler object
- * 
+ *
  * @param ssid WiFi SSID
  * @param password WiFi password
  * @param certificate SSL certificate (for HTTPS requests)
@@ -126,33 +126,7 @@ String sendPOST(const char *URL, const char *cert, String req)
 void APIHandler::sendMove(String from, String to)
 {
     String req = "{\"from\":\"" + from + "\",\"to\":\"" + to + "\"}";
-    sendPOST("https://chessbotapi.onrender.com/fen", certificate, req);
-}
-
-/**
- * @brief Gets the current FEN string from the server
- *
- * @return String of the current FEN string
- */
-String APIHandler::getFen()
-{
-    String res = sendGET("https://chessbotapi.onrender.com/fen", certificate);
-    JSONVar jsonRes = JSON.parse(res);
-    String fen = jsonRes["fen"];
-    return fen;
-}
-
-/**
- * @brief Gets the current turn from the server
- *
- * @return char of the current turn colour
- */
-char APIHandler::getTurn()
-{
-    String res = sendGET("https://chessbotapi.onrender.com/fen", certificate);
-    JSONVar jsonRes = JSON.parse(res);
-    String turn = jsonRes["turn"];
-    return turn[0];
+    sendPOST("https://chessbotapi.onrender.com/move", certificate, req);
 }
 
 /**
@@ -181,11 +155,36 @@ bool APIHandler::getMoveStatus()
 }
 
 /**
- * @brief Sets the current move status from the server
+ * @brief Sends the move status to the server
  *
+ * @param status status of the move (if move is complete)
  */
 void APIHandler::sendMoveStatus(bool status)
 {
     String req = "{\"moveComplete\":" + String(status) + "}";
+    sendPOST("https://chessbotapi.onrender.com/moveComplete", certificate, req);
+}
+
+/**
+ * @brief Checks if the game has just started
+ *
+ * @return true The game has just started
+ * @return false The game has not just started
+ */
+bool APIHandler::isNewGame()
+{
+    String res = sendGET("https://chessbotapi.onrender.com/isNewGame", certificate);
+    JSONVar jsonRes = JSON.parse(res);
+    bool status = jsonRes["isNewGame"];
+    return status;
+}
+
+/**
+ * @brief Creates a new game on the server (for if
+ * a game is ongoing on startup)
+ */
+void APIHandler::newGame()
+{
+    String req = "";
     sendPOST("https://chessbotapi.onrender.com/moveComplete", certificate, req);
 }
