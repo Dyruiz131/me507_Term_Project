@@ -124,18 +124,23 @@ String APIHandler::getLatestMove()
 {
     String res = sendGET("https://chessbotapi.onrender.com/lastMove", certificate);
     JSONVar jsonRes = JSON.parse(res);
-    if (JSON.typeof(jsonRes) == "undefined") {
-        Serial.println("Parsing input failed!");
-      }
+    String lastMove;
     String takeMove = "0";
-    if (jsonRes["lastMove.captured"])
+    if (JSON.typeof(jsonRes) == "undefined")
     {
-        takeMove = "1";
+        Serial.println("Parsing JSON failed.");
+        lastMove = takeMove;
     }
-    String from = jsonRes["lastMove.from"];
-    String to = jsonRes["lastMove.to"];
-    String lastMove = takeMove + from + to;
-    Serial.println(lastMove);
+    else
+    {
+        if (jsonRes["lastMove.captured"])
+        {
+            takeMove = "1";
+        }
+        String from = jsonRes["from"];
+        String to = jsonRes["to"];
+        lastMove = takeMove + from + to;
+    }
     return lastMove;
 }
 
