@@ -40,6 +40,7 @@ private:
     float xPieceGraveyard;
     float yPieceGraveyard;
     float sensorOffset;
+    uint8_t count = 0;
     Kinematics kinematics;
 
 public:
@@ -57,7 +58,6 @@ public:
     void releasePiece();                            // State 8
     void limSwitchRedirection();                    // State 9
     void runScan();                                 // State 10
-    void waitMotorStop();
     bool detectPiece();
 };
 #endif // _CONTROLLER_TASK_H_
