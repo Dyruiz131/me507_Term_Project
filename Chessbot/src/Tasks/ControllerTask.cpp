@@ -49,7 +49,7 @@ void Controller::run() // Method for FSM
     {
         case 0: 
         {
-        
+            releasePiece();
             origin_x();
             startLimitx.put(true);
             state = 20;
@@ -76,14 +76,15 @@ void Controller::run() // Method for FSM
             if((stopMotor1.get() == true, stopMotor2.get() == true))
             {
                 state = 1;
+                grabPiece(); // Release solenoid to stop meltdown
             }
             break;
         }
+
         
         case 1: // Check for a move request
         {
             // Serial.println("State 1:");
-            grabPiece(); // Release solenoid to stop meltdown
             if (beginMove.get() == true)
             {
                 state = 2;
@@ -99,7 +100,9 @@ void Controller::run() // Method for FSM
             yCoordinateFrom = directionsQueue.get(); // Third val defines y coordinate of piece to move
             xCoordinateTo = directionsQueue.get();   // Fourth val defines x coordinate of piece to move to
             yCoordinateTo = directionsQueue.get();   // Fifth val defines y coordinate of piece to move to
+            state = 3;
             break;
+
         }
         case 3:
         {
@@ -165,7 +168,6 @@ void Controller::run() // Method for FSM
 
         case 9: // Move to grid before moving along gridlines
         {
-            Serial.println("State 4:");
             centerToGrid();
             state = 10;
             break;
