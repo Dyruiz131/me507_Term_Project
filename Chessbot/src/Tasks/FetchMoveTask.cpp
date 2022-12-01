@@ -108,10 +108,10 @@ void FetchMove::run()
             directionsQueue.put(yCoordinateTo);   // To y
             beginMove.put(true);                  // Begin move
 
-            Serial.println(xCoordinateFrom);
-            Serial.println(yCoordinateFrom);
-            Serial.println(xCoordTo);
-            Serial.println(yCoordinateTo);
+            // Serial.println(xCoordinateFrom);
+            // Serial.println(yCoordinateFrom);
+            // Serial.println(xCoordTo);
+            // Serial.println(yCoordinateTo);
             
             state = 2;
             break;
