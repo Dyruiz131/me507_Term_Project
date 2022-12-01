@@ -60,6 +60,7 @@ void FetchMove::run()
         {
             api.newGame(); // Send new game request
             state = 0;
+            lastMove = "0"; // Reset last move since game is new
             break;
         }
         case 2: // Check for new moves
