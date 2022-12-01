@@ -28,10 +28,11 @@ public:
     FetchMove(); // Default constructor
     void run();  // Method for FSM
     void moveDone();
-    void moveFailed();
     float toCoordinate(char col);
     float toCoordinate(uint8_t row);
-    float *gridLocations[8];
+    float gridLocations[8];
+    float xOffset;
+    float yOffset;
 };
 
 #endif // _FETCH_MOVE_TASK_H_

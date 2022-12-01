@@ -11,8 +11,9 @@
 #include "objects/APIHandler.h"
 #include "objects/MotorDriver.h"
 #include "tasks/ControllerTask.h"
+#include "kinematics.cpp"
 
-Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api)
+Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN)
 {
     server = api;
     state = 0; // Start state = 0
@@ -21,6 +22,7 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
     xLimPin = XLIM_PIN;
     yLimPin = YLIM_PIN;
     solenoidPin = SOLENOID_PIN;
+    sensorPin = SENSOR_PIN;
     omegaMax = 500; // steps per second
     pitch = 1 / 9;  // mm/deg
     stepSize = .9;  // deg/step
@@ -31,9 +33,9 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
     xCoordinateTo = 0;
     yCoordinateTo = 0;
     takePiece = 0;
-    xPieceGraveyard = 0;
-    yPieceGraveyard = 0;
-    boardScanned = false;
+    xPieceGraveyard = 520;
+    yPieceGraveyard = 522.5;
+    sensorOffset = 18.25;
 }
 
 /**
@@ -43,70 +45,74 @@ void Controller::run() // Method for FSM
 {
     switch (state)
     {
-    case 0:
+    case 0: // Calibration
     {
         origin();
-        if (boardScanned) // If board has been scanned
-        {
-            state = 1; // Wait State
-        }
-        else
-        {
-            state = 9; // Scan Board State
-        }
+        state = 1;
         break;
     }
-    case 1:
+    case 1: // Check for a move request
     {
-        waiting();
+        grabPiece(); // Release solenoid to stop meltdown
         if (beginMove.get() == true)
         {
             state = 2;
-            beginMove.put(false);
+            beginMove.put(false); // Reset the flag
         }
         break;
     }
-    case 2:
+    case 2: // Move to piece
     {
         takePiece = directionsQueue.get();       // First val defines if piece needs taking first
         xCoordinateFrom = directionsQueue.get(); // Second val defines x coordinate of piece to move
         yCoordinateFrom = directionsQueue.get(); // Third val defines y coordinate of piece to move
         xCoordinateTo = directionsQueue.get();   // Fourth val defines x coordinate of piece to move to
         yCoordinateTo = directionsQueue.get();   // Fifth val defines y coordinate of piece to move to
+        releasePiece();
         if (takePiece == 1)
         { // If piece needs taking
             state = 10;
-            break;
         }
         else
         {
-            movePiece(xCoordinateFrom, yCoordinateFrom); // Move to piece
+            movePiece(xCoordinateFrom - sensorOffset, yCoordinateFrom); // Move to piece
             waitMotorStop();
             state = 3;
-            break;
         }
+        break;
     }
-    case 3:
+    case 3: // Grab piece
     {
+        uint8_t count = 0;
+        while (count < 10)
+        {
+            if (detectPiece())
+            {
+                count += 1;
+            }
+            delay(10);
+        }
+        movePiece(sensorOffset, 0); // Move to piece
+        waitMotorStop();
         grabPiece();
         state = 4;
         break;
     }
-    case 4:
+
+    case 4: // Move to grid before moving along gridlines
     {
-        squareOrigin();
+        centerToGrid();
         waitMotorStop();
         state = 5;
         break;
     }
-    case 5:
+    case 5: // Move along x gridline
     {
         if (takePiece)
         {
             xGridMove(xPieceGraveyard, xCoordinateTo);
             waitMotorStop();
             state = 6;
-            break;
         }
         else
         {
@@ -114,17 +120,16 @@ void Controller::run() // Method for FSM
             xGridMove(xCoordinateTo, xCoordinateFrom);
             waitMotorStop();
             state = 6;
-            break;
         }
+        break;
     }
-    case 6:
+    case 6: // Move along y gridline
     {
         if (takePiece)
         {
             yGridMove(yPieceGraveyard, yCoordinateTo);
             waitMotorStop();
             state = 7;
-            break;
         }
         else
         {
@@ -132,12 +137,19 @@ void Controller::run() // Method for FSM
             yGridMove(yCoordinateTo, yCoordinateFrom);
             waitMotorStop();
             state = 7;
-            break;
         }
+        break;
     }
     case 7:
     {
-        gridToCenter();
+        if (takePiece)
+        {
+            gridToGraveyard();
+        }
+        else
+        {
+            gridToCenter();
+        }
         waitMotorStop();
         state = 8;
         break;
@@ -145,45 +157,18 @@ void Controller::run() // Method for FSM
     case 8:
     {
         releasePiece();
-        if (takePiece == 1)
+        if (takePiece == 0)
         {
-            boardScanned = true;
-        }
-        else
-        {
-            boardScanned = false;
+            moveComplete.put(true); // Signal that move is complete
         }
         takePiece = 0;
         state = 0;
         break;
     }
-    case 9:
+    case 10: // Move to piece that needs taking
     {
-        scanBoard.put(true);
-        while (true)
-        {
-            if (scanBoard.get() == false)
-            {
-                break;
-            }
-            delay(10);
-        }
-        state = 0;
-        break;
-    }
-    case 10:
-    {
-        movePiece(xCoordinateTo, yCoordinateTo);
-        while (true)
-        {
-            if (stopMotor1.get() && stopMotor2.get())
-            {
-                stopMotor1.put(false);
-                stopMotor2.put(false);
-                break;
-            }
-            delay(10);
-        }
+        movePiece(xCoordinateTo - sensorOffset, yCoordinateTo);
+        waitMotorStop();
         state = 3;
         break;
     }
@@ -235,40 +220,42 @@ void Controller::origin() // State 0
         }
     }
 }
-void Controller::waiting() // State 1
-{
-}
 
 void Controller::movePiece(float moveFromX, float moveFromY) // State 2
 {
     float Dx = moveFromX; // mm
     float Dy = moveFromY; // mm
-    float omegaLesser = -omegaMax * (2 * Dy / Dx - 1) / (2 * Dy / Dx + 1);
-    uint16_t numStepsG = 2 * Dy / ((1 + ((Dy - 0.5 * Dx) / (Dy + 0.5 * Dx))) * stepSize * pitch); // Num of steps for greater motor
-    uint16_t numStepsL = 2 * Dy / (stepSize * pitch) - numStepsG;
-    aVel1.put(omegaLesser);
-    steps1.put(numStepsL);
-    dirMotor2.put(1);
-    steps2.put(numStepsG);
+    int16_t velocityMotor1 = coordsToVelocityMotor1(Dx, Dy);
+    int16_t velocityMotor2 = coordsToVelocityMotor2(Dx, Dy);
+    uint16_t stepsMotor1 = coordsToStepsMotor1(Dx, Dy);
+    uint16_t stepsMotor2 = coordsToStepsMotor2(Dx, Dy);
+
+    steps1.put(stepsMotor1);
+    steps2.put(stepsMotor2);
+    aVel1.put(velocityMotor1);
+    aVel2.put(velocityMotor2);
     startMotor1.put(true);
-    startMaxMotor2.put(true);
+    startMotor2.put(true);
 }
 void Controller::grabPiece() // State 3
 {
-    digitalWrite(solenoidPin, HIGH);
+    digitalWrite(solenoidPin, LOW);
+    delay(100);
 }
 
-void Controller::squareOrigin() // State 4
+void Controller::centerToGrid() // State 4
 {
-    float omegaLesser = omegaMax * (2 * yOrigin / xOrigin - 1) / (2 * yOrigin / xOrigin + 1);
-    uint16_t numStepsG = 2 * yOrigin / ((1 + ((yOrigin - 0.5 * xOrigin) / (yOrigin + 0.5 * xOrigin))) * stepSize * pitch); // Num of steps for greater motor
-    uint16_t numStepsL = 2 * yOrigin / (stepSize * pitch) - numStepsG;
-    aVel1.put(omegaLesser);
-    steps1.put(numStepsL);
-    dirMotor2.put(-1);
-    steps2.put(numStepsG);
-    startMotor1.put(true);
-    startMaxMotor2.put(true);
+    movePiece(-30, -30);
+}
+
+void Controller::gridToCenter() // State 7
+{
+    movePiece(30, 30);
+}
+
+void Controller::gridToGraveyard() // State 4
+{
+    movePiece(10, 30);
 }
 
 void Controller::xGridMove(uint16_t xTo, uint16_t xFrom) // State 5
@@ -315,21 +302,10 @@ void Controller::yGridMove(uint16_t yTo, uint16_t yFrom) // State 6
     startMaxMotor1.put(true);
     startMaxMotor2.put(true);
 }
-void Controller::gridToCenter() // State 7
-{
-    float omegaLesser = -omegaMax * (2 * yOrigin / xOrigin - 1) / (2 * yOrigin / xOrigin + 1);
-    uint16_t numStepsG = 2 * yOrigin / ((1 + ((yOrigin - 0.5 * xOrigin) / (yOrigin + 0.5 * xOrigin))) * stepSize * pitch); // Num of steps for greater motor
-    uint16_t numStepsL = 2 * yOrigin / (stepSize * pitch) - numStepsG;
-    aVel1.put(omegaLesser);
-    steps1.put(numStepsL);
-    dirMotor2.put(1);
-    steps2.put(numStepsG);
-    startMotor1.put(true);
-    startMaxMotor2.put(true);
-}
+
 void Controller::releasePiece() // State 8
 {
-    digitalWrite(solenoidPin, LOW);
+    digitalWrite(solenoidPin, HIGH);
 }
 
 void Controller::waitMotorStop()
@@ -342,260 +318,7 @@ void Controller::waitMotorStop()
     stopMotor2.put(false);
 }
 
-int16_t Controller::coordsToVelocityMotor1(float y_coordinate, float x_coordinate)
+bool Controller::detectPiece()
 {
-    if (abs(y_coordinate)>abs(x_coordinate)) //above 45 degree angles
-    {
-        if(y_coordinate/x_coordinate > 0)  //Motor 1 Max
-        {
-            if(x_coordinate > 0) //sector 2
-            {
-                return -1000;
-            }
-
-            else    // sector 6
-            {
-                return 1000;
-            }
-        }
-
-        else
-        {
-            if(x_coordinate > 0)  //sector 7 
-            {
-                return -1000*(1+(y_coordinate/x_coordinate))/(1-(y_coordinate/x_coordinate));
-            }
-
-            else        // sector 3
-            {
-                return 1000*(1+(y_coordinate/x_coordinate))/(1-(y_coordinate/x_coordinate));
-            }
-        }
-    }
-
-    if (abs(y_coordinate)<abs(x_coordinate)) //below 45 degree angles
-    {
-        if(x_coordinate/y_coordinate > 0)  //Motor 1 Max
-        {
-            if(x_coordinate > 0) //sector 1
-            {
-                return -1000;
-            }
-
-            else    // sector 5
-            {
-                return 1000;
-            }
-        }
-
-        else
-        {
-            if(x_coordinate > 0)  //sector 8 
-            {
-                return 1000*((x_coordinate/y_coordinate+1)/(1-x_coordinate/y_coordinate));
-            }
-
-            else        // sector 4
-            {
-                return -1000*((x_coordinate/y_coordinate+1)/(1-x_coordinate/y_coordinate));
-            }
-        }
-    }
-
-    if(abs(y_coordinate) == abs(x_coordinate)) //45 degrees
-    {
-        if (y_coordinate/x_coordinate > 0)
-        {
-            if(x_coordinate > 0)
-            {
-                return -1000; // quadrant 1
-            }
-
-            else
-            {
-                return 1000; // quadrant 3
-            }
-        }
-
-        else 
-        {
-            return 0;
-        }
-    }
-
-}
-
-int16_t Controller::coordsToVelocityMotor2(float y_coordinate, float x_coordinate)
-{
-    if (abs(y_coordinate)>abs(x_coordinate)) //above 45 degree angles
-    {
-        if(y_coordinate/x_coordinate > 0)  //Motor 1 Max
-        {
-            if(x_coordinate > 0) //sector 2
-            {
-                return -1000*(1-(y_coordinate/x_coordinate))/(1+(y_coordinate/x_coordinate));
-            }
-
-            else    // sector 6
-            {
-                return 1000*(1-(y_coordinate/x_coordinate))/(1+(y_coordinate/x_coordinate));
-            }
-        }
-
-        else    //Motor 2 Max
-        {
-            if(x_coordinate > 0)  //sector 7 
-            {
-                return -1000;
-            }
-
-            else        // sector 3
-            {
-                return 1000;
-            }
-        }
-    }
-
-    if (abs(y_coordinate)<abs(x_coordinate)) //below 45 degree angles
-    {
-        if(x_coordinate/y_coordinate > 0)  //Motor 1 Max
-        {
-            if(x_coordinate > 0) //sector 1
-            {
-                return -1000*((x_coordinate/y_coordinate)-1)/((1+(x_coordinate/y_coordinate)));
-            }
-
-            else    // sector 5
-            {
-                return 1000*((x_coordinate/y_coordinate)-1)/((1+(x_coordinate/y_coordinate)));
-            }
-        }
-
-        else // Motor 2 Max
-        {
-            if(x_coordinate > 0)  //sector 8 
-            {
-                return -1000;
-            }
-
-            else        // sector 4
-            {
-                return 1000;
-            }
-        }
-    }
-
-    if(abs(y_coordinate) == abs(x_coordinate)) //45 degrees
-    {
-        if (y_coordinate/x_coordinate < 0)
-        {
-            if(x_coordinate > 0)
-            {
-                return -1000; // quadrant 2
-            }
-
-            else
-            {
-                return 1000; // quadrant 4
-            }
-        }
-
-        else 
-        {
-            return 0;
-        }
-    }
-
-}
-
-uint16_t Controller::coordsToStepsMotor1(float y_coordinate, float x_coordinate)
-{
-    float stepLength = 0.1; //  mm/step
-
-    if (abs(y_coordinate)>abs(x_coordinate)) //above 45 degree angles
-    {
-        if(y_coordinate/x_coordinate > 0)  //Motor 1 Max
-        {
-           return abs(((-2*y_coordinate)/stepLength)/(1-((1-y_coordinate/x_coordinate)/(1+y_coordinate/x_coordinate))));
-
-        }
-
-        else
-        {
-            return abs(((-2*x_coordinate/stepLength)*(1+y_coordinate/x_coordinate)/(1-y_coordinate/x_coordinate))/(1+((1+y_coordinate/x_coordinate)/(1-y_coordinate/x_coordinate))));
-        }
-    }
-
-    if (abs(y_coordinate)<abs(x_coordinate)) //below 45 degree angles
-    {
-        if(x_coordinate/y_coordinate > 0)  //Motor 1 Max
-        {
-            return abs((-2*x_coordinate/stepLength)/(1+(x_coordinate/y_coordinate-1)/(1+x_coordinate/y_coordinate)));
-        }
-
-        else
-        {
-           return abs(((-2*y_coordinate/stepLength)*((x_coordinate/y_coordinate+1)/(1-x_coordinate/y_coordinate)))/(1-(x_coordinate/y_coordinate+1)/(1-x_coordinate/y_coordinate)));
-        }
-    }
-
-    if(abs(y_coordinate) == abs(x_coordinate)) //45 degrees
-    {
-        if (y_coordinate/x_coordinate > 0)
-        {
-            return abs(2*x_coordinate);
-        }
-
-        else 
-        {
-            return 0;
-        }
-    }
-
-}
-
-uint16_t Controller::coordsToStepsMotor2(float y_coordinate, float x_coordinate)
-{
-    float stepLength = 0.1; //  mm/step
-
-    if (abs(y_coordinate)>abs(x_coordinate)) //above 45 degree angles
-    {
-        if(y_coordinate/x_coordinate > 0)  //Motor 1 Max
-        {
-           return abs((((-2*y_coordinate)/stepLength)*(1-(y_coordinate/x_coordinate)/(1+y_coordinate/x_coordinate)))/(1-((1-y_coordinate/x_coordinate)/(1+y_coordinate/x_coordinate))));
-
-        }
-
-        else
-        {
-            return abs((-2*x_coordinate/stepLength)/(1+((1+y_coordinate/x_coordinate)/(1-y_coordinate/x_coordinate))));
-        }
-    }
-
-    if (abs(y_coordinate)<abs(x_coordinate)) //below 45 degree angles
-    {
-        if(x_coordinate/y_coordinate > 0)  //Motor 1 Max
-        {
-            return abs((-2*x_coordinate/stepLength)*((x_coordinate/y_coordinate-1)/(1+x_coordinate/y_coordinate))/(1+(x_coordinate/y_coordinate-1)/(1+x_coordinate/y_coordinate)));
-        }
-
-        else
-        {
-           return abs(((-2*y_coordinate/stepLength)/(1-x_coordinate/y_coordinate)))/(1-(x_coordinate/y_coordinate+1)/(1-x_coordinate/y_coordinate));
-        }
-    }
-
-    if(abs(y_coordinate) == abs(x_coordinate)) //45 degrees
-    {
-        if (y_coordinate/x_coordinate < 0)
-        {
-            return abs(2*x_coordinate);
-        }
-
-        else 
-        {
-            return 0;
-        }
-    }
-
+    return digitalRead(sensorPin) == LOW;
 }

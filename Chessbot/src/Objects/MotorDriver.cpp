@@ -9,7 +9,6 @@
 #include "objects/MotorDriver.h"
 #include "shares.h"
 
-
 Motor::Motor(uint8_t en, uint8_t step, uint8_t dir)
 {
     ENABLE_PIN = en;
@@ -66,9 +65,9 @@ void Motor::startMax(int8_t Dir, uint16_t Steps, Share<bool> &stopFlag)
 }
 void Motor::start(float velocity, uint16_t Steps, Share<bool> &stopFlag)
 {
-    stopFlag.put(false); //Start motor
+    stopFlag.put(false); // Start motor
 
-    if (velocity >= 0)
+    if (velocity > 0)
     {
         digitalWrite(DIRECTION_PIN, HIGH);
     }
@@ -77,10 +76,17 @@ void Motor::start(float velocity, uint16_t Steps, Share<bool> &stopFlag)
         digitalWrite(DIRECTION_PIN, LOW);
     }
 
-    float delay_time = 1000000 / abs(velocity);
-    int i = 0;
-
-    for (i = 0; i < 2 * Steps; i++)
+    float delay_time;
+    if (velocity = 0)
+    {
+        delay_time = 1;
+    }
+    else
+    {
+        delay_time = 1000000 / abs(velocity);
+    }
+    
+    for (int i = 0; i < 2 * Steps; i++)
     {
         if (stopFlag.get() == true)
         {

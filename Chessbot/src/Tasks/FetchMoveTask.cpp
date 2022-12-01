@@ -18,11 +18,12 @@
 FetchMove::FetchMove(APIHandler api)
 {
     this->api = api;
-
-    gridCoordinates[0] = 0.0;
-    for (int i = 0; i < 8; i++)
+    xOffset = 10;   // x offset from origin to game board origin
+    yOffset = 12.5; // y offset from origin to game board origin
+    gridCoordinates[0] = 30.0;
+    for (int i = 1; i < 8; i++)
     {                             // Create grid coordinates
-        gridCoordinates[i] += 60; // 60mm between each piece
+        gridCoordinates[i] = gridCoordinates[i-1] + 60; // 60mm between each piece
     }
 
     state = 0;     // Start state = 0
@@ -79,13 +80,27 @@ void FetchMove::run()
             char toCol = newMove.charAt(3);                   // To x
             uint8_t toRow = newMove.substring(4).toInt();     // To y
 
-            directionsQueue.put(takePiece);             // Take Piece Flag
-            directionsQueue.put(toCoordinate(fromCol)); // From x
-            directionsQueue.put(toCoordinate(fromRow)); // From y
-            directionsQueue.put(toCoordinate(toCol));   // To x
-            directionsQueue.put(toCoordinate(toRow));   // To y
-            beginMove.put(true);                        // Begin move
+            float xCoordinateFrom = toCoordinate(fromCol) + xOffset; // Convert to coordinates
+            float yCoordinateFrom = toCoordinate(fromRow) + yOffset; // Convert to coordinates
+            float xCoordTo = toCoordinate(toCol) + xOffset;          // Convert to coordinates
+            float yCoordinateTo = toCoordinate(toRow) + yOffset;     // Convert to coordinates
+
+            directionsQueue.put(takePiece);       // Take Piece Flag
+            directionsQueue.put(xCoordinateFrom); // From x
+            directionsQueue.put(yCoordinateFrom); // From y
+            directionsQueue.put(xCoordTo);        // To x
+            directionsQueue.put(yCoordinateTo);   // To y
+            beginMove.put(true);                  // Begin move
             state = 2;
+            break;
+        }
+        case 4:
+        {
+            if(moveComplete.get())
+            {
+                moveDone(); // Update server state
+                state = 2;
+            }
             break;
         }
         }
@@ -95,11 +110,6 @@ void FetchMove::run()
 void FetchMove::moveDone()
 {
     api.sendMoveStatus(true);
-}
-
-void FetchMove::moveFailed()
-{
-    api.sendMoveStatus(false);
 }
 
 float FetchMove::toCoordinate(char col)

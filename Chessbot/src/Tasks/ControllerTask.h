@@ -25,6 +25,7 @@ private:
     uint8_t xLimPin;
     uint8_t yLimPin;
     uint8_t solenoidPin;
+    uint8_t sensorPin;
     float omegaMax; // steps per second
     float pitch;    // mm/deg
     float stepSize; // deg/step
@@ -37,27 +38,24 @@ private:
     float takePiece;
     float xPieceGraveyard;
     float yPieceGraveyard;
-    bool boardScanned;
+    float sensorOffset;
 
 public:
-    Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, APIHandler api); // Constructor
-    void run();                                                                           // Method for FSM
+    Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN); // Constructor
+    void run();                                                                                               // Method for FSM
     void setState(uint8_t newState);
     void origin();                                    // State 0
-    void waiting();                                   // State 1
     void movePiece(float moveFromx, float moveFromy); // State 2
     void grabPiece();                                 // State 3
-    void squareOrigin();                              // State 4
-    void xGridMove(uint16_t x_to, uint16_t x_from);   // State 5
-    void yGridMove(uint16_t y_to, uint16_t y_from);   // State 6
-    void gridToCenter();                              // State 7
-    void releasePiece();                              // State 8
-    void limSwitchRedirection();                      // State 9
-    void runScan();                                   // State 10
+    void centerToGrid();                              // State 4
+    void gridToGraveyard();
+    void xGridMove(uint16_t x_to, uint16_t x_from); // State 5
+    void yGridMove(uint16_t y_to, uint16_t y_from); // State 6
+    void gridToCenter();                            // State 7
+    void releasePiece();                            // State 8
+    void limSwitchRedirection();                    // State 9
+    void runScan();                                 // State 10
     void waitMotorStop();
-    int16_t coordsToVelocityMotor1(float y_coordinate, float x_coordinate);
-    int16_t coordsToVelocityMotor2(float y_coordinate, float x_coordinate);
-    uint16_t coordsToStepsMotor1(float y_coordinate, float x_coordinate);
-    uint16_t coordsToStepsMotor2(float y_coordinate, float x_coordinate);
+    bool detectPiece();
 };
 #endif // _CONTROLLER_TASK_H_

@@ -22,11 +22,11 @@ extern Share<uint16_t> steps2;
 extern Share<float> aVel1;
 extern Share<float> aVel2;
 extern Share<bool> Piece_Detect;
-extern Share<bool> scanBoard;
 extern Share<bool> startMotor1;
 extern Share<bool> startMotor2;
 extern Share<bool> startMaxMotor1;
 extern Share<bool> startMaxMotor2;
 extern Share<int8_t> dirMotor1;
 extern Share<int8_t> dirMotor2;
+extern Share<bool> moveComplete;
 #endif // _SHARES_H_
