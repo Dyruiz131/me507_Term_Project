@@ -13,7 +13,7 @@
 
 /**
  * @brief Construct a new APIHandler::APIHandler object
- * 
+ *
  * @param ssid WiFi SSID
  * @param password WiFi password
  * @param certificate SSL certificate (for HTTPS requests)
@@ -21,9 +21,9 @@
 APIHandler::APIHandler(const char *ssid, const char *password, const char *certificate)
 {
     Serial.begin(115200);
-    ssid = ssid;
-    password = password;
-    certificate = certificate;
+    this->ssid = ssid;
+    this->password = password;
+    this->certificate = certificate;
 
     WiFi.begin(ssid, password);
     Serial.println("Connecting");
@@ -126,33 +126,7 @@ String sendPOST(const char *URL, const char *cert, String req)
 void APIHandler::sendMove(String from, String to)
 {
     String req = "{\"from\":\"" + from + "\",\"to\":\"" + to + "\"}";
-    sendPOST("https://chessbotapi.onrender.com/fen", certificate, req);
-}
-
-/**
- * @brief Gets the current FEN string from the server
- *
- * @return String of the current FEN string
- */
-String APIHandler::getFen()
-{
-    String res = sendGET("https://chessbotapi.onrender.com/fen", certificate);
-    JSONVar jsonRes = JSON.parse(res);
-    String fen = jsonRes["fen"];
-    return fen;
-}
-
-/**
- * @brief Gets the current turn from the server
- *
- * @return char of the current turn colour
- */
-char APIHandler::getTurn()
-{
-    String res = sendGET("https://chessbotapi.onrender.com/fen", certificate);
-    JSONVar jsonRes = JSON.parse(res);
-    String turn = jsonRes["turn"];
-    return turn[0];
+    sendPOST("https://chessbotapi.onrender.com/move", certificate, req);
 }
 
 /**
@@ -160,13 +134,21 @@ char APIHandler::getTurn()
  *
  * @return String of the most recent move in the format "e2,e4"
  */
-String APIHandler::getLastMove()
+String APIHandler::getLatestMove()
 {
     String res = sendGET("https://chessbotapi.onrender.com/lastMove", certificate);
     JSONVar jsonRes = JSON.parse(res);
-    String lastMove = jsonRes["lastMove.from"] + "," + jsonRes["lastMove.to"];
+    String takeMove = "0";
+    if (jsonRes["lastMove.captured"])
+    {
+        takeMove = "1";
+    }
+    String from = jsonRes["lastMove.from"];
+    String to = jsonRes["lastMove.to"];
+    String lastMove = takeMove + from + to;
     return lastMove;
 }
+
 /**
  * @brief Gets the current move status from the server
  *
@@ -174,18 +156,43 @@ String APIHandler::getLastMove()
  */
 bool APIHandler::getMoveStatus()
 {
-    String res = sendGET("https://chessbotapi.onrender.com/moveComplete", certificate);
+    String res = sendGET("https://chessbotapi.onrender.com/acceptMoves", certificate);
     JSONVar jsonRes = JSON.parse(res);
-    bool status = jsonRes["moveComplete"];
+    bool status = jsonRes["acceptMoves"];
     return status;
 }
 
 /**
- * @brief Sets the current move status from the server
+ * @brief Sends the move status to the server
  *
+ * @param status status of the move (if move is complete)
  */
 void APIHandler::sendMoveStatus(bool status)
 {
-    String req = "{\"moveComplete\":" + String(status) + "}";
-    sendPOST("https://chessbotapi.onrender.com/moveComplete", certificate, req);
+    String req = "{\"acceptMoves\":" + String(status) + "}";
+    sendPOST("https://chessbotapi.onrender.com/acceptMoves", certificate, req);
+}
+
+/**
+ * @brief Checks if the game has just started
+ *
+ * @return true The game has just started
+ * @return false The game has not just started
+ */
+bool APIHandler::isNewGame()
+{
+    String res = sendGET("https://chessbotapi.onrender.com/isNewGame", certificate);
+    JSONVar jsonRes = JSON.parse(res);
+    bool status = jsonRes["isNewGame"];
+    return status;
+}
+
+/**
+ * @brief Creates a new game on the server (for if
+ * a game is ongoing on startup)
+ */
+void APIHandler::newGame()
+{
+    String req = "";
+    sendPOST("https://chessbotapi.onrender.com/new", certificate, req);
 }

@@ -1,37 +1,37 @@
 /**
- * @file APIHandler.h
+ * @file FetchMoveTask.h
  * @author Sam Hudson
- * @brief Handles the API communication between the server and the chess board
+ * @brief Task that operates the API handler
  * @version 1.0
- * @date 2022-11-27
+ * @date 2022-11-30
  */
 
-#ifndef _API_HANDLER_H_
-#define _API_HANDLER_H_
+#ifndef _FETCH_MOVE_TASK_H_
+#define _FETCH_MOVE_TASK_H_
 
 #include <Arduino.h>
-#include <WiFi.h>
-#include "HTTPClient.h"
-#include "Arduino_JSON.h"
 #include "taskqueue.h"
 #include "taskshare.h"
+#include "objects/APIHandler.h"
 
-class APIHandler
+class FetchMove
 {
 private:
-    const char *ssid;
-    const char *password;
-    const char *certificate;
+    APIHandler api;
+    uint8_t state;
+    String lastMove;
+    String newMove;
+    float gridCoordinates[8];
 
 public:
-    APIHandler(const char *ssid, const char *password, const char *certificate);
-    APIHandler(); // Default constructor
-    void sendMove(String from, String to);
-    String getFen();
-    char getTurn();
-    String getLastMove();
-    bool getMoveStatus();
-    void sendMoveStatus(bool status);
+    FetchMove(APIHandler api);
+    FetchMove(); // Default constructor
+    void run();  // Method for FSM
+    void moveDone();
+    void moveFailed();
+    float toCoordinate(char col);
+    float toCoordinate(uint8_t row);
+    float *gridLocations[8];
 };
 
-#endif // _API_HANDLER_H_
+#endif // _FETCH_MOVE_TASK_H_

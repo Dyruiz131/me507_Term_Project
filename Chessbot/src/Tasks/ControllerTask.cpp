@@ -16,11 +16,11 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
 {
     server = api;
     state = 0; // Start state = 0
-    uint16_t xStep = 0;
-    uint16_t yStep = 0;
-    uint8_t xLimPin = XLIM_PIN;
-    uint8_t yLimPin = YLIM_PIN;
-    uint8_t solenoidPin = SOLENOID_PIN;
+    xStep = 0;
+    yStep = 0;
+    xLimPin = XLIM_PIN;
+    yLimPin = YLIM_PIN;
+    solenoidPin = SOLENOID_PIN;
     omegaMax = 500; // steps per second
     pitch = 1 / 9;  // mm/deg
     stepSize = .9;  // deg/step

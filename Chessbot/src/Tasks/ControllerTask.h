@@ -60,5 +60,4 @@ public:
     uint16_t coordsToStepsMotor1(float y_coordinate, float x_coordinate);
     uint16_t coordsToStepsMotor2(float y_coordinate, float x_coordinate);
 };
-
 #endif // _CONTROLLER_TASK_H_

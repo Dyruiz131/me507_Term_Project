@@ -27,11 +27,11 @@ public:
     APIHandler(const char *ssid, const char *password, const char *certificate);
     APIHandler(); // Default constructor
     void sendMove(String from, String to);
-    String getFen();
-    char getTurn();
-    String getLastMove();
+    String getLatestMove();
     bool getMoveStatus();
     void sendMoveStatus(bool status);
+    bool isNewGame();
+    void newGame();
 };
 
 #endif // _API_HANDLER_H_
