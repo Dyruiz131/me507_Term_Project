@@ -13,13 +13,13 @@
 
 MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<bool> &startMotor, Share<bool> &startMotorMax)
 {
-    motor = motor;
-    stopMotor = stopMotor;
-    direction = direction;
-    velocity = velocity;
-    steps = steps;
-    startMotor = startMotor;
-    startMotorMax = startMotorMax;
+    this->motor = motor;
+    this->stopMotor = stopMotor;
+    this->direction = direction;
+    this->velocity = velocity;
+    this->steps = steps;
+    this->startMotor = startMotor;
+    this->startMotorMax = startMotorMax;
     state = 0; // Start state = 0
 }
 
@@ -27,7 +27,7 @@ void MotorTask::run() // Method for FSM
 {
     switch (state)
     {
-    case 0: //Check if the motor should start
+    case 0: // Check if the motor should start
     {
         if (startMotor.get())
         {
@@ -45,13 +45,13 @@ void MotorTask::run() // Method for FSM
         }
         break;
     }
-    case 1: //Run motor with specific velocity
+    case 1: // Run motor with specific velocity
     {
         motor.start(velocity.get(), steps.get(), stopMotor);
         state = 0;
         break;
     }
-    case 2: //Run motor at max velocity
+    case 2: // Run motor at max velocity
     {
         motor.startMax(direction.get(), steps.get(), stopMotor);
         state = 0;

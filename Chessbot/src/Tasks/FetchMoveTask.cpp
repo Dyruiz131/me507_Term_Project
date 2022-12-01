@@ -7,55 +7,31 @@
  */
 
 #include <Arduino.h>
-#include "objects/MotorDriver.h"
-#include "tasks/MotorTask.h"
+#include "tasks/FetchMoveTask.h"
 #include "shares.h"
 
-MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<bool> &startMotor, Share<bool> &startMotorMax)
+/**
+ * @brief Construct a new FetchMoveTask object
+ *
+ * @param api The API handler object
+ */
+FetchMoveTask::FetchMoveTask(APIHandler api)
 {
-    motor = motor;
-    stopMotor = stopMotor;
-    direction = direction;
-    velocity = velocity;
-    steps = steps;
-    startMotor = startMotor;
-    startMotorMax = startMotorMax;
+    this->api = api;
     state = 0; // Start state = 0
 }
 
-void MotorTask::run() // Method for FSM
+/**
+ * @brief Default constructor necessary for dependency injection
+ */
+FetchMoveTask::FetchMoveTask()
 {
-    switch (state)
-    {
-    case 0: //Check if the motor should start
-    {
-        if (startMotor.get())
-        {
-            state = 1;
-            startMotor.put(false);
+}
+
+void FetchMoveTask::run(){
+    while(true){
+        switch(state){
+            case 0:
         }
-        else if (startMotorMax.get())
-        {
-            state = 2;
-            startMotorMax.put(false);
-        }
-        else // Stay in state 0
-        {
-            state = 0;
-        }
-        break;
-    }
-    case 1: //Run motor with specific velocity
-    {
-        motor.start(velocity.get(), steps.get(), stopMotor);
-        state = 0;
-        break;
-    }
-    case 2: //Run motor at max velocity
-    {
-        motor.startMax(direction.get(), steps.get(), stopMotor);
-        state = 0;
-        break;
-    }
     }
 }

@@ -21,9 +21,9 @@
 APIHandler::APIHandler(const char *ssid, const char *password, const char *certificate)
 {
     Serial.begin(115200);
-    ssid = ssid;
-    password = password;
-    certificate = certificate;
+    this->ssid = ssid;
+    this->password = password;
+    this->certificate = certificate;
 
     WiFi.begin(ssid, password);
     Serial.println("Connecting");

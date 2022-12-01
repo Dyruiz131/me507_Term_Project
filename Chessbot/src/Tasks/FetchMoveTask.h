@@ -17,17 +17,13 @@
 class FetchMoveTask
 {
 private:
-    Motor motor;
+    APIHandler api;
     uint8_t state;
 
 public:
     FetchMoveTask(APIHandler api);
-    Queue<float> directionsQueue;
-    Share<bool> beginMove;
+    FetchMoveTask(); // Default constructor
     void run(); // Method for FSM
-    void waiting();
-    void runMotor(); 
-    void runMotorMax();
 };
 
 #endif // _FETCH_MOVE_TASK_H_
