@@ -21,10 +21,14 @@ FetchMove::FetchMove(APIHandler api)
     xOffset = 10;   // x offset from origin to game board origin
     yOffset = 12.5; // y offset from origin to game board origin
     gridCoordinates[0] = 30.0;
-    for (int i = 1; i < 8; i++)
-    {                                                     // Create grid coordinates
-        gridCoordinates[i] = gridCoordinates[i - 1] + 60; // 60mm between each piece
-    }
+    gridCoordinates[1] = 90.0;
+    gridCoordinates[2] = 150.0;
+    gridCoordinates[3] = 210.0;
+    gridCoordinates[4] = 270.0;
+    gridCoordinates[5] = 330.0;
+    gridCoordinates[6] = 390.0;
+    gridCoordinates[7] = 450.0;
+    
 
     state = 0;      // Start state = 0
     lastMove = "0"; // Store last move for comparison, initialise with "0"
@@ -66,15 +70,15 @@ void FetchMove::run()
         case 2: // Check for new moves
         {
             newMove = api.getLatestMove(); // Get latest move
-            if (newMove == lastMove)
+            if (newMove.length() > 3)
             { // If there is a new move
                 state = 3;
+                Serial.println("lastMove:");
+                Serial.println(lastMove);
+                Serial.println("newMove:");
+                Serial.println(newMove);
             }
             lastMove = newMove; // Set last move for future comparison
-            Serial.println("lastMove:");
-            Serial.print(lastMove);
-            Serial.println("newMove:");
-            Serial.print(newMove);
             break;
         }
         case 3: // Calculate and send coordinates to queue
@@ -85,6 +89,12 @@ void FetchMove::run()
             uint8_t fromRow = newMove.substring(2).toInt();   // From y
             char toCol = newMove.charAt(3);                   // To x
             uint8_t toRow = newMove.substring(4).toInt();     // To y
+
+                        Serial.println(takePiece);
+                        Serial.println(fromCol);
+                        Serial.println(fromRow);
+                        Serial.println(toCol);
+                        Serial.println(toRow);
 
             float xCoordinateFrom = toCoordinate(fromCol) + xOffset; // Convert to coordinates
             float yCoordinateFrom = toCoordinate(fromRow) + yOffset; // Convert to coordinates
@@ -97,6 +107,12 @@ void FetchMove::run()
             directionsQueue.put(xCoordTo);        // To x
             directionsQueue.put(yCoordinateTo);   // To y
             beginMove.put(true);                  // Begin move
+
+            Serial.println(xCoordinateFrom);
+            Serial.println(yCoordinateFrom);
+            Serial.println(xCoordTo);
+            Serial.println(yCoordinateTo);
+            
             state = 2;
             break;
         }

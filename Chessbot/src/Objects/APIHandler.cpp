@@ -179,7 +179,6 @@ bool APIHandler::isNewGame()
     String res = sendGET("https://chessbotapi.onrender.com/isNewGame", certificate);
     JSONVar jsonRes = JSON.parse(res);
     bool status = jsonRes["isNewGame"];
-    Serial.println(status);
     return status;
 }
 

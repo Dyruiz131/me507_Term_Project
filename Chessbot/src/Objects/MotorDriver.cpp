@@ -76,7 +76,7 @@ void Motor::start(float velocity, uint16_t Steps, Share<bool> &stopFlag)
         digitalWrite(DIRECTION_PIN, LOW);
     }
 
-    float delay_time;
+    uint32_t delay_time;
     if (velocity = 0)
     {
         delay_time = 1;

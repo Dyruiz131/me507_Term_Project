@@ -49,13 +49,17 @@ public:
     void setState(uint8_t newState);
     void origin_x();                                    // State 0
     void origin_y();
-    void movePiece(float moveFromx, float moveFromy); // State 2
+    void movePiecex(float moveFromx, float moveFromy); // State 2
+    void movePiecey(float moveFromx, float moveFromy); // State 2
     void grabPiece();                                 // State 3
-    void centerToGrid();                              // State 4
-    void gridToGraveyard();
+    void centerToGridx();                              // State 4
+    void centerToGridy();
+    void gridToGraveyardx();
+    void gridToGraveyardy();
     void xGridMove(uint16_t x_to, uint16_t x_from); // State 5
     void yGridMove(uint16_t y_to, uint16_t y_from); // State 6
-    void gridToCenter();                            // State 7
+    void gridToCenterx();                            // State 7
+    void gridToCentery();
     void releasePiece();                            // State 8
     void limSwitchRedirection();                    // State 9
     void runScan();                                 // State 10

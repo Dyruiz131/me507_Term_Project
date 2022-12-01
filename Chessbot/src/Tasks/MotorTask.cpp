@@ -49,7 +49,10 @@ void MotorTask::run() // Method for FSM
     }
     case 1: // Run motor with specific velocity
     {
+        Serial.println("Motor started");
+        stopMotor.put(false);
         motor.start(velocity.get(), steps.get(), stopMotor);
+
         state = 0;
         break;
     }
