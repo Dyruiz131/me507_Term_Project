@@ -47,13 +47,39 @@ void Controller::run() // Method for FSM
 {
     switch (state)
     {
-        case 0: // Calibration
+        case 0: 
         {
-            Serial.println("State 0");
-            origin();
-            state = 1;
+        
+            origin_x();
+            startLimitx.put(true);
+            state = 20;
             break;
         }
+        case 20: 
+        {
+            if((stopMotor1.get() == true, stopMotor2.get() == true))
+            {
+                state = 21;
+            }
+            break;
+        }
+        case 21:
+        {
+            
+            origin_y();
+            startLimity.put(true);
+            state = 22;
+            break;
+        }
+        case 22: 
+        {
+            if((stopMotor1.get() == true, stopMotor2.get() == true))
+            {
+                state = 1;
+            }
+            break;
+        }
+        
         case 1: // Check for a move request
         {
             // Serial.println("State 1:");
@@ -272,38 +298,29 @@ void Controller::setState(uint8_t newState)
     state = newState;
 }
 
-void Controller::origin() // State 0
+void Controller::origin_x() // State 0
 {
-    /* Check x axis */
-    if (!digitalRead(xLimPin)) // If x lim switch is hit, stop moving.
-    {
-        xStep = 0; // Set x position to 0
-    }
-    else
-    {
-        // Move left 1 step
-        steps1.put(1);
-        steps2.put(1);
-        dirMotor1.put(1);
-        dirMotor2.put(-1);
-        startMaxMotor1.put(true);
-        startMaxMotor2.put(true);
-    }
-    /* Check y axis */
-    if (!digitalRead(yLimPin)) // If y lim switch is hit, stop moving.
-    {
-        yStep = 0; // Set y position to 0
-    }
-    else
-    {
-        // Move down 1 step
-        steps1.put(1);
-        steps2.put(1);
-        dirMotor1.put(1);
-        dirMotor2.put(-1);
-        startMaxMotor1.put(true);
-        startMaxMotor2.put(true);
-    }
+/* Check x axis */
+    // Move left 1 step
+    steps1.put(10000);
+    steps2.put(10000);
+    dirMotor1.put(1);
+    dirMotor2.put(1);
+    startMaxMotor1.put(true);
+    startMaxMotor2.put(true);
+}
+void Controller::origin_y() // State 0
+{
+  
+
+    // Move down 1 step
+    steps1.put(10000);
+    steps2.put(10000);
+    dirMotor1.put(1);
+    dirMotor2.put(-1);
+    startMaxMotor1.put(true);
+    startMaxMotor2.put(true);
+    
 }
 
 void Controller::movePiece(float moveFromX, float moveFromY) // State 2

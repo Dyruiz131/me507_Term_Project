@@ -47,7 +47,8 @@ public:
     Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN); // Constructor
     void run();                                                                                               // Method for FSM
     void setState(uint8_t newState);
-    void origin();                                    // State 0
+    void origin_x();                                    // State 0
+    void origin_y();
     void movePiece(float moveFromx, float moveFromy); // State 2
     void grabPiece();                                 // State 3
     void centerToGrid();                              // State 4

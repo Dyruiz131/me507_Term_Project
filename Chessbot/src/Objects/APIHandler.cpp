@@ -21,6 +21,7 @@
 APIHandler::APIHandler(const char *certificate)
 {
     this->certificate = certificate;
+    String lastMove = "";
 }
 
 /**
@@ -124,24 +125,24 @@ String APIHandler::getLatestMove()
 {
     String res = sendGET("https://chessbotapi.onrender.com/lastMove", certificate);
     JSONVar jsonRes = JSON.parse(res);
-    String lastMove;
-    String takeMove = "0";
-    if (JSON.typeof(jsonRes) == "undefined")
+    String returnMoveString = "";
+    bool takePiece = jsonRes.hasOwnProperty("captured");
+    String from = jsonRes["from"];
+    String to = jsonRes["to"];
+
+    // Set first value as flag for taking a piece
+    if (takePiece) // Check if captured flag is returned from api
     {
-        // Serial.println("Parsing JSON failed.");
-        lastMove = takeMove;
+        returnMoveString = "1";
     }
     else
     {
-        if (jsonRes["lastMove.captured"])
-        {
-            takeMove = "1";
-        }
-        String from = jsonRes["from"];
-        String to = jsonRes["to"];
-        lastMove = takeMove + from + to;
+        returnMoveString = "0";
     }
-    return lastMove;
+
+    returnMoveString = returnMoveString + from + to; // Create move string
+    lastMove = returnMoveString;                     // Set last move for next check
+    return returnMoveString;
 }
 
 /**

@@ -9,6 +9,7 @@
 #include "Tasks/FetchMoveTask.h"
 #include "wifiPass.h"
 #include "WiFi.h"
+#include "Tasks/LimitswitchTask.h"
 
 // Motor 1 pins
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled
@@ -46,6 +47,8 @@ Share<bool> startMotor2("Start Motor2");
 Share<bool> startMaxMotor1("Start Max Motor1");
 Share<bool> startMaxMotor2("Start Max Motor2");
 Share<bool> moveComplete("Move Complete");
+Share<bool> startLimitx("Start Limitx");
+Share<bool> startLimity("Start Limity");
 
 // WiFi credentials (ssid and password is ignored by git for security)
 const char *ssid = WIFI_SSID;                 // Import SSID from wifi.h
@@ -68,6 +71,9 @@ MotorTask motorTask2(motor2, stopMotor2, dirMotor2, aVel2, steps2, startMotor2, 
 
 // Create fetch move task object
 FetchMove fetchMoveTask(apiHandler);
+
+// Create Limit task object
+LimitSwitchTask limitTask;
 
 /* Define tasks for FreeRTOS */
 
@@ -107,6 +113,15 @@ void defFetchMoveTask(void *p_params)
     Serial.println("fetch task run");
     fetchMoveTask.run();
     vTaskDelay(1000); // Task period
+  }
+}
+
+void defLimitTask(void *p_params)
+{
+  while (true)
+  {
+    limitTask.run();
+    vTaskDelay(20); // Task period
   }
 }
 
@@ -158,8 +173,8 @@ void setup()
   // Setup pins
   pinMode(EN_PIN_1, OUTPUT);
   pinMode(STEP_PIN_1, OUTPUT);
-  pinMode(XLIM_PIN, INPUT_PULLUP);
-  pinMode(YLIM_PIN, INPUT_PULLUP);
+  pinMode(XLIM_PIN, INPUT);
+  pinMode(YLIM_PIN, INPUT);
   pinMode(SENSOR_PIN, INPUT);
   pinMode(SOLENOID_PIN, OUTPUT);
 
@@ -168,6 +183,7 @@ void setup()
   // xTaskCreate(defKillTask, "Kill Task", 2048, NULL, 1, NULL);
   xTaskCreate(defControllerTask, "Controller Task", 10000, NULL, 2, NULL);
   xTaskCreate(defFetchMoveTask, "Fetch Move Task", 10000, NULL, 3, NULL);
+   xTaskCreate(defLimitTask, "Limit Task", 4096, NULL, 1, NULL);
 }
 void loop()
 {

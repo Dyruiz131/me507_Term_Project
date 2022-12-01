@@ -29,4 +29,6 @@ extern Share<bool> startMaxMotor2;
 extern Share<int8_t> dirMotor1;
 extern Share<int8_t> dirMotor2;
 extern Share<bool> moveComplete;
+extern Share<bool> startLimitx;
+extern Share<bool> startLimity;
 #endif // _SHARES_H_

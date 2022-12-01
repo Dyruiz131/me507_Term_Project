@@ -22,6 +22,7 @@ private:
     const char *ssid;
     const char *password;
     const char *certificate;
+    String lastMove;
 
 public:
     APIHandler(const char *certificate);
