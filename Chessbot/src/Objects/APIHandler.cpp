@@ -18,23 +18,9 @@
  * @param password WiFi password
  * @param certificate SSL certificate (for HTTPS requests)
  */
-APIHandler::APIHandler(const char *ssid, const char *password, const char *certificate)
+APIHandler::APIHandler(const char *certificate)
 {
-    Serial.begin(115200);
-    this->ssid = ssid;
-    this->password = password;
     this->certificate = certificate;
-
-    WiFi.begin(ssid, password);
-    Serial.println("Connecting");
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("");
-    Serial.print("Connected to WiFi network with IP Address: ");
-    Serial.println(WiFi.localIP());
 }
 
 /**
@@ -138,6 +124,10 @@ String APIHandler::getLatestMove()
 {
     String res = sendGET("https://chessbotapi.onrender.com/lastMove", certificate);
     JSONVar jsonRes = JSON.parse(res);
+    if (JSON.typeof(jsonRes) == "undefined") {
+        Serial.println("Parsing input failed!");
+        return;
+      }
     String takeMove = "0";
     if (jsonRes["lastMove.captured"])
     {
@@ -146,6 +136,7 @@ String APIHandler::getLatestMove()
     String from = jsonRes["lastMove.from"];
     String to = jsonRes["lastMove.to"];
     String lastMove = takeMove + from + to;
+    Serial.println(lastMove);
     return lastMove;
 }
 
@@ -181,9 +172,11 @@ void APIHandler::sendMoveStatus(bool status)
  */
 bool APIHandler::isNewGame()
 {
+
     String res = sendGET("https://chessbotapi.onrender.com/isNewGame", certificate);
     JSONVar jsonRes = JSON.parse(res);
     bool status = jsonRes["isNewGame"];
+    Serial.println(status);
     return status;
 }
 

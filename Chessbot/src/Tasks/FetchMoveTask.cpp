@@ -22,13 +22,13 @@ FetchMove::FetchMove(APIHandler api)
     yOffset = 12.5; // y offset from origin to game board origin
     gridCoordinates[0] = 30.0;
     for (int i = 1; i < 8; i++)
-    {                             // Create grid coordinates
-        gridCoordinates[i] = gridCoordinates[i-1] + 60; // 60mm between each piece
+    {                                                     // Create grid coordinates
+        gridCoordinates[i] = gridCoordinates[i - 1] + 60; // 60mm between each piece
     }
 
     state = 0;     // Start state = 0
-    lastMove = ""; // Store last move for comparison
-    newMove = "";  // Store new move for comparison
+    lastMove = "0"; // Store last move for comparison
+    newMove = "0";  // Store new move for comparison
 }
 
 /**
@@ -64,8 +64,12 @@ void FetchMove::run()
         }
         case 2:
         {
+            Serial.println("Fetch state 2");
             newMove = api.getLatestMove(); // Get latest move
-            if (newMove != lastMove)
+            Serial.print(
+                "new move:");
+            Serial.println(newMove);
+            if (newMove != lastMove) // If a new move is fetched
             {
                 lastMove = newMove; // Set future evaluations
                 state = 3;
@@ -74,6 +78,7 @@ void FetchMove::run()
         }
         case 3: // Calculate and send coordinates to queue
         {
+            Serial.println("Fetch state 3");
             uint8_t takePiece = newMove.substring(0).toInt(); // If piece needs taking
             char fromCol = newMove.charAt(1);                 // From x
             uint8_t fromRow = newMove.substring(2).toInt();   // From y
@@ -96,7 +101,7 @@ void FetchMove::run()
         }
         case 4:
         {
-            if(moveComplete.get())
+            if (moveComplete.get())
             {
                 moveDone(); // Update server state
                 state = 2;

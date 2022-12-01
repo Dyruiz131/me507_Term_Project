@@ -8,6 +8,7 @@
 #include "Tasks/MotorTask.h"
 #include "Tasks/FetchMoveTask.h"
 #include "wifiPass.h"
+#include "WiFi.h"
 
 // Motor 1 pins
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled
@@ -52,7 +53,7 @@ const char *password = WIFI_PASSWORD;         // Import password from wifi.h
 const char *SSLCertificate = SSL_CERTIFICATE; // Import SSL certificate from wifi.h
 
 // API setup for dependency injection into Controller object
-APIHandler apiHandler(ssid, password, SSLCertificate);
+APIHandler apiHandler(SSLCertificate);
 
 // Motor setup
 Motor motor1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1);
@@ -93,6 +94,7 @@ void defControllerTask(void *p_params)
 {
   while (true)
   {
+    Serial.println("Controller task run");
     mainController.run();
     vTaskDelay(100); // Task period
   }
@@ -102,6 +104,7 @@ void defFetchMoveTask(void *p_params)
 {
   while (true)
   {
+    Serial.println("fetch task run");
     fetchMoveTask.run();
     vTaskDelay(1000); // Task period
   }
@@ -140,6 +143,18 @@ void setup()
   {
   } // Wait for port to be ready before continuing
 
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
+
   // Setup pins
   pinMode(EN_PIN_1, OUTPUT);
   pinMode(STEP_PIN_1, OUTPUT);
@@ -148,11 +163,11 @@ void setup()
   pinMode(SENSOR_PIN, INPUT);
   pinMode(SOLENOID_PIN, OUTPUT);
 
-  xTaskCreate(defMotorTask1, "Motor 1 Task", 10000, NULL, 3, NULL);
-  xTaskCreate(defMotorTask2, "Motor 2 Task", 10000, NULL, 3, NULL);
+  xTaskCreate(defMotorTask1, "Motor 1 Task", 10000, NULL, 1, NULL);
+  xTaskCreate(defMotorTask2, "Motor 2 Task", 10000, NULL, 1, NULL);
   // xTaskCreate(defKillTask, "Kill Task", 2048, NULL, 1, NULL);
   xTaskCreate(defControllerTask, "Controller Task", 10000, NULL, 2, NULL);
-  xTaskCreate(defFetchMoveTask, "Fetch Move Task", 10000, NULL, 1, NULL);
+  xTaskCreate(defFetchMoveTask, "Fetch Move Task", 10000, NULL, 3, NULL);
 }
 void loop()
 {

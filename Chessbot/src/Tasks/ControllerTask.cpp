@@ -11,11 +11,10 @@
 #include "objects/APIHandler.h"
 #include "objects/MotorDriver.h"
 #include "tasks/ControllerTask.h"
-#include "kinematics.cpp"
+#include "kinematics.h"
 
 Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN)
 {
-    server = api;
     state = 0; // Start state = 0
     xStep = 0;
     yStep = 0;
@@ -36,6 +35,8 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
     xPieceGraveyard = 520;
     yPieceGraveyard = 522.5;
     sensorOffset = 18.25;
+    Kinematics kinematics;
+    beginMove.put(false);
 }
 
 /**
@@ -47,12 +48,14 @@ void Controller::run() // Method for FSM
     {
     case 0: // Calibration
     {
+        Serial.println("State 0");
         origin();
         state = 1;
         break;
     }
     case 1: // Check for a move request
     {
+        Serial.println("State 1:");
         grabPiece(); // Release solenoid to stop meltdown
         if (beginMove.get() == true)
         {
@@ -63,6 +66,7 @@ void Controller::run() // Method for FSM
     }
     case 2: // Move to piece
     {
+        Serial.println("State 2:");
         takePiece = directionsQueue.get();       // First val defines if piece needs taking first
         xCoordinateFrom = directionsQueue.get(); // Second val defines x coordinate of piece to move
         yCoordinateFrom = directionsQueue.get(); // Third val defines y coordinate of piece to move
@@ -83,6 +87,7 @@ void Controller::run() // Method for FSM
     }
     case 3: // Grab piece
     {
+        Serial.println("State 3:");
         uint8_t count = 0;
         while (count < 10)
         {
@@ -101,6 +106,7 @@ void Controller::run() // Method for FSM
 
     case 4: // Move to grid before moving along gridlines
     {
+        Serial.println("State 4:");
         centerToGrid();
         waitMotorStop();
         state = 5;
@@ -182,42 +188,34 @@ void Controller::setState(uint8_t newState)
 void Controller::origin() // State 0
 {
     /* Check x axis */
-    while (1)
+    if (!digitalRead(xLimPin)) // If x lim switch is hit, stop moving.
     {
-        if (!digitalRead(xLimPin)) // If x lim switch is hit, stop moving.
-        {
-            xStep = 0; // Set x position to 0
-            break;     // End while loop
-        }
-        else
-        {
-            // Move left 1 step
-            steps1.put(1);
-            steps2.put(1);
-            dirMotor1.put(1);
-            dirMotor2.put(-1);
-            startMaxMotor1.put(true);
-            startMaxMotor2.put(true);
-        }
+        xStep = 0; // Set x position to 0
+    }
+    else
+    {
+        // Move left 1 step
+        steps1.put(1);
+        steps2.put(1);
+        dirMotor1.put(1);
+        dirMotor2.put(-1);
+        startMaxMotor1.put(true);
+        startMaxMotor2.put(true);
     }
     /* Check y axis */
-    while (1)
+    if (!digitalRead(yLimPin)) // If y lim switch is hit, stop moving.
     {
-        if (!digitalRead(yLimPin)) // If y lim switch is hit, stop moving.
-        {
-            yStep = 0; // Set y position to 0
-            break;     // End while loop
-        }
-        else
-        {
-            // Move down 1 step
-            steps1.put(1);
-            steps2.put(1);
-            dirMotor1.put(1);
-            dirMotor2.put(-1);
-            startMaxMotor1.put(true);
-            startMaxMotor2.put(true);
-        }
+        yStep = 0; // Set y position to 0
+    }
+    else
+    {
+        // Move down 1 step
+        steps1.put(1);
+        steps2.put(1);
+        dirMotor1.put(1);
+        dirMotor2.put(-1);
+        startMaxMotor1.put(true);
+        startMaxMotor2.put(true);
     }
 }
 
@@ -225,10 +223,10 @@ void Controller::movePiece(float moveFromX, float moveFromY) // State 2
 {
     float Dx = moveFromX; // mm
     float Dy = moveFromY; // mm
-    int16_t velocityMotor1 = coordsToVelocityMotor1(Dx, Dy);
-    int16_t velocityMotor2 = coordsToVelocityMotor2(Dx, Dy);
-    uint16_t stepsMotor1 = coordsToStepsMotor1(Dx, Dy);
-    uint16_t stepsMotor2 = coordsToStepsMotor2(Dx, Dy);
+    int16_t velocityMotor1 = kinematics.coordsToVelocityMotor1(Dx, Dy);
+    int16_t velocityMotor2 = kinematics.coordsToVelocityMotor2(Dx, Dy);
+    uint16_t stepsMotor1 = kinematics.coordsToStepsMotor1(Dx, Dy);
+    uint16_t stepsMotor2 = kinematics.coordsToStepsMotor2(Dx, Dy);
 
     steps1.put(stepsMotor1);
     steps2.put(stepsMotor2);
@@ -240,7 +238,6 @@ void Controller::movePiece(float moveFromX, float moveFromY) // State 2
 void Controller::grabPiece() // State 3
 {
     digitalWrite(solenoidPin, LOW);
-    delay(100);
 }
 
 void Controller::centerToGrid() // State 4

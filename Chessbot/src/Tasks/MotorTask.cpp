@@ -21,6 +21,8 @@ MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &directi
     this->startMotor = startMotor;
     this->startMotorMax = startMotorMax;
     state = 0; // Start state = 0
+    startMotor.put(false);
+    startMotorMax.put(false);
 }
 
 void MotorTask::run() // Method for FSM

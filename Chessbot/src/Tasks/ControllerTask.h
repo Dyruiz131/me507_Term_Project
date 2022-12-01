@@ -14,6 +14,7 @@
 #include "taskshare.h"
 #include "objects/MotorDriver.h"
 #include "objects/APIHandler.h"
+#include "kinematics.h"
 
 class Controller
 {
@@ -39,6 +40,7 @@ private:
     float xPieceGraveyard;
     float yPieceGraveyard;
     float sensorOffset;
+    Kinematics kinematics;
 
 public:
     Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN); // Constructor

@@ -24,7 +24,7 @@ private:
     const char *certificate;
 
 public:
-    APIHandler(const char *ssid, const char *password, const char *certificate);
+    APIHandler(const char *certificate);
     APIHandler(); // Default constructor
     void sendMove(String from, String to);
     String getLatestMove();
