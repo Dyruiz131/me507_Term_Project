@@ -82,7 +82,7 @@ void defMotorTask1(void *p_params)
   while (true)
   {
     motorTask1.run();
-    vTaskDelay(50); // Task period
+    vTaskDelay(20); // Task period
   }
 }
 
@@ -91,7 +91,7 @@ void defMotorTask2(void *p_params)
   while (true)
   {
     motorTask2.run();
-    vTaskDelay(50); // Task period
+    vTaskDelay(20); // Task period
   }
 }
 
