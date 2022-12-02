@@ -47,15 +47,15 @@ void Controller::run() // Method for FSM
 {
     switch (state)
     {
-    case 0:
+    case 0: // Calibrate x axis
     {
-        releasePiece();
+        grabPiece();
         origin_x();
         startLimitx.put(true);
         state = 20;
         break;
     }
-    case 20:
+    case 20: // Check if motors have stopped
     {
         if ((stopMotor1.get() == true, stopMotor2.get() == true))
         {
@@ -63,7 +63,7 @@ void Controller::run() // Method for FSM
         }
         break;
     }
-    case 21:
+    case 21: // Calibrate y axis
     {
         grabPiece();
         origin_y();
@@ -71,7 +71,7 @@ void Controller::run() // Method for FSM
         state = 22;
         break;
     }
-    case 22:
+    case 22: // Check if motors have stopped
     {
         if ((stopMotor1.get() == true, stopMotor2.get() == true))
         {
@@ -81,45 +81,43 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 1: // Check for a move request
+    case 1: // Check for a move request (waiting state)
     {
         grabPiece();
-        // Serial.println("State 1:");
-        if (moveTake == 1)
+        if (moveTake == 1) // If a piece needs taking
         {
             state = 3;
             moveTake = 0;
         }
-        else if (beginMove.get() == true)
+        else if (beginMove.get() == true) // If a move is requested
         {
             state = 2;
-            beginMove.put(false); // Reset the flag
+            beginMove.put(false);    // Reset the flag
+            moveComplete.put(false); // Tell API that move is not complete
         }
         break;
     }
-    case 2: // Move to piece
+    case 2: // Get new move from FetchMoveTask
     {
-        // Serial.println("State 2:");
         takePiece = directionsQueue.get();       // First val defines if piece needs taking first
         xCoordinateFrom = directionsQueue.get(); // Second val defines x coordinate of piece to move
         yCoordinateFrom = directionsQueue.get(); // Third val defines y coordinate of piece to move
         xCoordinateTo = directionsQueue.get();   // Fourth val defines x coordinate of piece to move to
         yCoordinateTo = directionsQueue.get();   // Fifth val defines y coordinate of piece to move to
         state = 3;
-        Serial.println(xCoordinateFrom);
-        Serial.println(xCoordinateTo);
-        Serial.println(yCoordinateFrom);
-        Serial.println(yCoordinateTo);
+        // Serial.println(xCoordinateFrom);
+        // Serial.println(xCoordinateTo);
+        // Serial.println(yCoordinateFrom);
+        // Serial.println(yCoordinateTo);
         break;
     }
-    case 3:
+    case 3: // Stop motors, move to piece along x
     {
-
         stopMotor1.put(false);
         stopMotor2.put(false);
-        if (takePiece == 1)
-        { // If piece needs taking
-            state = 18;
+        if (takePiece == 1) // If a piece needs taking
+        {
+            state = 18; // Move to piece to take
         }
         else
         {
@@ -128,9 +126,8 @@ void Controller::run() // Method for FSM
         }
         break;
     }
-    case 23:
+    case 23: // Wait for motors to stop
     {
-        Serial.println("State 4:");
         if ((stopMotor1.get() == true, stopMotor2.get() == true))
         {
             state = 24;
@@ -139,7 +136,7 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 24:
+    case 24: // Stop motors, move to piece along y
     {
         stopMotor1.put(false);
         stopMotor2.put(false);
@@ -149,9 +146,8 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 4:
+    case 4: // Wait for motors to stop
     {
-        Serial.println("State 4:");
         if ((stopMotor1.get() == true, stopMotor2.get() == true))
         {
             state = 5;
@@ -160,9 +156,8 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 5: // detect piece
+    case 5: // Check if sensor is under piece
     {
-        Serial.println("State 5");
         if (detectPiece())
         {
             count += 1;
@@ -174,14 +169,13 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 6:
-
+    case 6: // Move actuator under piece
     {
         movePiecex(sensorOffset, 0); // Move to piece
         state = 7;
         break;
     }
-    case 7:
+    case 7: // Wait for motors to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
@@ -190,21 +184,21 @@ void Controller::run() // Method for FSM
         }
         break;
     }
-    case 8:
+    case 8: // Grab piece
     {
         grabPiece();
         state = 9;
         break;
     }
 
-    case 9: // Move to grid before moving along gridlines
+    case 9: // Move to grid before moving along gridlines (along x)
     {
         centerToGridx();
         state = 10;
         break;
     }
 
-    case 10:
+    case 10: // Wait for motors to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
@@ -214,14 +208,14 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 25: // Move to grid before moving along gridlines
+    case 25: // Move to grid before moving along gridlines (along y)
     {
         centerToGridy();
         state = 26;
         break;
     }
 
-    case 26:
+    case 26: // Wait for motors to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
@@ -233,7 +227,7 @@ void Controller::run() // Method for FSM
 
     case 11: // Move along x gridline
     {
-        if (takePiece == 1)
+        if (takePiece == 1) // If piece needs taking
         {
             xGridMove(xPieceGraveyard, xCoordinateTo);
             state = 12;
@@ -247,7 +241,7 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 12:
+    case 12: // Wait for motor to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
@@ -259,7 +253,7 @@ void Controller::run() // Method for FSM
 
     case 13: // Move along y gridline
     {
-        if (takePiece == 1)
+        if (takePiece == 1) // If piece needs taking
         {
             yGridMove(yPieceGraveyard, yCoordinateTo);
             state = 14;
@@ -273,7 +267,7 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 14:
+    case 14: // Wait for motor to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
@@ -283,22 +277,22 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 15:
+    case 15: // Move piece along x for final position
     {
-        if (takePiece)
+        if (takePiece) // If piece needs taking
         {
-            gridToGraveyardx();
+            gridToGraveyardx(); // Take piece to graveyard along x
         }
         else
         {
-            gridToCenterx();
+            gridToCenterx(); // Move piece to x center of sqaure from grid
         }
 
         state = 16;
         break;
     }
 
-    case 16:
+    case 16: // Wait for motors to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
@@ -308,22 +302,22 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 27:
+    case 27: // Move piece along y for final position
     {
-        if (takePiece)
+        if (takePiece) // If piece needs taking
         {
-            gridToGraveyardy();
+            gridToGraveyardy(); // Take piece to graveyard along y
         }
         else
         {
-            gridToCentery();
+            gridToCentery(); // Move piece to y center of sqaure from grid
         }
 
         state = 28;
         break;
     }
 
-    case 28:
+    case 28: // Wait for motors to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
@@ -333,29 +327,29 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 17:
+    case 17: // Release piece
     {
         releasePiece();
-        if (takePiece == 0)
+        if (takePiece == 0) // Check if piece did not need taking
         {
-            moveComplete.put(true); // Signal that move is complete
+            moveComplete.put(true); // Tell API that move is complete
         }
-        if (takePiece == 1)
+        if (takePiece == 1) // If piece needs taking
         {
-            moveTake = 1;
+            moveTake = 1; // Set moveTake to 1 to signal that piece needs taking
         }
-        takePiece = 0;
+        takePiece = 0; // Reset takePiece flag
         state = 0;
         break;
     }
-    case 18: // Move to piece that needs taking
+    case 18: // Move to piece that needs taking along x grid
     {
         movePiecex(xCoordinateTo - sensorOffset, yCoordinateTo);
 
         state = 19;
         break;
     }
-    case 19:
+    case 19: // Wait for motors to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
@@ -365,7 +359,7 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 29: // Move to piece that needs taking
+    case 29: // Move to piece that needs taking along y grid
     {
         movePiecey(xCoordinateTo - sensorOffset, yCoordinateTo);
 
@@ -373,12 +367,12 @@ void Controller::run() // Method for FSM
         break;
     }
 
-    case 30:
+    case 30: // Wait for motors to stop
     {
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
 
-            state = 5;
+            state = 5; // Take piece
         }
         break;
     }
