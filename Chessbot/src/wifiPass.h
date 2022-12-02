@@ -1,4 +1,4 @@
-#define WIFI_SSID "Dylan’s iPhone"
+#define WIFI_SSID "Sam’s iPhone"
 #define WIFI_PASSWORD "chessbot"
 #define SSL_CERTIFICATE                                                   \
     "-----BEGIN CERTIFICATE-----\n"                                       \

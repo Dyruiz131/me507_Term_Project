@@ -113,25 +113,20 @@ void FetchMove::run()
             // Serial.println(xCoordTo);
             // Serial.println(yCoordinateTo);
             
-            state = 2;
+            state = 4;
             break;
         }
         case 4:
         {
-            if (moveComplete.get())
+            if (moveComplete.get()) // Wait for move to complete
             {
-                moveDone(); // Update server state
+                api.sendMoveStatus(true); // Set move status to true;
                 state = 2;
             }
             break;
         }
         }
     }
-}
-
-void FetchMove::moveDone()
-{
-    api.sendMoveStatus(true);
 }
 
 float FetchMove::toCoordinate(char col)

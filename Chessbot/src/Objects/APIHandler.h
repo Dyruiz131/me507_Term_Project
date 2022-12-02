@@ -29,7 +29,7 @@ public:
     void sendMove(String from, String to);
     String getLatestMove();
     bool getMoveStatus();
-    void sendMoveStatus(bool status);
+    void sendMoveStatus(bool moveIsComplete);
     bool isNewGame();
     void newGame();
 };

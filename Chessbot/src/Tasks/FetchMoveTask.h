@@ -27,7 +27,6 @@ public:
     FetchMove(APIHandler api);
     FetchMove(); // Default constructor
     void run();  // Method for FSM
-    void moveDone();
     float toCoordinate(char col);
     float toCoordinate(uint8_t row);
     float gridLocations[8];

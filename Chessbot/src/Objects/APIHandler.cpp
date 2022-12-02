@@ -161,9 +161,9 @@ bool APIHandler::getMoveStatus()
  *
  * @param status status of the move (if move is complete)
  */
-void APIHandler::sendMoveStatus(bool status)
+void APIHandler::sendMoveStatus(bool moveIsComplete)
 {
-    String req = "{\"acceptMoves\":" + String(status) + "}";
+    String req = "{\"acceptMoves\":" + String(moveIsComplete) + "}";
     sendPOST("https://chessbotapi.onrender.com/acceptMoves", certificate, req);
 }
 
