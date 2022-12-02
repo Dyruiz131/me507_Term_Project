@@ -27,9 +27,8 @@ private:
     uint8_t yLimPin;
     uint8_t solenoidPin;
     uint8_t sensorPin;
-    float omegaMax; // steps per second
-    float pitch;    // mm/deg
-    float stepSize; // deg/step
+    float omegaMax; // steps per second    
+    float stepLength; // deg/step
     float xCoordinateFrom;
     float yCoordinateFrom;
     float xCoordinateTo;
@@ -42,6 +41,7 @@ private:
     float sensorOffset;
     uint8_t count = 0;
     Kinematics kinematics;
+    float moveTake;
 
 public:
     Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN); // Constructor

@@ -23,17 +23,17 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
     solenoidPin = SOLENOID_PIN;
     sensorPin = SENSOR_PIN;
     omegaMax = 500; // steps per second
-    pitch = 1 / 9;  // mm/deg
-    stepSize = .9;  // deg/step
     xOrigin = -5;   // mm to origin of square x-direction
     yOrigin = -5;   // mm to origin of square y-direction
+    stepLength = .1;
     xCoordinateFrom = 0;
     yCoordinateFrom = 0;
     xCoordinateTo = 0;
     yCoordinateTo = 0;
     takePiece = 0;
+    moveTake = 0;
     xPieceGraveyard = 520;
-    yPieceGraveyard = 522.5;
+    yPieceGraveyard = 522.5-180;
     sensorOffset = 18.25;
     Kinematics kinematics;
     beginMove.put(false);
@@ -65,7 +65,7 @@ void Controller::run() // Method for FSM
     }
     case 21:
     {
-
+        grabPiece();
         origin_y();
         startLimity.put(true);
         state = 22;
@@ -85,7 +85,12 @@ void Controller::run() // Method for FSM
     {
         grabPiece();
         // Serial.println("State 1:");
-        if (beginMove.get() == true)
+        if (moveTake == 1)
+        {
+            state = 3;
+            moveTake =0;
+        }
+        else if(beginMove.get() == true)
         {
             state = 2;
             beginMove.put(false); // Reset the flag
@@ -101,11 +106,15 @@ void Controller::run() // Method for FSM
         xCoordinateTo = directionsQueue.get();   // Fourth val defines x coordinate of piece to move to
         yCoordinateTo = directionsQueue.get();   // Fifth val defines y coordinate of piece to move to
         state = 3;
+        Serial.println(xCoordinateFrom);
+        Serial.println(xCoordinateTo);
+        Serial.println(yCoordinateFrom);
+        Serial.println(yCoordinateTo);
         break;
     }
     case 3:
     {
-        releasePiece();
+        
         stopMotor1.put(false);
         stopMotor2.put(false);
         if (takePiece == 1)
@@ -224,7 +233,7 @@ void Controller::run() // Method for FSM
 
     case 11: // Move along x gridline
     {
-        if (takePiece)
+        if (takePiece==1)
         {
             xGridMove(xPieceGraveyard, xCoordinateTo);
             state = 12;
@@ -250,7 +259,7 @@ void Controller::run() // Method for FSM
 
     case 13: // Move along y gridline
     {
-        if (takePiece)
+        if (takePiece==1)
         {
             yGridMove(yPieceGraveyard, yCoordinateTo);
             state = 14;
@@ -294,7 +303,7 @@ void Controller::run() // Method for FSM
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
 
-            state = 25;
+            state = 27;
         }
         break;
     }
@@ -331,6 +340,10 @@ void Controller::run() // Method for FSM
         {
             moveComplete.put(true); // Signal that move is complete
         }
+        if (takePiece == 1)
+        {
+            moveTake = 1;
+        }
         takePiece = 0;
         state = 0;
         break;
@@ -365,7 +378,7 @@ void Controller::run() // Method for FSM
         if ((stopMotor1.get() == true && stopMotor2.get() == true))
         {
 
-            state = 3;
+            state = 5;
         }
         break;
     }
@@ -518,46 +531,62 @@ void Controller::gridToGraveyardy() // State 4
 void Controller::xGridMove(uint16_t xTo, uint16_t xFrom) // State 5
 {
     int16_t xMove = xTo - xFrom; // mm
-    uint16_t numSteps = xMove / (pitch * stepSize);
+    uint16_t numSteps = abs(xMove / (stepLength));
     int8_t direction = 0;
-    if (xMove < 0)
+    if(xMove == 0)
     {
-        direction = -1;
+        stopMotor1.put(true);
+        stopMotor2.put(true);
     }
     else
     {
-        direction = 1;
+        if (xMove < 0)
+        {
+            direction = 1;
+        }
+        else
+        {
+            direction = -1;
+        }
+        steps1.put(numSteps);
+        steps2.put(numSteps);
+        dirMotor1.put(direction);
+        dirMotor2.put(direction);
+        startMaxMotor1.put(true);
+        startMaxMotor2.put(true);
     }
-    steps1.put(numSteps);
-    steps2.put(numSteps);
-    dirMotor1.put(direction);
-    dirMotor2.put(direction);
-    startMaxMotor1.put(true);
-    startMaxMotor2.put(true);
 }
 
 void Controller::yGridMove(uint16_t yTo, uint16_t yFrom) // State 6
 {
     int16_t yMove = yTo - yFrom; // mm
-    uint16_t numSteps = yMove / (pitch * stepSize);
+    uint16_t numSteps = abs(yMove / (stepLength));
     int8_t direction1 = 0;
     int8_t direction2 = 0;
-    if (yMove < 0)
+    if(yMove == 0)
     {
-        direction1 = 1;
-        direction2 = -1;
+        stopMotor1.put(true);
+        stopMotor2.put(true);
     }
     else
     {
-        direction1 = -1;
-        direction2 = 1;
+        if (yMove < 0)
+        {
+            direction1 = 1;
+            direction2 = -1;
+        }
+        else
+        {
+            direction1 = -1;
+            direction2 = 1;
+        }
+        steps1.put(numSteps);
+        steps2.put(numSteps);
+        dirMotor1.put(direction1);
+        dirMotor2.put(direction2);
+        startMaxMotor1.put(true);
+        startMaxMotor2.put(true);
     }
-    steps1.put(numSteps);
-    steps2.put(numSteps);
-    dirMotor1.put(direction1);
-    dirMotor2.put(direction2);
-    startMaxMotor1.put(true);
-    startMaxMotor2.put(true);
 }
 
 void Controller::releasePiece() // State 8

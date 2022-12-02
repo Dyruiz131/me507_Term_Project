@@ -19,7 +19,7 @@ FetchMove::FetchMove(APIHandler api)
 {
     this->api = api;
     xOffset = 10;   // x offset from origin to game board origin
-    yOffset = 12.5; // y offset from origin to game board origin
+    yOffset = 10; // y offset from origin to game board origin
     gridCoordinates[0] = 30.0;
     gridCoordinates[1] = 90.0;
     gridCoordinates[2] = 150.0;
@@ -70,7 +70,7 @@ void FetchMove::run()
         case 2: // Check for new moves
         {
             newMove = api.getLatestMove(); // Get latest move
-            if (newMove.length() > 3)
+            if (newMove != lastMove)
             { // If there is a new move
                 state = 3;
                 Serial.println("lastMove:");
