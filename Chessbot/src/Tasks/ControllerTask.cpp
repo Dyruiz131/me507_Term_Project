@@ -49,7 +49,7 @@ void Controller::run() // Method for FSM
     {
     case 0: // Calibrate x axis
     {
-        grabPiece();
+        releasePiece();
         origin_x();
         startLimitx.put(true);
         state = 20;
@@ -99,6 +99,7 @@ void Controller::run() // Method for FSM
     }
     case 2: // Get new move from FetchMoveTask
     {
+        moveComplete.put(false);
         takePiece = directionsQueue.get();       // First val defines if piece needs taking first
         xCoordinateFrom = directionsQueue.get(); // Second val defines x coordinate of piece to move
         yCoordinateFrom = directionsQueue.get(); // Third val defines y coordinate of piece to move
