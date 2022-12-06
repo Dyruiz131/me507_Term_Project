@@ -1,8 +1,8 @@
 /**
- * @file ControllerTask.h
- * @author Dylan Ruiz
+ * @file Controller.h
  * @author Sam Hudson
- * @brief Controller task that manages the chess board movements
+ * @brief Provides the Main FSM, controls the actuator,
+ * reads the IR sensor, and coordinates the movement of both motors
  * @version 1.0
  * @date 2022-11-10
  */
@@ -20,14 +20,11 @@
 class Controller
 {
 private:
-    APIHandler server;
     uint8_t state;
     uint16_t xStep;
     uint16_t yStep;
-    uint8_t xLimPin;
-    uint8_t yLimPin;
-    uint8_t solenoidPin;
-    uint8_t sensorPin;
+    uint8_t SOLENOID_PIN;
+    uint8_t SENSOR_PIN;
     float omegaMax; // steps per second    
     float stepLength; // deg/step
     float xCoordinateFrom;
@@ -52,20 +49,20 @@ private:
     bool stateFlag11;
     bool stateFlag12;
     bool stateFlag13;
+    void origin_x();                                    
+    void origin_y();
+    void movePiece(float moveFromx, float moveFromy, float moveTox, float moveToy); 
+    void grabPiece();                                 
+    void centerToGrid();                              
+    void gridToGraveyard();
+    void xGridMove(uint16_t x_to, uint16_t x_from);
+    void yGridMove(uint16_t y_to, uint16_t y_from); 
+    void gridToCenter();                            
+    void releasePiece();                            
+    bool detectPiece();
 
 public:
-    Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN); // Constructor
+    Controller(uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN, Kinematics kinematics); // Constructor
     void run();   // Method for FSM
-    void origin_x();                                    // State 0
-    void origin_y();
-    void movePiece(float moveFromx, float moveFromy, float moveTox, float moveToy); // State 2
-    void grabPiece();                                 // State 3
-    void centerToGrid();                              // State 4
-    void gridToGraveyard();
-    void xGridMove(uint16_t x_to, uint16_t x_from); // State 5
-    void yGridMove(uint16_t y_to, uint16_t y_from); // State 6
-    void gridToCenter();                            // State 7
-    void releasePiece();                            // State 8
-    bool detectPiece();
 };
 #endif // _CONTROLLER_TASK_H_

@@ -1,7 +1,7 @@
 /**
- * @file MotorTask.h
+ * @file LimitSwitchTask.h
  * @author Dylan Ruiz
- * @brief Motor task that manages actuation for the Motors.
+ * @brief Provides the FSM for checking the limit switches
  * @version 1.0
  * @date 2022-11-23
  */
@@ -18,9 +18,11 @@ class LimitSwitchTask
 {
 private:
     uint8_t state;
+    uint8_t XLIM_PIN;
+    uint8_t YLIM_PIN;
 
 public:
-    LimitSwitchTask();
+    LimitSwitchTask(uint8_t XLIM_PIN, uint8_t YLIM_PIN);
     void run();
  
 };

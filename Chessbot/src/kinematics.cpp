@@ -1,10 +1,30 @@
+/**
+ * @file kinematics.h
+ * @author Dylan Ruiz
+ * @brief Helper functions for calculating the coordination
+ * of the motor movements
+ * @version 1.0
+ * @date 2022-12-06
+ *
+ */
+
 #include <Arduino.h>
 #include "kinematics.h"
-
+/**
+ * @brief Default constructor for a new Kinematics object
+ *
+ */
 Kinematics::Kinematics()
 {
 }
 
+/**
+ * @brief Calculates the velocity of motor 1 based on the coordinates
+ *
+ * @param x_coordinate Desired x coordinate
+ * @param y_coordinate Desired y coordinate
+ * @return int16_t Required velocity of motor 1
+ */
 int16_t Kinematics::coordsToVelocityMotor1(float x_coordinate, float y_coordinate)
 {
     if (y_coordinate == 0)
@@ -32,7 +52,7 @@ int16_t Kinematics::coordsToVelocityMotor1(float x_coordinate, float y_coordinat
             return 1000; // quadrant 3
         }
     }
-    
+
     else if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
     {
         if (y_coordinate / x_coordinate > 0) // Motor 1 Max
@@ -112,10 +132,16 @@ int16_t Kinematics::coordsToVelocityMotor1(float x_coordinate, float y_coordinat
         }
     }
 
-    
     return 0;
 }
 
+/**
+ * @brief Calculates the velocity of motor 2 based on the coordinates
+ *
+ * @param x_coordinate Desired x coordinate
+ * @param y_coordinate Desired y coordinate
+ * @return int16_t Required velocity of motor 2
+ */
 int16_t Kinematics::coordsToVelocityMotor2(float x_coordinate, float y_coordinate)
 {
     if (y_coordinate == 0)
@@ -223,11 +249,16 @@ int16_t Kinematics::coordsToVelocityMotor2(float x_coordinate, float y_coordinat
         }
     }
 
-    
-
     return 0;
 }
 
+/**
+ * @brief Calculates the steps for motor 1 based on the coordinates
+ *
+ * @param x_coordinate Desired x coordinate
+ * @param y_coordinate Desired y coordinate
+ * @return uint16_t Required steps for motor 1
+ */
 uint16_t Kinematics::coordsToStepsMotor1(float x_coordinate, float y_coordinate)
 {
     float stepLength = 0.1; //  mm/step
@@ -254,7 +285,6 @@ uint16_t Kinematics::coordsToStepsMotor1(float x_coordinate, float y_coordinate)
     {
         return abs(y_coordinate / stepLength);
     }
-   
 
     else if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
     {
@@ -282,10 +312,15 @@ uint16_t Kinematics::coordsToStepsMotor1(float x_coordinate, float y_coordinate)
         }
     }
     return 0;
-
-   
 }
 
+/**
+ * @brief Calculates the steps for motor 2 based on the coordinates
+ *
+ * @param x_coordinate Desired x coordinate
+ * @param y_coordinate Desired y coordinate
+ * @return uint16_t Required steps for motor 2
+ */
 uint16_t Kinematics::coordsToStepsMotor2(float x_coordinate, float y_coordinate)
 {
     float stepLength = 0.1; //  mm/step
@@ -338,7 +373,5 @@ uint16_t Kinematics::coordsToStepsMotor2(float x_coordinate, float y_coordinate)
             return abs(((-2 * y_coordinate / stepLength) / (1 - x_coordinate / y_coordinate))) / (1 - (x_coordinate / y_coordinate + 1) / (1 - x_coordinate / y_coordinate));
         }
     }
-
-    
     return 0;
 }

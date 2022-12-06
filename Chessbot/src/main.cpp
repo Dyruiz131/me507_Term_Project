@@ -1,15 +1,23 @@
+/**
+ * @file main.cpp
+ * @author Sam Hudson, Dylan Ruiz, Scott Dunn
+ * @brief Main file for controlling the Chessbot
+ * @version 1.0
+ * @date 2022-12-06
+ *
+ */
 #include <Arduino.h>
 #include "taskshare.h" // Header for inter-task shared data
 #include "taskqueue.h" // Header for inter-task data queues
 #include "shares.h"    // Header for shares used in this project
-#include "Objects/MotorDriver.h"
-#include "Objects/APIHandler.h"
-#include "Tasks/ControllerTask.h"
-#include "Tasks/MotorTask.h"
-#include "Tasks/FetchMoveTask.h"
+#include "objects/MotorDriver.h"
+#include "objects/APIHandler.h"
+#include "tasks/ControllerTask.h"
+#include "tasks/MotorTask.h"
+#include "tasks/FetchMoveTask.h"
+#include "tasks/LimitSwitchTask.h"
 #include "wifiPass.h"
 #include "WiFi.h"
-#include "Tasks/LimitswitchTask.h"
 
 // Motor 1 pins
 #define EN_PIN_1 14   // LOW: Driver enabled. HIGH: Driver disabled
@@ -51,31 +59,30 @@ Share<bool> startLimitx("Start Limitx");
 Share<bool> startLimity("Start Limity");
 
 // WiFi credentials (ssid and password is ignored by git for security)
-const char *ssid = WIFI_SSID;                 // Import SSID from wifi.h
-const char *password = WIFI_PASSWORD;         // Import password from wifi.h
-const char *SSLCertificate = SSL_CERTIFICATE; // Import SSL certificate from wifi.h
+const char *ssid = WIFI_SSID;                 // Import SSID from wifiPass.h
+const char *password = WIFI_PASSWORD;         // Import password from wifiPass.h
+const char *SSLCertificate = SSL_CERTIFICATE; // Import SSL certificate from wifiPass.h
 
-// API setup for dependency injection into Controller object
+// Create fetch move task object using APIHandler object
 APIHandler apiHandler(SSLCertificate);
+FetchMove fetchMoveTask(apiHandler);
 
-// Motor setup
+// Create each motor driver object
 Motor motor1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1);
 Motor motor2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2);
 
-// Dependency injection for board
-Controller mainController(XLIM_PIN, YLIM_PIN, SOLENOID_PIN, SENSOR_PIN);
-
-// Create motor task objects
+// Create motor task objects using motor driver objects
 MotorTask motorTask1(motor1, stopMotor1, dirMotor1, aVel1, steps1, startMotor1, startMaxMotor1);
 MotorTask motorTask2(motor2, stopMotor2, dirMotor2, aVel2, steps2, startMotor2, startMaxMotor2);
 
-// Create fetch move task object
-FetchMove fetchMoveTask(apiHandler);
+// Create Limit Switch task object
+LimitSwitchTask limitTask(XLIM_PIN, YLIM_PIN);
 
-// Create Limit task object
-LimitSwitchTask limitTask;
+// Create main controller
+Kinematics kinematics; // Create kinematics object for calculatons
+Controller mainController(SOLENOID_PIN, SENSOR_PIN, kinematics);
 
-/* Define tasks for FreeRTOS */
+/* --- Define tasks for FreeRTOS --- */
 
 void defMotorTask1(void *p_params)
 {
@@ -124,9 +131,9 @@ void defLimitTask(void *p_params)
   }
 }
 
-/* End of task definitions for FreeRTOS tasks*/
+/* --- End of task definitions for FreeRTOS tasks --- */
 
-/* Setup and begin multitasking */
+/* --- Setup and begin multitasking --- */
 
 /**
  * @brief Main program that sets up FreeRTOS tasks and starts the scheduler
@@ -139,6 +146,7 @@ void setup()
   {
   } // Wait for port to be ready before continuing
 
+  // Connect to WiFi
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
@@ -159,13 +167,18 @@ void setup()
   pinMode(SENSOR_PIN, INPUT);
   pinMode(SOLENOID_PIN, OUTPUT);
 
+  // Start FreeRTOS tasks
   xTaskCreate(defMotorTask1, "Motor 1 Task", 10000, NULL, 1, NULL);
   xTaskCreate(defMotorTask2, "Motor 2 Task", 10000, NULL, 1, NULL);
-  // xTaskCreate(defKillTask, "Kill Task", 2048, NULL, 1, NULL);
   xTaskCreate(defControllerTask, "Controller Task", 10000, NULL, 2, NULL);
   xTaskCreate(defFetchMoveTask, "Fetch Move Task", 10000, NULL, 3, NULL);
-   xTaskCreate(defLimitTask, "Limit Task", 4096, NULL, 1, NULL);
+  xTaskCreate(defLimitTask, "Limit Task", 4096, NULL, 1, NULL);
 }
+
+/**
+ * @brief Main loop that does nothing (ensures FreeRTOS does not crash)
+ *
+ */
 void loop()
 {
   delay(60000);

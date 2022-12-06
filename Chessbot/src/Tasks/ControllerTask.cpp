@@ -1,27 +1,31 @@
 /**
- * @file Mover_Task.h
+ * @file Controller.cpp
  * @author Sam Hudson
- * @brief Controller task that manages the chess board movements
+ * @brief Provides the Main FSM, controls the actuator,
+ * reads the IR sensor, and coordinates the movement of both motors
  * @version 1.0
  * @date 2022-11-10
  */
 
 #include <Arduino.h>
 #include "shares.h"
-#include "objects/APIHandler.h"
-#include "objects/MotorDriver.h"
 #include "tasks/ControllerTask.h"
 #include "kinematics.h"
-
-Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN)
+/**
+ * @brief Construct a new Controller object
+ *
+ * @param SOLENOID_PIN Pin for the solenoid
+ * @param SENSOR_PIN Pin for the IR sensor
+ * @param kinematics Kinematics object for calculations
+ */
+Controller::Controller(uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN, Kinematics kinematics)
 {
+    this->kinematics = kinematics; // Set kinematics object for calculations
+    this->SOLENOID_PIN = SOLENOID_PIN;
+    this->SENSOR_PIN = SENSOR_PIN;
     state = 0; // Start state = 0
     xStep = 0;
     yStep = 0;
-    xLimPin = XLIM_PIN;
-    yLimPin = YLIM_PIN;
-    solenoidPin = SOLENOID_PIN;
-    sensorPin = SENSOR_PIN;
     omegaMax = 500; // steps per second
     xOrigin = -5;   // mm to origin of square x-direction
     yOrigin = -5;   // mm to origin of square y-direction
@@ -35,12 +39,12 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
     xPieceGraveyard = 520;
     yPieceGraveyard = 522.5 - 180;
     sensorOffset = 18.25;
-    Kinematics kinematics;
+
     beginMove.put(false);
     uint8_t count = 0;
 
     stateFlag2 = false;
-    stateFlag3 = false; // Flag indicating wait motor state to go to state 4
+    stateFlag3 = false;
     stateFlag6 = false;
     stateFlag8 = false;
     stateFlag10 = false;
@@ -50,7 +54,7 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
 }
 
 /**
- * @brief Method called for multitasking.
+ * @brief Main FSM for the controller
  */
 void Controller::run() // Method for FSM
 {
@@ -69,59 +73,56 @@ void Controller::run() // Method for FSM
     {
         if ((stopMotor1.get() == true, stopMotor2.get() == true))
         {
-            if(stateFlag2)
+            if (stateFlag2)
             {
                 state = 2;
                 stateFlag2 = false;
             }
-            else if(stateFlag3)
+            else if (stateFlag3)
             {
                 state = 3;
                 stateFlag3 = false;
             }
-            else if(stateFlag6)
+            else if (stateFlag6)
             {
                 state = 6;
                 stateFlag6 = false;
             }
-            else if(stateFlag8)
+            else if (stateFlag8)
             {
                 state = 8;
                 stateFlag8 = false;
             }
-            else if(stateFlag10)
+            else if (stateFlag10)
             {
                 state = 10;
                 stateFlag10 = false;
             }
-            else if(stateFlag11)
+            else if (stateFlag11)
             {
                 state = 11;
                 stateFlag11 = false;
             }
-            else if(stateFlag12)
+            else if (stateFlag12)
             {
                 state = 12;
                 stateFlag12 = false;
             }
-            else if(stateFlag13)
+            else if (stateFlag13)
             {
                 state = 13;
                 stateFlag13 = false;
             }
-            
-            
-
         }
         break;
     }
     case 2: // Calibrate y axis
     {
-        grabPiece();    // Releases Solenoid Activation
+        grabPiece(); // Releases Solenoid Activation
         origin_y();
         startLimity.put(true);
         state = 1; // Wait Motor State
-        stateFlag3 = true; 
+        stateFlag3 = true;
         break;
     }
 
@@ -152,23 +153,19 @@ void Controller::run() // Method for FSM
     }
     case 5: //  Move piece to chess piece
     {
-        releasePiece(); // activates solenoid before moving under pieces
+        releasePiece();     // activates solenoid before moving under pieces
         if (takePiece == 1) // If a piece needs taking
         {
-            movePiece(0,xCoordinateTo - sensorOffset,0, yCoordinateTo);
-         
+            movePiece(0, xCoordinateTo - sensorOffset, 0, yCoordinateTo);
         }
         else
         {
-            movePiece(0,xCoordinateFrom - sensorOffset, 0, yCoordinateFrom); // Move to piece
-           
-            
+            movePiece(0, xCoordinateFrom - sensorOffset, 0, yCoordinateFrom); // Move to piece
         }
         state = 1;
         stateFlag6 = true;
         break;
     }
-
 
     case 6: // Check if sensor is under piece
     {
@@ -207,7 +204,6 @@ void Controller::run() // Method for FSM
         break;
     }
 
-
     case 10: // Move along x gridline
     {
         if (takePiece == 1) // If piece needs taking
@@ -222,31 +218,25 @@ void Controller::run() // Method for FSM
             state = 1;
         }
         stateFlag11 = true;
-    
+
         break;
     }
-
 
     case 11: // Move along y gridline
     {
         if (takePiece == 1) // If piece needs taking
         {
             yGridMove(yPieceGraveyard, yCoordinateTo);
-          
         }
         else
         {
 
             yGridMove(yCoordinateTo, yCoordinateFrom);
-           
         }
         state = 1;
         stateFlag12 = true;
         break;
-       
     }
-
-
 
     case 12: // Move piece along x for final position
     {
@@ -264,7 +254,6 @@ void Controller::run() // Method for FSM
         break;
     }
 
-
     case 13: // Release piece
     {
         releasePiece();
@@ -280,15 +269,15 @@ void Controller::run() // Method for FSM
         state = 0;
         break;
     }
-
     }
 }
 
-
-void Controller::origin_x() // State 0
+/**
+ * @brief Moves the carriage to the x limit switch
+ *
+ */
+void Controller::origin_x()
 {
-    /* Check x axis */
-    // Move left 1 step
     steps1.put(10000);
     steps2.put(10000);
     dirMotor1.put(1);
@@ -296,10 +285,13 @@ void Controller::origin_x() // State 0
     startMaxMotor1.put(true);
     startMaxMotor2.put(true);
 }
+
+/**
+ * @brief Moves the carriage to the y limit switch
+ *
+ */
 void Controller::origin_y() // State 0
 {
-
-    // Move down 1 step
     steps1.put(10000);
     steps2.put(10000);
     dirMotor1.put(1);
@@ -308,6 +300,14 @@ void Controller::origin_y() // State 0
     startMaxMotor2.put(true);
 }
 
+/**
+ * @brief Moves the carriage to the desired board coordinates
+ *
+ * @param moveFromX Starting x coordinate
+ * @param moveFromY Starting y coordinate
+ * @param moveToX Destination x coordinate
+ * @param moveToY Destination y coordinate
+ */
 void Controller::movePiece(float moveFromX, float moveFromY, float moveToX, float moveToY) // State 2
 {
     float Dx = moveToX - moveFromX; // mm
@@ -320,34 +320,53 @@ void Controller::movePiece(float moveFromX, float moveFromY, float moveToX, floa
     steps1.put(stepsMotor1);
     steps2.put(stepsMotor2);
 
-
     startMotor1.put(true);
     startMotor2.put(true);
 }
 
+/**
+ * @brief Release the actuator such that it can grab a piece
+ *
+ */
 void Controller::grabPiece() // State 3
 {
-    digitalWrite(solenoidPin, LOW);
+    digitalWrite(SOLENOID_PIN, LOW);
 }
 
+/**
+ * @brief Move the piece from the center of the square to the grid
+ *
+ */
 void Controller::centerToGrid() // State 4
 {
-    movePiece(0,-30, 0 , -30);
+    movePiece(0, -30, 0, -30);
 }
 
-
+/**
+ * @brief Move the piece from the grid to the center of the square
+ *
+ */
 void Controller::gridToCenter() // State 7
 {
-    movePiece(0,30, 0, 30);
+    movePiece(0, 30, 0, 30);
 }
 
-
+/**
+ * @brief Move the piece from the grid to the graveyard
+ *
+ */
 void Controller::gridToGraveyard() // State 4
 {
-    movePiece(0,10, 0, 30);
+    movePiece(0, 10, 0, 30);
 }
 
-void Controller::xGridMove(uint16_t xTo, uint16_t xFrom) // State 5
+/**
+ * @brief Move the piece along the x grid
+ *
+ * @param xFrom Starting x grid coordinate
+ * @param xTo Destination x grid coordinate
+ */
+void Controller::xGridMove(uint16_t xFrom, uint16_t xTo) // State 5
 {
     int16_t xMove = xTo - xFrom; // mm
     uint16_t numSteps = abs(xMove / (stepLength));
@@ -375,7 +394,12 @@ void Controller::xGridMove(uint16_t xTo, uint16_t xFrom) // State 5
         startMaxMotor2.put(true);
     }
 }
-
+/**
+ * @brief Move the piece along the y grid
+ *
+ * @param yTo Starting y grid coordinate
+ * @param yFrom Destination y grid coordinate
+ */
 void Controller::yGridMove(uint16_t yTo, uint16_t yFrom) // State 6
 {
     int16_t yMove = yTo - yFrom; // mm
@@ -408,12 +432,22 @@ void Controller::yGridMove(uint16_t yTo, uint16_t yFrom) // State 6
     }
 }
 
+/**
+ * @brief Activate the actuator to release the piece
+ *
+ */
 void Controller::releasePiece() // State 8
 {
-    digitalWrite(solenoidPin, HIGH);
+    digitalWrite(SOLENOID_PIN, HIGH);
 }
 
+/**
+ * @brief Check if a piece is detected by the sensor
+ *
+ * @return true If a piece is detected
+ * @return false If no piece is detected
+ */
 bool Controller::detectPiece()
 {
-    return digitalRead(sensorPin) == LOW;
+    return digitalRead(SENSOR_PIN) == LOW;
 }

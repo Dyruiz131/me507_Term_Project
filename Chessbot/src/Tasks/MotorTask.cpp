@@ -1,9 +1,9 @@
 /**
  * @file MotorTask.cpp
  * @author Dylan Ruiz
- * @brief Motor task that manages the motor movements
+ * @brief Provides an FSM for a motor
  * @version 1.0
- * @date 2022-11-10
+ * @date 2022-11-23
  */
 
 #include <Arduino.h>
@@ -12,17 +12,16 @@
 #include "shares.h"
 
 /**
- * @brief Construct a new MotorTask object
+ * @brief Construct a new Motor Task object
  *
- * @param motor The motor object
- * @param stopMotor share variable used to stop motor
- * @param direction share variable used to indicate direction of motor for motorstartMax method
- * @param velocity share variable used to give velocity of motor for motorstart method
- * @param steps share variable indicating number of steps motor should take
- * @param startMotor bool share variable acting as a flag used to start the motor using the method startMotor
- * @param startMotorMax bool share variable acting as a flag used to start the motor using the method startMotorMax
+ * @param motor The motor object that will be controlled by the FSM
+ * @param stopMotor shared variable used to stop motor
+ * @param direction shared variable used to indicate direction of motor for motorstartMax method
+ * @param velocity shared variable used to give velocity of motor for motorstart method
+ * @param steps shared variable indicating number of steps motor should take
+ * @param startMotor shared variable acting as a flag used to start the motor using the method startMotor
+ * @param startMotorMax shared variable acting as a flag used to start the motor using the method startMotorMax
  */
-
 MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<bool> &startMotor, Share<bool> &startMotorMax)
 {
     this->motor = motor;
@@ -38,8 +37,8 @@ MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &directi
 }
 
 /**
- * @brief Runs the MotorTask FSM
- *
+ * @brief Run the FSM for the motor
+ * 
  */
 void MotorTask::run() // Method for FSM
 {

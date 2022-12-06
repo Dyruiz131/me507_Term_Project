@@ -1,9 +1,11 @@
 /**
- * @file MotorTask.cpp
- * @author Dylan Ruiz
- * @brief Motor task that manages the motor movements
+ * @file FetchMoveTask.cpp
+ * @author Sam Hudson
+ * @brief Provides the FSM that fetches moves
+ * from the server and converts them to coordinates
+ * (to be placed in the move queue)
  * @version 1.0
- * @date 2022-11-10
+ * @date 2022-11-30
  */
 
 #include <Arduino.h>
@@ -13,13 +15,15 @@
 /**
  * @brief Construct a new FetchMoveTask object
  *
- * @param api The API handler object
+ * @param api The API handler object that will communicate with the server
  */
 FetchMove::FetchMove(APIHandler api)
 {
     this->api = api;
-    xOffset = 10;   // x offset from origin to game board origin
+    xOffset = 10; // x offset from origin to game board origin
     yOffset = 10; // y offset from origin to game board origin
+
+    // Set grid locations manually (in mm from origin)
     gridCoordinates[0] = 30.0;
     gridCoordinates[1] = 90.0;
     gridCoordinates[2] = 150.0;
@@ -28,11 +32,10 @@ FetchMove::FetchMove(APIHandler api)
     gridCoordinates[5] = 330.0;
     gridCoordinates[6] = 390.0;
     gridCoordinates[7] = 450.0;
-    
 
     state = 0;      // Start state = 0
     lastMove = "0"; // Store last move for comparison, initialise with "0"
-    newMove = "0";
+    newMove = "0";  // Store new move for comparison, initialise with "0"
 }
 
 /**
@@ -42,6 +45,10 @@ FetchMove::FetchMove()
 {
 }
 
+/**
+ * @brief FSM that fetches moves from the server and converts them to coordinates
+ *
+ */
 void FetchMove::run()
 {
     while (true)
@@ -90,11 +97,11 @@ void FetchMove::run()
             char toCol = newMove.charAt(3);                   // To x
             uint8_t toRow = newMove.substring(4).toInt();     // To y
 
-                        Serial.println(takePiece);
-                        Serial.println(fromCol);
-                        Serial.println(fromRow);
-                        Serial.println(toCol);
-                        Serial.println(toRow);
+            Serial.println(takePiece);
+            Serial.println(fromCol);
+            Serial.println(fromRow);
+            Serial.println(toCol);
+            Serial.println(toRow);
 
             float xCoordinateFrom = toCoordinate(fromCol) + xOffset; // Convert to coordinates
             float yCoordinateFrom = toCoordinate(fromRow) + yOffset; // Convert to coordinates
@@ -107,20 +114,14 @@ void FetchMove::run()
             directionsQueue.put(xCoordTo);        // To x
             directionsQueue.put(yCoordinateTo);   // To y
             beginMove.put(true);                  // Begin move
-
-            // Serial.println(xCoordinateFrom);
-            // Serial.println(yCoordinateFrom);
-            // Serial.println(xCoordTo);
-            // Serial.println(yCoordinateTo);
-            
             state = 4;
             break;
         }
-        case 4:
+        case 4: // Wait for move to complete before checking for new moves
         {
             if (moveComplete.get()) // Wait for move to complete
             {
-                api.sendMoveStatus(true); // Set move status to true;
+                api.sendMoveStatus(true); // Set move complete status to true on server
                 state = 2;
             }
             break;
@@ -129,6 +130,12 @@ void FetchMove::run()
     }
 }
 
+/**
+ * @brief Converts the chessboard coordinate of a column to a coordinate
+ *
+ * @param col the chessboard coordinate of the column
+ * @return float Board coordinate (in mm)
+ */
 float FetchMove::toCoordinate(char col)
 {
     switch (col)
@@ -154,6 +161,12 @@ float FetchMove::toCoordinate(char col)
     }
 }
 
+/**
+ * @brief Converts the chessboard coordinate of a row to a coordinate
+ *
+ * @param col the chessboard coordinate of the row
+ * @return float Board coordinate (in mm)
+ */
 float FetchMove::toCoordinate(uint8_t row)
 {
     return gridCoordinates[row - 1];

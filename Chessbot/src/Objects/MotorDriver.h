@@ -1,8 +1,10 @@
-/** @file MotorDriver.cpp
- *  @author Dylan Ruiz, created original file
- *  @author Sam Hudson
- *  @author Scott Dunn
- *  @date 2022-Oct-29 Original file by Dylan Ruiz
+/**
+ * @file MotorDriver.h
+ * @author Dylan Ruiz
+ * @brief Motor control specific to the TMC2208 stepper driver
+ * @version 1.0
+ * @date 2022-10-29
+ *
  */
 
 #ifndef _MOTOR_DRIVER_H_
@@ -14,12 +16,12 @@
 class Motor
 
 {
-
-public:
+private:
     uint8_t ENABLE_PIN;
     uint8_t STEP_PIN;
     uint8_t DIRECTION_PIN;
 
+public:
     Motor(uint8_t enable_pin, uint8_t step_pin, uint8_t direction_pin);
     Motor(); // Default constructor
 

@@ -1,7 +1,9 @@
 /**
  * @file FetchMoveTask.h
  * @author Sam Hudson
- * @brief Task that operates the API handler
+ * @brief Provides the FSM that fetches moves
+ * from the server and converts them to coordinates
+ * (to be placed in the move queue)
  * @version 1.0
  * @date 2022-11-30
  */
@@ -22,16 +24,16 @@ private:
     String lastMove;
     String newMove;
     float gridCoordinates[8];
+    float gridLocations[8];
+    float xOffset;
+    float yOffset;
+    float toCoordinate(char col);
+    float toCoordinate(uint8_t row);
 
 public:
     FetchMove(APIHandler api);
     FetchMove(); // Default constructor
     void run();  // Method for FSM
-    float toCoordinate(char col);
-    float toCoordinate(uint8_t row);
-    float gridLocations[8];
-    float xOffset;
-    float yOffset;
 };
 
 #endif // _FETCH_MOVE_TASK_H_

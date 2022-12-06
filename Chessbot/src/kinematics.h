@@ -1,9 +1,11 @@
 /**
- * @file MotorTask.h
+ * @file kinematics.h
  * @author Dylan Ruiz
- * @brief Motor task that manages actuation for the Motors.
+ * @brief Helper functions for calculating the coordination
+ * of the motor movements
  * @version 1.0
- * @date 2022-11-23
+ * @date 2022-12-06
+ *
  */
 
 #ifndef _KINEMATICS_H

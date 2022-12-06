@@ -1,3 +1,11 @@
+/**
+ * @file wifiPass.h
+ * @author Sam Hudson
+ * @brief File containing the WiFi credentials
+ * @version 1.0
+ * @date 2022-12-06
+ *
+ */
 #define WIFI_SSID "Sam’s iPhone"
 #define WIFI_PASSWORD "chessbot"
 #define SSL_CERTIFICATE                                                   \
