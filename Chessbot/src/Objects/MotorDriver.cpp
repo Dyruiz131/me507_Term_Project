@@ -9,6 +9,11 @@
 #include "objects/MotorDriver.h"
 #include "shares.h"
 
+
+/**
+ * @brief Default constructor for a new Motor object (needed for motor task class dependency)
+ *
+ */
 Motor::Motor(uint8_t en, uint8_t step, uint8_t dir)
 {
     ENABLE_PIN = en;
@@ -22,22 +27,11 @@ Motor::Motor(uint8_t en, uint8_t step, uint8_t dir)
     digitalWrite(ENABLE_PIN, LOW); // Enable motor
 }
 /**
- * @brief Default consturctor for a new Motor object (needed for motor task class dependency)
- *
+ * @brief Start Motor at a fixed maximum angular velocity
+ * @param Dir indicates which direction the motor runs(Dir = 1 or Dir = -1)
+ * @param Steps indicates number of steps the motor should run for
+ * @param stopFlag A share bool variable indicating whether the motor should stop prematurely.
  */
-Motor::Motor()
-{
-    ENABLE_PIN = 0;
-    STEP_PIN = 0;
-    DIRECTION_PIN = 0;
-
-    // Setup pins
-    pinMode(ENABLE_PIN, OUTPUT);
-    pinMode(STEP_PIN, OUTPUT);
-    pinMode(DIRECTION_PIN, OUTPUT);
-    digitalWrite(ENABLE_PIN, LOW); // Enable motor
-}
-
 void Motor::startMax(int8_t Dir, uint16_t Steps, Share<bool> &stopFlag)
 {
     stopFlag.put(false); // Start motor

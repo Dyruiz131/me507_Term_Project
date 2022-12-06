@@ -11,6 +11,18 @@
 #include "tasks/MotorTask.h"
 #include "shares.h"
 
+/**
+ * @brief Construct a new MotorTask object
+ *
+ * @param motor The motor object
+ * @param stopMotor share variable used to stop motor
+ * @param direction share variable used to indicate direction of motor for motorstartMax method
+ * @param velocity share variable used to give velocity of motor for motorstart method
+ * @param steps share variable indicating number of steps motor should take
+ * @param startMotor bool share variable acting as a flag used to start the motor using the method startMotor
+ * @param startMotorMax bool share variable acting as a flag used to start the motor using the method startMotorMax
+ */
+
 MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<bool> &startMotor, Share<bool> &startMotorMax)
 {
     this->motor = motor;
@@ -25,6 +37,10 @@ MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &directi
     startMotorMax.put(false);
 }
 
+/**
+ * @brief Runs the MotorTask FSM
+ *
+ */
 void MotorTask::run() // Method for FSM
 {
     switch (state)

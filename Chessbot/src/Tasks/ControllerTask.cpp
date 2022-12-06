@@ -38,6 +38,15 @@ Controller::Controller(uint8_t XLIM_PIN, uint8_t YLIM_PIN, uint8_t SOLENOID_PIN,
     Kinematics kinematics;
     beginMove.put(false);
     uint8_t count = 0;
+
+    stateFlag2 = false;
+    stateFlag3 = false; // Flag indicating wait motor state to go to state 4
+    stateFlag6 = false;
+    stateFlag8 = false;
+    stateFlag10 = false;
+    stateFlag11 = false;
+    stateFlag12 = false;
+    stateFlag13 = true;
 }
 
 /**
@@ -49,286 +58,214 @@ void Controller::run() // Method for FSM
     {
     case 0: // Calibrate x axis
     {
-        releasePiece();
+        releasePiece(); // activates solenoid before moving under pieces
         origin_x();
         startLimitx.put(true);
-        state = 20;
+        state = 1;
+        stateFlag2 = true;
         break;
     }
-    case 20: // Check if motors have stopped
+    case 1: // Check if motors have stopped
     {
         if ((stopMotor1.get() == true, stopMotor2.get() == true))
         {
-            state = 21;
+            if(stateFlag2)
+            {
+                state = 2;
+                stateFlag2 = false;
+            }
+            else if(stateFlag3)
+            {
+                state = 3;
+                stateFlag3 = false;
+            }
+            else if(stateFlag6)
+            {
+                state = 6;
+                stateFlag6 = false;
+            }
+            else if(stateFlag8)
+            {
+                state = 8;
+                stateFlag8 = false;
+            }
+            else if(stateFlag10)
+            {
+                state = 10;
+                stateFlag10 = false;
+            }
+            else if(stateFlag11)
+            {
+                state = 11;
+                stateFlag11 = false;
+            }
+            else if(stateFlag12)
+            {
+                state = 12;
+                stateFlag12 = false;
+            }
+            else if(stateFlag13)
+            {
+                state = 13;
+                stateFlag13 = false;
+            }
+            
+            
+
         }
         break;
     }
-    case 21: // Calibrate y axis
+    case 2: // Calibrate y axis
     {
-        grabPiece();
+        grabPiece();    // Releases Solenoid Activation
         origin_y();
         startLimity.put(true);
-        state = 22;
-        break;
-    }
-    case 22: // Check if motors have stopped
-    {
-        if ((stopMotor1.get() == true, stopMotor2.get() == true))
-        {
-            state = 1;
-            // Release solenoid to stop meltdown
-        }
+        state = 1; // Wait Motor State
+        stateFlag3 = true; 
         break;
     }
 
-    case 1: // Check for a move request (waiting state)
+    case 3: // Check for a move request (waiting state)
     {
-        grabPiece();
-        if (moveTake == 1) // If a piece needs taking
+        if (moveTake == 1) // If a piece needs finished taking a piece
         {
-            state = 3;
+            state = 5;
             moveTake = 0;
         }
         else if (beginMove.get() == true) // If a move is requested
         {
-            state = 2;
+            state = 4;
             beginMove.put(false);    // Reset the flag
             moveComplete.put(false); // Tell API that move is not complete
         }
         break;
     }
-    case 2: // Get new move from FetchMoveTask
+    case 4: // Get new move from FetchMoveTask
     {
-        moveComplete.put(false);
         takePiece = directionsQueue.get();       // First val defines if piece needs taking first
         xCoordinateFrom = directionsQueue.get(); // Second val defines x coordinate of piece to move
         yCoordinateFrom = directionsQueue.get(); // Third val defines y coordinate of piece to move
         xCoordinateTo = directionsQueue.get();   // Fourth val defines x coordinate of piece to move to
         yCoordinateTo = directionsQueue.get();   // Fifth val defines y coordinate of piece to move to
-        state = 3;
-        // Serial.println(xCoordinateFrom);
-        // Serial.println(xCoordinateTo);
-        // Serial.println(yCoordinateFrom);
-        // Serial.println(yCoordinateTo);
+        state = 5;
         break;
     }
-    case 3: // Stop motors, move to piece along x
+    case 5: //  Move piece to chess piece
     {
-        stopMotor1.put(false);
-        stopMotor2.put(false);
+        releasePiece(); // activates solenoid before moving under pieces
         if (takePiece == 1) // If a piece needs taking
         {
-            state = 18; // Move to piece to take
+            movePiece(0,xCoordinateTo - sensorOffset,0, yCoordinateTo);
+         
         }
         else
         {
-            movePiecex(xCoordinateFrom - sensorOffset, yCoordinateFrom); // Move to piece
-            state = 23;
+            movePiece(0,xCoordinateFrom - sensorOffset, 0, yCoordinateFrom); // Move to piece
+           
+            
         }
-        break;
-    }
-    case 23: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true, stopMotor2.get() == true))
-        {
-            state = 24;
-            count = 0;
-        }
+        state = 1;
+        stateFlag6 = true;
         break;
     }
 
-    case 24: // Stop motors, move to piece along y
-    {
-        stopMotor1.put(false);
-        stopMotor2.put(false);
-        movePiecey(xCoordinateFrom - sensorOffset, yCoordinateFrom); // Move to piece
-        state = 4;
 
-        break;
-    }
-
-    case 4: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true, stopMotor2.get() == true))
-        {
-            state = 5;
-            count = 0;
-        }
-        break;
-    }
-
-    case 5: // Check if sensor is under piece
+    case 6: // Check if sensor is under piece
     {
         if (detectPiece())
         {
             count += 1;
         }
-        if (count > 10)
+        if (count > 10) // should detect piece for 1 second before initiating move
         {
-            state = 6;
+            state = 7;
         }
         break;
     }
 
-    case 6: // Move actuator under piece
+    case 7: // Move actuator under piece
     {
-        movePiecex(sensorOffset, 0); // Move to piece
-        state = 7;
+        movePiece(0, sensorOffset, 0, 0); // Move to the right by the sensor offset
+        state = 1;
+        stateFlag8 = true;
         break;
     }
-    case 7: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
 
-            state = 8;
-        }
-        break;
-    }
     case 8: // Grab piece
     {
         grabPiece();
+        delay(50);
         state = 9;
         break;
     }
 
     case 9: // Move to grid before moving along gridlines (along x)
     {
-        centerToGridx();
+        centerToGrid();
         state = 10;
+        stateFlag10 = true;
         break;
     }
 
-    case 10: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
 
-            state = 25;
-        }
-        break;
-    }
-
-    case 25: // Move to grid before moving along gridlines (along y)
-    {
-        centerToGridy();
-        state = 26;
-        break;
-    }
-
-    case 26: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
-
-            state = 11;
-        }
-        break;
-    }
-
-    case 11: // Move along x gridline
+    case 10: // Move along x gridline
     {
         if (takePiece == 1) // If piece needs taking
         {
             xGridMove(xPieceGraveyard, xCoordinateTo);
-            state = 12;
+            state = 1;
         }
         else
         {
 
             xGridMove(xCoordinateTo, xCoordinateFrom);
-            state = 12;
+            state = 1;
         }
+        stateFlag11 = true;
+    
         break;
     }
 
-    case 12: // Wait for motor to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
 
-            state = 13;
-        }
-        break;
-    }
-
-    case 13: // Move along y gridline
+    case 11: // Move along y gridline
     {
         if (takePiece == 1) // If piece needs taking
         {
             yGridMove(yPieceGraveyard, yCoordinateTo);
-            state = 14;
+          
         }
         else
         {
 
             yGridMove(yCoordinateTo, yCoordinateFrom);
-            state = 14;
+           
         }
+        state = 1;
+        stateFlag12 = true;
         break;
+       
     }
 
-    case 14: // Wait for motor to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
 
-            state = 15;
-        }
-        break;
-    }
 
-    case 15: // Move piece along x for final position
+    case 12: // Move piece along x for final position
     {
         if (takePiece) // If piece needs taking
         {
-            gridToGraveyardx(); // Take piece to graveyard along x
+            gridToGraveyard(); // Take piece to graveyard along x
         }
         else
         {
-            gridToCenterx(); // Move piece to x center of sqaure from grid
+            gridToCenter(); // Move piece to x center of sqaure from grid
         }
 
-        state = 16;
+        state = 1;
+        stateFlag13 = true;
         break;
     }
 
-    case 16: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
 
-            state = 27;
-        }
-        break;
-    }
-
-    case 27: // Move piece along y for final position
-    {
-        if (takePiece) // If piece needs taking
-        {
-            gridToGraveyardy(); // Take piece to graveyard along y
-        }
-        else
-        {
-            gridToCentery(); // Move piece to y center of sqaure from grid
-        }
-
-        state = 28;
-        break;
-    }
-
-    case 28: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
-
-            state = 17;
-        }
-        break;
-    }
-
-    case 17: // Release piece
+    case 13: // Release piece
     {
         releasePiece();
         if (takePiece == 0) // Check if piece did not need taking
@@ -337,53 +274,16 @@ void Controller::run() // Method for FSM
         }
         if (takePiece == 1) // If piece needs taking
         {
-            moveTake = 1; // Set moveTake to 1 to signal that piece needs taking
+            moveTake = 1; // Set moveTake to 1 to signal that taken piece was moved
         }
         takePiece = 0; // Reset takePiece flag
         state = 0;
         break;
     }
-    case 18: // Move to piece that needs taking along x grid
-    {
-        movePiecex(xCoordinateTo - sensorOffset, yCoordinateTo);
 
-        state = 19;
-        break;
-    }
-    case 19: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
-
-            state = 29;
-        }
-        break;
-    }
-
-    case 29: // Move to piece that needs taking along y grid
-    {
-        movePiecey(xCoordinateTo - sensorOffset, yCoordinateTo);
-
-        state = 30;
-        break;
-    }
-
-    case 30: // Wait for motors to stop
-    {
-        if ((stopMotor1.get() == true && stopMotor2.get() == true))
-        {
-
-            state = 5; // Take piece
-        }
-        break;
-    }
     }
 }
 
-void Controller::setState(uint8_t newState)
-{
-    state = newState;
-}
 
 void Controller::origin_x() // State 0
 {
@@ -408,119 +308,43 @@ void Controller::origin_y() // State 0
     startMaxMotor2.put(true);
 }
 
-void Controller::movePiecex(float moveFromX, float moveFromY) // State 2
+void Controller::movePiece(float moveFromX, float moveFromY, float moveToX, float moveToY) // State 2
 {
-    float Dx = moveFromX; // mm
-    float Dy = moveFromY; // mm
-    int16_t velocityMotor1 = kinematics.coordsToVelocityMotor1(Dx, 0);
-    int16_t velocityMotor2 = kinematics.coordsToVelocityMotor2(Dx, 0);
-    uint16_t stepsMotor1 = kinematics.coordsToStepsMotor1(Dx, 0);
-    uint16_t stepsMotor2 = kinematics.coordsToStepsMotor2(Dx, 0);
-
-    Serial.println(Dx);
-    Serial.println(Dy);
-    Serial.println(velocityMotor1);
-    Serial.println(velocityMotor2);
-    Serial.println(stepsMotor1);
-    Serial.println(stepsMotor2);
-
-    steps1.put(stepsMotor1);
-    steps2.put(stepsMotor2);
-    if (velocityMotor1 > 0)
-    {
-        dirMotor1.put(1);
-    }
-    else
-    {
-        dirMotor1.put(-1);
-    }
-
-    if (velocityMotor2 > 0)
-    {
-        dirMotor2.put(1);
-    }
-    else
-    {
-        dirMotor2.put(-1);
-    }
-
-    startMaxMotor1.put(true);
-    startMaxMotor2.put(true);
-}
-
-void Controller::movePiecey(float moveFromX, float moveFromY) // State 2
-{
-    float Dx = moveFromX; // mm
-    float Dy = moveFromY; // mm
-    int16_t velocityMotor1 = kinematics.coordsToVelocityMotor1(0, Dy);
-    int16_t velocityMotor2 = kinematics.coordsToVelocityMotor2(0, Dy);
-    uint16_t stepsMotor1 = kinematics.coordsToStepsMotor1(0, Dy);
-    uint16_t stepsMotor2 = kinematics.coordsToStepsMotor2(0, Dy);
-
-    Serial.println(Dx);
-    Serial.println(Dy);
-    Serial.println(velocityMotor1);
-    Serial.println(velocityMotor2);
-    Serial.println(stepsMotor1);
-    Serial.println(stepsMotor2);
+    float Dx = moveToX - moveFromX; // mm
+    float Dy = moveToY - moveFromY; // mm
+    int16_t velocityMotor1 = kinematics.coordsToVelocityMotor1(Dx, Dy);
+    int16_t velocityMotor2 = kinematics.coordsToVelocityMotor2(Dx, Dy);
+    uint16_t stepsMotor1 = kinematics.coordsToStepsMotor1(Dx, Dy);
+    uint16_t stepsMotor2 = kinematics.coordsToStepsMotor2(Dx, Dy);
 
     steps1.put(stepsMotor1);
     steps2.put(stepsMotor2);
 
-    if (velocityMotor1 > 0)
-    {
-        dirMotor1.put(1);
-    }
-    else
-    {
-        dirMotor1.put(-1);
-    }
 
-    if (velocityMotor2 > 0)
-    {
-        dirMotor2.put(1);
-    }
-    else
-    {
-        dirMotor2.put(-1);
-    }
-
-    startMaxMotor1.put(true);
-    startMaxMotor2.put(true);
+    startMotor1.put(true);
+    startMotor2.put(true);
 }
+
 void Controller::grabPiece() // State 3
 {
     digitalWrite(solenoidPin, LOW);
 }
 
-void Controller::centerToGridx() // State 4
+void Controller::centerToGrid() // State 4
 {
-    movePiecex(-30, 0);
+    movePiece(0,-30, 0 , -30);
 }
 
-void Controller::centerToGridy() // State 4
+
+void Controller::gridToCenter() // State 7
 {
-    movePiecey(0, -30);
+    movePiece(0,30, 0, 30);
 }
 
-void Controller::gridToCenterx() // State 7
-{
-    movePiecex(30, 0);
-}
 
-void Controller::gridToCentery() // State 7
+void Controller::gridToGraveyard() // State 4
 {
-    movePiecey(0, 30);
-}
-
-void Controller::gridToGraveyardx() // State 4
-{
-    movePiecex(10, 0);
-}
-
-void Controller::gridToGraveyardy() // State 4
-{
-    movePiecey(0, 30);
+    movePiece(0,10, 0, 30);
 }
 
 void Controller::xGridMove(uint16_t xTo, uint16_t xFrom) // State 5

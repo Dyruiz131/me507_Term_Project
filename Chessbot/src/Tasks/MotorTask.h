@@ -21,9 +21,7 @@ private:
     uint8_t state;
 
 public:
-    MotorTask(Motor m, Share<bool> &stopM, Share<int8_t> &dir,
-              Share<float> &vel, Share<uint16_t> &st, Share<bool> &startM,
-              Share<bool> &startMMax);
+    MotorTask(Motor m, Share<bool> &stopM, Share<int8_t> &dir, Share<float> &vel, Share<uint16_t> &step, Share<bool> &startM, Share<bool> &startMMax);
     Share<bool> stopMotor;
     Share<int8_t> direction;
     Share<float> velocity;
@@ -31,9 +29,6 @@ public:
     Share<bool> startMotor;
     Share<bool> startMotorMax;
     void run();
-    void waiting();
-    void runMotor();    // Method for velocity specific motor actuation
-    void runMotorMax(); // Method for Max velocity motor actuation
 };
 
 #endif // _MOTOR_TASK_H

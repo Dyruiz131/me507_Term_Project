@@ -124,24 +124,6 @@ void defLimitTask(void *p_params)
   }
 }
 
-// void defKillTask(void *p_params)
-// {
-//   while (true)
-//   {
-//     if ((digitalRead(XLIM_PIN) == 0) || (digitalRead(YLIM_PIN) == 0))
-//     {
-//       stopMotor1.put(true);
-//       stopMotor2.put(true);
-//     }
-//     else
-//     {
-//       stopMotor1.put(false);
-//       stopMotor2.put(false);
-//     }
-//     vTaskDelay(100); // Task period
-//   }
-// }
-
 /* End of task definitions for FreeRTOS tasks*/
 
 /* Setup and begin multitasking */

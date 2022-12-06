@@ -20,7 +20,7 @@ int16_t Kinematics::coordsToVelocityMotor1(float x_coordinate, float y_coordinat
         }
     }
 
-    if (x_coordinate == 0)
+    else if (x_coordinate == 0)
     {
         if (y_coordinate > 0)
         {
@@ -33,7 +33,7 @@ int16_t Kinematics::coordsToVelocityMotor1(float x_coordinate, float y_coordinat
         }
     }
     
-    if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
+    else if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
     {
         if (y_coordinate / x_coordinate > 0) // Motor 1 Max
         {
@@ -62,7 +62,7 @@ int16_t Kinematics::coordsToVelocityMotor1(float x_coordinate, float y_coordinat
         }
     }
 
-    if (abs(y_coordinate) < abs(x_coordinate)) // below 45 degree angles
+    else if (abs(y_coordinate) < abs(x_coordinate)) // below 45 degree angles
     {
         if (x_coordinate / y_coordinate > 0) // Motor 1 Max
         {
@@ -91,7 +91,7 @@ int16_t Kinematics::coordsToVelocityMotor1(float x_coordinate, float y_coordinat
         }
     }
 
-    if (abs(y_coordinate) == abs(x_coordinate)) // 45 degrees
+    else if (abs(y_coordinate) == abs(x_coordinate)) // 45 degrees
     {
         if (y_coordinate / x_coordinate > 0)
         {
@@ -131,7 +131,7 @@ int16_t Kinematics::coordsToVelocityMotor2(float x_coordinate, float y_coordinat
         }
     }
 
-    if (x_coordinate == 0)
+    else if (x_coordinate == 0)
     {
         if (y_coordinate > 0)
         {
@@ -144,7 +144,7 @@ int16_t Kinematics::coordsToVelocityMotor2(float x_coordinate, float y_coordinat
         }
     }
 
-    if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
+    else if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
     {
         if (y_coordinate / x_coordinate > 0) // Motor 1 Max
         {
@@ -173,7 +173,7 @@ int16_t Kinematics::coordsToVelocityMotor2(float x_coordinate, float y_coordinat
         }
     }
 
-    if (abs(y_coordinate) < abs(x_coordinate)) // below 45 degree angles
+    else if (abs(y_coordinate) < abs(x_coordinate)) // below 45 degree angles
     {
         if (x_coordinate / y_coordinate > 0) // Motor 1 Max
         {
@@ -202,7 +202,7 @@ int16_t Kinematics::coordsToVelocityMotor2(float x_coordinate, float y_coordinat
         }
     }
 
-    if (abs(y_coordinate) == abs(x_coordinate)) // 45 degrees
+    else if (abs(y_coordinate) == abs(x_coordinate)) // 45 degrees
     {
         if (y_coordinate / x_coordinate < 0)
         {
@@ -245,18 +245,18 @@ uint16_t Kinematics::coordsToStepsMotor1(float x_coordinate, float y_coordinate)
         }
     }
 
-    if (y_coordinate == 0)
+    else if (y_coordinate == 0)
     {
         return abs(x_coordinate / stepLength);
     }
 
-    if (x_coordinate == 0)
+    else if (x_coordinate == 0)
     {
         return abs(y_coordinate / stepLength);
     }
    
 
-    if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
+    else if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
     {
         if (y_coordinate / x_coordinate > 0) // Motor 1 Max
         {
@@ -269,7 +269,7 @@ uint16_t Kinematics::coordsToStepsMotor1(float x_coordinate, float y_coordinate)
         }
     }
 
-    if (abs(y_coordinate) < abs(x_coordinate)) // below 45 degree angles
+    else if (abs(y_coordinate) < abs(x_coordinate)) // below 45 degree angles
     {
         if (x_coordinate / y_coordinate > 0) // Motor 1 Max
         {
@@ -303,17 +303,17 @@ uint16_t Kinematics::coordsToStepsMotor2(float x_coordinate, float y_coordinate)
         }
     }
 
-    if (y_coordinate == 0)
+    else if (y_coordinate == 0)
     {
         return abs(x_coordinate / stepLength);
     }
 
-    if (x_coordinate == 0)
+    else if (x_coordinate == 0)
     {
         return abs(y_coordinate / stepLength);
     }
 
-    if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
+    else if (abs(y_coordinate) > abs(x_coordinate)) // above 45 degree angles
     {
         if (y_coordinate / x_coordinate > 0) // Motor 1 Max
         {
@@ -326,7 +326,7 @@ uint16_t Kinematics::coordsToStepsMotor2(float x_coordinate, float y_coordinate)
         }
     }
 
-    if (abs(y_coordinate) < abs(x_coordinate)) // below 45 degree angles
+    else if (abs(y_coordinate) < abs(x_coordinate)) // below 45 degree angles
     {
         if (x_coordinate / y_coordinate > 0) // Motor 1 Max
         {
