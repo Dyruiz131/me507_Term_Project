@@ -20,9 +20,8 @@
  * @param velocity shared variable used to give velocity of motor for motorstart method
  * @param steps shared variable indicating number of steps motor should take
  * @param startMotor shared variable acting as a flag used to start the motor using the method startMotor
- * @param startMotorMax shared variable acting as a flag used to start the motor using the method startMotorMax
  */
-MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<bool> &startMotor, Share<bool> &startMotorMax)
+MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<uint8_t> &startMotor)
 {
     this->motor = motor;
     this->stopMotor = stopMotor;
@@ -30,10 +29,8 @@ MotorTask::MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &directi
     this->velocity = velocity;
     this->steps = steps;
     this->startMotor = startMotor;
-    this->startMotorMax = startMotorMax;
     state = 0; // Start state = 0
-    startMotor.put(false);
-    startMotorMax.put(false);
+    startMotor.put(0);
 }
 
 /**
@@ -46,15 +43,15 @@ void MotorTask::run() // Method for FSM
     {
     case 0: // Check if the motor should start
     {
-        if (startMotor.get())
+        if (startMotor.get() == 1)
         {
             state = 1;
-            startMotor.put(false);
+            startMotor.put(0);
         }
-        else if (startMotorMax.get())
+        else if (startMotor.get() == 2)
         {
             state = 2;
-            startMotorMax.put(false);
+            startMotor.put(0);
         }
         else // Stay in state 0
         {

@@ -24,10 +24,9 @@ private:
     Share<float> velocity;
     Share<uint16_t> steps;
     Share<bool> startMotor;
-    Share<bool> startMotorMax;
 
 public:
-    MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<bool> &startMotor, Share<bool> &startMotorMax);
+    MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<uint8_t> &startMotor);
     void run();
 };
 
