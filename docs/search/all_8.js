@@ -5,5 +5,6 @@ var searchData=
   ['motordriver_2eh_2',['MotorDriver.h',['../_motor_driver_8h.html',1,'']]],
   ['motortask_3',['MotorTask',['../class_motor_task.html',1,'MotorTask'],['../class_motor_task.html#ac81f8410b65f619eca5521cb77850957',1,'MotorTask::MotorTask()']]],
   ['motortask_2ecpp_4',['MotorTask.cpp',['../_motor_task_8cpp.html',1,'']]],
-  ['motortask_2eh_5',['MotorTask.h',['../_motor_task_8h.html',1,'']]]
+  ['motortask_2eh_5',['MotorTask.h',['../_motor_task_8h.html',1,'']]],
+  ['movepiece_6',['movePiece',['../class_controller.html#a86954c8d6ca66a89df5dbfda5757d403',1,'Controller']]]
 ];

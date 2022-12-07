@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ChessBot: src/objects/APIHandler.h Source File</title>
+<title>ChessBot: Chessbot/src/objects/APIHandler.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -112,8 +112,8 @@ $(document).ready(function(){initNavTree('_a_p_i_handler_8h_source.html',''); in
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">const</span> <span class="keywordtype">char</span> *ssid;</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">const</span> <span class="keywordtype">char</span> *password;</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keyword">const</span> <span class="keywordtype">char</span> *certificate;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    String sendGET(<span class="keyword">const</span> <span class="keywordtype">char</span> *URL);</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    String sendPOST(<span class="keyword">const</span> <span class="keywordtype">char</span> *URL, String req);</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    String <a class="code hl_function" href="class_a_p_i_handler.html#abc18cd3d90bea1beb56fac69cc6722b6">sendGET</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *URL);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    String <a class="code hl_function" href="class_a_p_i_handler.html#a690bc42e0d7e4f9f21371410b8bab16a">sendPOST</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *URL, String req);</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">public</span>:</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <a class="code hl_function" href="class_a_p_i_handler.html#ac33916a544c830ab1248410cb855bf59">APIHandler</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *certificate);</div>
@@ -132,7 +132,9 @@ $(document).ready(function(){initNavTree('_a_p_i_handler_8h_source.html',''); in
 <div class="ttc" id="aclass_a_p_i_handler_html_a0f4e0fb4ce83902fb12ca279bc8cc256"><div class="ttname"><a href="class_a_p_i_handler.html#a0f4e0fb4ce83902fb12ca279bc8cc256">APIHandler::sendMoveStatus</a></div><div class="ttdeci">void sendMoveStatus(bool moveIsComplete)</div><div class="ttdoc">Sends the move status to the server.</div><div class="ttdef"><b>Definition:</b> APIHandler.cpp:164</div></div>
 <div class="ttc" id="aclass_a_p_i_handler_html_a1b8e2057bedba8c02bcd1abc624d35a2"><div class="ttname"><a href="class_a_p_i_handler.html#a1b8e2057bedba8c02bcd1abc624d35a2">APIHandler::getLatestMove</a></div><div class="ttdeci">String getLatestMove()</div><div class="ttdoc">Gets the most recent move from the server.</div><div class="ttdef"><b>Definition:</b> APIHandler.cpp:123</div></div>
 <div class="ttc" id="aclass_a_p_i_handler_html_a4883051f5f5d4de5716c33ab4f12551a"><div class="ttname"><a href="class_a_p_i_handler.html#a4883051f5f5d4de5716c33ab4f12551a">APIHandler::getMoveStatus</a></div><div class="ttdeci">bool getMoveStatus()</div><div class="ttdoc">Gets the current move status from the server.</div><div class="ttdef"><b>Definition:</b> APIHandler.cpp:151</div></div>
+<div class="ttc" id="aclass_a_p_i_handler_html_a690bc42e0d7e4f9f21371410b8bab16a"><div class="ttname"><a href="class_a_p_i_handler.html#a690bc42e0d7e4f9f21371410b8bab16a">APIHandler::sendPOST</a></div><div class="ttdeci">String sendPOST(const char *URL, String req)</div><div class="ttdoc">Sends a POST request to a specified server.</div><div class="ttdef"><b>Definition:</b> APIHandler.cpp:76</div></div>
 <div class="ttc" id="aclass_a_p_i_handler_html_a7f4debdcd803a61db1ebc14e631e1f89"><div class="ttname"><a href="class_a_p_i_handler.html#a7f4debdcd803a61db1ebc14e631e1f89">APIHandler::sendMove</a></div><div class="ttdeci">void sendMove(String from, String to)</div><div class="ttdoc">Sends a move to the server.</div><div class="ttdef"><b>Definition:</b> APIHandler.cpp:112</div></div>
+<div class="ttc" id="aclass_a_p_i_handler_html_abc18cd3d90bea1beb56fac69cc6722b6"><div class="ttname"><a href="class_a_p_i_handler.html#abc18cd3d90bea1beb56fac69cc6722b6">APIHandler::sendGET</a></div><div class="ttdeci">String sendGET(const char *URL)</div><div class="ttdoc">Sends a GET request to a specified server.</div><div class="ttdef"><b>Definition:</b> APIHandler.cpp:40</div></div>
 <div class="ttc" id="aclass_a_p_i_handler_html_ac33916a544c830ab1248410cb855bf59"><div class="ttname"><a href="class_a_p_i_handler.html#ac33916a544c830ab1248410cb855bf59">APIHandler::APIHandler</a></div><div class="ttdeci">APIHandler()</div><div class="ttdoc">Default constructor necessary for dependency injection.</div><div class="ttdef"><b>Definition:</b> APIHandler.cpp:29</div></div>
 <div class="ttc" id="aclass_a_p_i_handler_html_ae19b996f1cd551eaa095bcdcca96f50d"><div class="ttname"><a href="class_a_p_i_handler.html#ae19b996f1cd551eaa095bcdcca96f50d">APIHandler::newGame</a></div><div class="ttdeci">void newGame()</div><div class="ttdoc">Creates a new game on the server (for if a game is ongoing on startup)</div><div class="ttdef"><b>Definition:</b> APIHandler.cpp:189</div></div>
 </div><!-- fragment --></div><!-- contents -->
@@ -140,7 +142,7 @@ $(document).ready(function(){initNavTree('_a_p_i_handler_8h_source.html',''); in
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_a7fa5847c07dc92c5227f8a150238560.html">objects</a></li><li class="navelem"><a class="el" href="_a_p_i_handler_8h.html">APIHandler.h</a></li>
+    <li class="navelem"><a class="el" href="dir_0c9262926d4bdfdfe05db1a60bfff193.html">Chessbot</a></li><li class="navelem"><a class="el" href="dir_331e598ef2d87f8216d72f1c515b9151.html">src</a></li><li class="navelem"><a class="el" href="dir_702531d1ffdf0f39c5bdb96626e508b8.html">objects</a></li><li class="navelem"><a class="el" href="_a_p_i_handler_8h.html">APIHandler.h</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>

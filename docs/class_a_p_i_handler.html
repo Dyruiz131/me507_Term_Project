@@ -94,6 +94,8 @@ $(document).ready(function(){initNavTree('class_a_p_i_handler.html',''); initRes
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_a_p_i_handler-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">APIHandler Class Reference</div></div>
 </div><!--header-->
@@ -127,6 +129,27 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>newGame</b> ()</td></tr>
 <tr class="memdesc:ae19b996f1cd551eaa095bcdcca96f50d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new game on the server (for if a game is ongoing on startup) <br /></td></tr>
 <tr class="separator:ae19b996f1cd551eaa095bcdcca96f50d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:abc18cd3d90bea1beb56fac69cc6722b6"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_p_i_handler.html#abc18cd3d90bea1beb56fac69cc6722b6">sendGET</a> (const char *URL)</td></tr>
+<tr class="memdesc:abc18cd3d90bea1beb56fac69cc6722b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends a GET request to a specified server.  <a href="class_a_p_i_handler.html#abc18cd3d90bea1beb56fac69cc6722b6">More...</a><br /></td></tr>
+<tr class="separator:abc18cd3d90bea1beb56fac69cc6722b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a690bc42e0d7e4f9f21371410b8bab16a"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_a_p_i_handler.html#a690bc42e0d7e4f9f21371410b8bab16a">sendPOST</a> (const char *URL, String req)</td></tr>
+<tr class="memdesc:a690bc42e0d7e4f9f21371410b8bab16a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends a POST request to a specified server.  <a href="class_a_p_i_handler.html#a690bc42e0d7e4f9f21371410b8bab16a">More...</a><br /></td></tr>
+<tr class="separator:a690bc42e0d7e4f9f21371410b8bab16a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a8eefcea99f6e45cee922262c2a98540c"><td class="memItemLeft" align="right" valign="top"><a id="a8eefcea99f6e45cee922262c2a98540c" name="a8eefcea99f6e45cee922262c2a98540c"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>ssid</b></td></tr>
+<tr class="separator:a8eefcea99f6e45cee922262c2a98540c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82c871bcd3faf96e275c4a973600d903"><td class="memItemLeft" align="right" valign="top"><a id="a82c871bcd3faf96e275c4a973600d903" name="a82c871bcd3faf96e275c4a973600d903"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>password</b></td></tr>
+<tr class="separator:a82c871bcd3faf96e275c4a973600d903"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a368c0193af7cf56fa74e9d8b795097"><td class="memItemLeft" align="right" valign="top"><a id="a5a368c0193af7cf56fa74e9d8b795097" name="a5a368c0193af7cf56fa74e9d8b795097"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>certificate</b></td></tr>
+<tr class="separator:a5a368c0193af7cf56fa74e9d8b795097"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac67cffcb7e3fcdf1806e39664ce2409e" name="ac67cffcb7e3fcdf1806e39664ce2409e"></a>
@@ -220,6 +243,42 @@ false The game has not just started </dd></dl>
 
 </div>
 </div>
+<a id="abc18cd3d90bea1beb56fac69cc6722b6" name="abc18cd3d90bea1beb56fac69cc6722b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc18cd3d90bea1beb56fac69cc6722b6">&#9670;&#160;</a></span>sendGET()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String APIHandler::sendGET </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>URL</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sends a GET request to a specified server. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">URL</td><td>The server URL to send the request to </td></tr>
+    <tr><td class="paramname">cert</td><td>The SSL certificate for the server </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String response from the server </dd></dl>
+
+</div>
+</div>
 <a id="a7f4debdcd803a61db1ebc14e631e1f89" name="a7f4debdcd803a61db1ebc14e631e1f89"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7f4debdcd803a61db1ebc14e631e1f89">&#9670;&#160;</a></span>sendMove()</h2>
 
@@ -283,9 +342,56 @@ false The game has not just started </dd></dl>
 
 </div>
 </div>
+<a id="a690bc42e0d7e4f9f21371410b8bab16a" name="a690bc42e0d7e4f9f21371410b8bab16a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a690bc42e0d7e4f9f21371410b8bab16a">&#9670;&#160;</a></span>sendPOST()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String APIHandler::sendPOST </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>URL</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>req</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sends a POST request to a specified server. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">URL</td><td>The server URL to send the request to </td></tr>
+    <tr><td class="paramname">cert</td><td>The SSL certificate for the server </td></tr>
+    <tr><td class="paramname">req</td><td>The request body to send </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String response from the server </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/objects/<a class="el" href="_a_p_i_handler_8h_source.html">APIHandler.h</a></li>
-<li>src/objects/APIHandler.cpp</li>
+<li>Chessbot/src/objects/<a class="el" href="_a_p_i_handler_8h_source.html">APIHandler.h</a></li>
+<li>Chessbot/src/objects/APIHandler.cpp</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

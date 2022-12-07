@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('class_motor_task.html',''); initResiza
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_motor_task-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">MotorTask Class Reference</div></div>
 </div><!--header-->
@@ -107,6 +108,30 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a58529bfedfc753dcdd1c25d02eb4d3a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_motor_task.html#a58529bfedfc753dcdd1c25d02eb4d3a5">run</a> ()</td></tr>
 <tr class="memdesc:a58529bfedfc753dcdd1c25d02eb4d3a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the FSM for the motor.  <a href="class_motor_task.html#a58529bfedfc753dcdd1c25d02eb4d3a5">More...</a><br /></td></tr>
 <tr class="separator:a58529bfedfc753dcdd1c25d02eb4d3a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:af873b2be5e1764a7397b00aa472b379e"><td class="memItemLeft" align="right" valign="top"><a id="af873b2be5e1764a7397b00aa472b379e" name="af873b2be5e1764a7397b00aa472b379e"></a>
+<a class="el" href="class_motor.html">Motor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>motor</b></td></tr>
+<tr class="separator:af873b2be5e1764a7397b00aa472b379e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a091af3202dc006e64fd378fc75115b12"><td class="memItemLeft" align="right" valign="top"><a id="a091af3202dc006e64fd378fc75115b12" name="a091af3202dc006e64fd378fc75115b12"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>state</b></td></tr>
+<tr class="separator:a091af3202dc006e64fd378fc75115b12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd06a082ae450bd0460565187f219228"><td class="memItemLeft" align="right" valign="top"><a id="afd06a082ae450bd0460565187f219228" name="afd06a082ae450bd0460565187f219228"></a>
+Share&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>stopMotor</b></td></tr>
+<tr class="separator:afd06a082ae450bd0460565187f219228"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7becb7096dd3620d503fb3e20ca8a40"><td class="memItemLeft" align="right" valign="top"><a id="ad7becb7096dd3620d503fb3e20ca8a40" name="ad7becb7096dd3620d503fb3e20ca8a40"></a>
+Share&lt; int8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>direction</b></td></tr>
+<tr class="separator:ad7becb7096dd3620d503fb3e20ca8a40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43d73d5c44fcd144863435f026984405"><td class="memItemLeft" align="right" valign="top"><a id="a43d73d5c44fcd144863435f026984405" name="a43d73d5c44fcd144863435f026984405"></a>
+Share&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>velocity</b></td></tr>
+<tr class="separator:a43d73d5c44fcd144863435f026984405"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab74270c1273cf3bb6ddc808186040bb8"><td class="memItemLeft" align="right" valign="top"><a id="ab74270c1273cf3bb6ddc808186040bb8" name="ab74270c1273cf3bb6ddc808186040bb8"></a>
+Share&lt; uint16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>steps</b></td></tr>
+<tr class="separator:ab74270c1273cf3bb6ddc808186040bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a719242a3dffc783545ba905df82f3e83"><td class="memItemLeft" align="right" valign="top"><a id="a719242a3dffc783545ba905df82f3e83" name="a719242a3dffc783545ba905df82f3e83"></a>
+Share&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>startMotor</b></td></tr>
+<tr class="separator:a719242a3dffc783545ba905df82f3e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac81f8410b65f619eca5521cb77850957" name="ac81f8410b65f619eca5521cb77850957"></a>
@@ -195,8 +220,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/tasks/<a class="el" href="_motor_task_8h_source.html">MotorTask.h</a></li>
-<li>src/tasks/<a class="el" href="_motor_task_8cpp.html">MotorTask.cpp</a></li>
+<li>Chessbot/src/tasks/<a class="el" href="_motor_task_8h_source.html">MotorTask.h</a></li>
+<li>Chessbot/src/tasks/<a class="el" href="_motor_task_8cpp.html">MotorTask.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
