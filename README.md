@@ -1,6 +1,6 @@
 # ME507 Fall 2022 Project: ChessBot
 
-[Documentation](https://dyruiz131.github.io/me507_Term_Project/)
+[ChessBot controller code documentation](https://dyruiz131.github.io/me507_Term_Project/)
 
 [ChessBot controller code](https://github.com/Dyruiz131/me507_Term_Project/tree/main/Chessbot)
 
