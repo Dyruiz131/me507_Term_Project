@@ -21,18 +21,13 @@ class Controller
 {
 private:
     uint8_t state;
-    uint16_t xStep;
-    uint16_t yStep;
     uint8_t SOLENOID_PIN;
     uint8_t SENSOR_PIN;
-    float omegaMax; // steps per second    
     float stepLength; // deg/step
     float xCoordinateFrom;
     float yCoordinateFrom;
     float xCoordinateTo;
     float yCoordinateTo;
-    float xOrigin;
-    float yOrigin;
     float takePiece;
     float xPieceGraveyard;
     float yPieceGraveyard;
@@ -49,20 +44,20 @@ private:
     bool stateFlag11;
     bool stateFlag12;
     bool stateFlag13;
-    void origin_x();                                    
+    void origin_x();
     void origin_y();
-    void movePiece(float moveFromx, float moveFromy, float moveTox, float moveToy); 
-    void grabPiece();                                 
-    void centerToGrid();                              
+    void movePiece(float moveFromx, float moveFromy, float moveTox, float moveToy);
+    void grabPiece();
+    void centerToGrid();
     void gridToGraveyard();
     void xGridMove(uint16_t x_to, uint16_t x_from);
-    void yGridMove(uint16_t y_to, uint16_t y_from); 
-    void gridToCenter();                            
-    void releasePiece();                            
+    void yGridMove(uint16_t y_to, uint16_t y_from);
+    void gridToCenter();
+    void releasePiece();
     bool detectPiece();
 
 public:
     Controller(uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN, Kinematics kinematics); // Constructor
-    void run();   // Method for FSM
+    void run();                                                                  // Method for FSM
 };
 #endif // _CONTROLLER_TASK_H_

@@ -1,7 +1,7 @@
 /**
  * @file main.cpp
  * @author Sam Hudson, Dylan Ruiz, Scott Dunn
- * @brief Main file for controlling the Chessbot
+ * @brief Main file for controlling the ChessBot
  * @version 1.0
  * @date 2022-12-06
  *
@@ -53,8 +53,8 @@ Share<int8_t> dirMotor2("Motor2 Direction");
 Share<uint8_t> startMotor1("Start Motor1");
 Share<uint8_t> startMotor2("Start Motor2");
 Share<bool> moveComplete("Move Complete");
-Share<bool> startLimitx("Start Limitx");
-Share<bool> startLimity("Start Limity");
+Share<bool> startLimitx("Start Limit X");
+Share<bool> startLimity("Start Limit Y");
 
 // WiFi credentials (ssid and password is ignored by git for security)
 const char *ssid = WIFI_SSID;                 // Import SSID from wifiPass.h
@@ -69,9 +69,11 @@ FetchMove fetchMoveTask(apiHandler);
 Motor motor1(EN_PIN_1, STEP_PIN_1, DIR_PIN_1);
 Motor motor2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2);
 
+
 // Create motor task objects using motor driver objects
 MotorTask motorTask1(motor1, stopMotor1, dirMotor1, aVel1, steps1, startMotor1);
 MotorTask motorTask2(motor2, stopMotor2, dirMotor2, aVel2, steps2, startMotor2);
+
 
 // Create Limit Switch task object
 LimitSwitchTask limitTask(XLIM_PIN, YLIM_PIN);
@@ -82,6 +84,11 @@ Controller mainController(SOLENOID_PIN, SENSOR_PIN, kinematics);
 
 /* --- Define tasks for FreeRTOS --- */
 
+/**
+ * @brief Task for controlling motor 1
+ *
+ * @param p_params void pointer for FreeRTOS setup
+ */
 void defMotorTask1(void *p_params)
 {
   while (true)
@@ -91,6 +98,11 @@ void defMotorTask1(void *p_params)
   }
 }
 
+/**
+ * @brief Task for controlling motor 2
+ *
+ * @param p_params void pointer for FreeRTOS setup
+ */
 void defMotorTask2(void *p_params)
 {
   while (true)
@@ -100,7 +112,11 @@ void defMotorTask2(void *p_params)
   }
 }
 
-/* Main controller task (FSM) */
+/**
+ * @brief Task for main controller
+ *
+ * @param p_params void pointer for FreeRTOS setup
+ */
 void defControllerTask(void *p_params)
 {
   while (true)
@@ -110,16 +126,25 @@ void defControllerTask(void *p_params)
   }
 }
 
+/**
+ * @brief Task for fetching move from API
+ *
+ * @param p_params void pointer for FreeRTOS setup
+ */
 void defFetchMoveTask(void *p_params)
 {
   while (true)
   {
-    Serial.println("fetch task run");
     fetchMoveTask.run();
     vTaskDelay(1000); // Task period
   }
 }
 
+/**
+ * @brief Task for checking limit switches
+ *
+ * @param p_params void pointer for FreeRTOS setup
+ */
 void defLimitTask(void *p_params)
 {
   while (true)

@@ -53,10 +53,6 @@ void MotorTask::run() // Method for FSM
             state = 2;
             startMotor.put(0);
         }
-        else // Stay in state 0
-        {
-            state = 0;
-        }
         break;
     }
     case 1: // Run motor with specific velocity

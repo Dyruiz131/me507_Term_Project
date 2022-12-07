@@ -22,6 +22,8 @@ private:
     const char *ssid;
     const char *password;
     const char *certificate;
+    String sendGET(const char *URL);
+    String sendPOST(const char *URL, String req);
 
 public:
     APIHandler(const char *certificate);
