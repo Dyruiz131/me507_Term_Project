@@ -40,18 +40,18 @@
 #define SENSOR_PIN 39
 
 /* Define Shares*/
-Share<bool> stopMotor1("stopMotor1");
-Share<bool> stopMotor2("stopMotor2");
-Share<bool> beginMove("beginMove");
-Queue<float> directionsQueue(5, "directionsQueue");
-Share<uint16_t> steps1("No. of steps1");
-Share<uint16_t> steps2("No. of steps2");
-Share<float> aVel1("Steps/sec1");
-Share<float> aVel2("Steps/sec2");
-Share<int8_t> dirMotor1("Motor1 Direction");
-Share<int8_t> dirMotor2("Motor2 Direction");
-Share<uint8_t> startMotor1("Start Motor1");
-Share<uint8_t> startMotor2("Start Motor2");
+Share<bool> stopMotor1("Stop Motor 1");
+Share<bool> stopMotor2("Stop  Motor 2");
+Share<bool> beginMove("Begin Move");
+Queue<float> directionsQueue(5, "Directions Queue");
+Share<uint16_t> steps1("No. of steps for Motor 1");
+Share<uint16_t> steps2("No. of steps for Motor 2");
+Share<float> velocity1("Steps/sec for Motor 1");
+Share<float> velocity2("Steps/sec for Motor 2");
+Share<int8_t> dirMotor1("Motor 1 Direction");
+Share<int8_t> dirMotor2("Motor 2 Direction");
+Share<uint8_t> startMotor1("Start Motor 1");
+Share<uint8_t> startMotor2("Start Motor 2");
 Share<bool> moveComplete("Move Complete");
 Share<bool> startLimitx("Start Limit X");
 Share<bool> startLimity("Start Limit Y");
@@ -71,8 +71,8 @@ Motor motor2(EN_PIN_2, STEP_PIN_2, DIR_PIN_2);
 
 
 // Create motor task objects using motor driver objects
-MotorTask motorTask1(motor1, stopMotor1, dirMotor1, aVel1, steps1, startMotor1);
-MotorTask motorTask2(motor2, stopMotor2, dirMotor2, aVel2, steps2, startMotor2);
+MotorTask motorTask1(motor1, stopMotor1, dirMotor1, velocity1, steps1, startMotor1);
+MotorTask motorTask2(motor2, stopMotor2, dirMotor2, velocity2, steps2, startMotor2);
 
 
 // Create Limit Switch task object

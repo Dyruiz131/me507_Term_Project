@@ -314,8 +314,8 @@ void Controller::movePiece(float moveFromX, float moveFromY, float moveToX, floa
 
     steps1.put(stepsMotor1);
     steps2.put(stepsMotor2);
-    aVel1.put(velocityMotor1);
-    aVel2.put(velocityMotor2);
+    velocity1.put(velocityMotor1);
+    velocity2.put(velocityMotor2);
 
 
     startMotor1.put(1);

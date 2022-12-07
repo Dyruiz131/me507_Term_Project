@@ -44,7 +44,7 @@ void LimitSwitchTask::run() // Method for FSM
         }
         if (startLimity.get())
         {
-            state = 2;
+            state = 2; // Go to check y state
             startLimity.put(false);
         }
         break;
