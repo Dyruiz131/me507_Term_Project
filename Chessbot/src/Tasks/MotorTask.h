@@ -23,7 +23,7 @@ private:
     Share<int8_t> direction;
     Share<float> velocity;
     Share<uint16_t> steps;
-    Share<bool> startMotor;
+    Share<uint8_t> startMotor;
 
 public:
     MotorTask(Motor motor, Share<bool> &stopMotor, Share<int8_t> &direction, Share<float> &velocity, Share<uint16_t> &steps, Share<uint8_t> &startMotor);
