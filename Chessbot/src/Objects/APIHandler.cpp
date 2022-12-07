@@ -20,7 +20,7 @@
  */
 APIHandler::APIHandler(const char *certificate)
 {
-    this->certificate = certificate;
+    this->certificate = certificate; // Set the certificate
 }
 
 /**
@@ -37,18 +37,18 @@ APIHandler::APIHandler()
  * @param cert The SSL certificate for the server
  * @return String response from the server
  */
-String sendGET(const char *URL, const char *cert)
+String APIHandler::sendGET(const char *URL)
 {
     WiFiClient client;
     HTTPClient http;
 
     // Start connection and send HTTP header to URL with certificate
-    http.begin(URL, cert);
+    http.begin(URL, certificate);
 
-    // Send HTTP GET request
+    // Send HTTP GET request and save response code
     int httpResponseCode = http.GET();
 
-    String res = "{}";
+    String res = "{}"; // For parsing the response
 
     // If successful query
     if (httpResponseCode > 0)
@@ -58,7 +58,7 @@ String sendGET(const char *URL, const char *cert)
     else
     {
         Serial.print("Error code: ");
-        Serial.println(httpResponseCode);
+        Serial.println(httpResponseCode); // Print the error code
     }
     // Stop HTTP connection
     http.end();
@@ -73,19 +73,19 @@ String sendGET(const char *URL, const char *cert)
  * @param req The request body to send
  * @return String response from the server
  */
-String sendPOST(const char *URL, const char *cert, String req)
+String APIHandler::sendPOST(const char *URL, String req)
 {
     WiFiClient client;
     HTTPClient http;
 
     // Start connection and send HTTP header to URL with certificate
-    http.begin(URL, cert);
+    http.begin(URL, certificate);
 
-    // Send HTTP POST request
+    // Send HTTP POST request and save response code
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(req);
 
-    String res = "{}";
+    String res = "{}"; // For parsing the response
 
     // If successful query
     if (httpResponseCode > 0)
@@ -95,7 +95,7 @@ String sendPOST(const char *URL, const char *cert, String req)
     else
     {
         Serial.print("Error code: ");
-        Serial.println(httpResponseCode);
+        Serial.println(httpResponseCode); // Print the error code
     }
     // Stop HTTP connection
     http.end();
@@ -111,8 +111,8 @@ String sendPOST(const char *URL, const char *cert, String req)
  */
 void APIHandler::sendMove(String from, String to)
 {
-    String req = "{\"from\":\"" + from + "\",\"to\":\"" + to + "\"}";
-    sendPOST("https://chessbotapi.onrender.com/move", certificate, req);
+    String req = "{\"from\":\"" + from + "\",\"to\":\"" + to + "\"}"; // Create request body in JSON format
+    sendPOST("https://chessbotapi.onrender.com/move", req);
 }
 
 /**
@@ -122,21 +122,21 @@ void APIHandler::sendMove(String from, String to)
  */
 String APIHandler::getLatestMove()
 {
-    String res = sendGET("https://chessbotapi.onrender.com/lastMove", certificate);
-    JSONVar jsonRes = JSON.parse(res);
-    String returnMoveString = "";
-    bool takePiece = jsonRes.hasOwnProperty("captured"); // Check if returned object has captured flag
+    String res = sendGET("https://chessbotapi.onrender.com/lastMove");
+    JSONVar jsonRes = JSON.parse(res);                   // Parse the response
+    String returnMoveString = "";                        // String to return
+    bool takePiece = jsonRes.hasOwnProperty("captured"); // Check if move is taking a piece
     String from = jsonRes["from"];
     String to = jsonRes["to"];
 
     // Set first value as flag for taking a piece
     if (takePiece) // Check if captured flag is returned from api
     {
-        returnMoveString = "1";
+        returnMoveString = "1"; // Taking a piece
     }
     else
     {
-        returnMoveString = "0";
+        returnMoveString = "0"; // Not taking a piece
     }
 
     returnMoveString = returnMoveString + from + to; // Create move string
@@ -150,9 +150,9 @@ String APIHandler::getLatestMove()
  */
 bool APIHandler::getMoveStatus()
 {
-    String res = sendGET("https://chessbotapi.onrender.com/acceptMoves", certificate);
-    JSONVar jsonRes = JSON.parse(res);
-    bool status = jsonRes["acceptMoves"];
+    String res = sendGET("https://chessbotapi.onrender.com/acceptMoves");
+    JSONVar jsonRes = JSON.parse(res);    // Parse the response
+    bool status = jsonRes["acceptMoves"]; // Get the status
     return status;
 }
 
@@ -163,8 +163,8 @@ bool APIHandler::getMoveStatus()
  */
 void APIHandler::sendMoveStatus(bool moveIsComplete)
 {
-    String req = "{\"acceptMoves\":" + String(moveIsComplete) + "}";
-    sendPOST("https://chessbotapi.onrender.com/acceptMoves", certificate, req);
+    String req = "{\"acceptMoves\":" + String(moveIsComplete) + "}"; // Create request body in JSON format
+    sendPOST("https://chessbotapi.onrender.com/acceptMoves", req);
 }
 
 /**
@@ -176,9 +176,9 @@ void APIHandler::sendMoveStatus(bool moveIsComplete)
 bool APIHandler::isNewGame()
 {
 
-    String res = sendGET("https://chessbotapi.onrender.com/isNewGame", certificate);
-    JSONVar jsonRes = JSON.parse(res);
-    bool status = jsonRes["isNewGame"];
+    String res = sendGET("https://chessbotapi.onrender.com/isNewGame");
+    JSONVar jsonRes = JSON.parse(res);  // Parse the response
+    bool status = jsonRes["isNewGame"]; // Get the new game status
     return status;
 }
 
@@ -188,6 +188,6 @@ bool APIHandler::isNewGame()
  */
 void APIHandler::newGame()
 {
-    String req = "";
-    sendPOST("https://chessbotapi.onrender.com/new", certificate, req);
+    String req = ""; // Empty body (not required for new game root)
+    sendPOST("https://chessbotapi.onrender.com/new", req);
 }

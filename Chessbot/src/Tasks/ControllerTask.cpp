@@ -290,7 +290,7 @@ void Controller::origin_x()
  * @brief Moves the carriage to the y limit switch
  *
  */
-void Controller::origin_y() // State 0
+void Controller::origin_y()
 {
     steps1.put(10000);
     steps2.put(10000);

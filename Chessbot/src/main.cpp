@@ -102,7 +102,7 @@ void defMotorTask2(void *p_params)
   }
 }
 
-/* Main controller task (FSM) */
+// Main controller task (FSM)
 void defControllerTask(void *p_params)
 {
   while (true)

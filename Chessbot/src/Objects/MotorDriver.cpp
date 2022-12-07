@@ -28,6 +28,7 @@ Motor::Motor(uint8_t ENABLE_PIN, uint8_t STEP_PIN, uint8_t DIRECTION_PIN)
     pinMode(ENABLE_PIN, OUTPUT);
     pinMode(STEP_PIN, OUTPUT);
     pinMode(DIRECTION_PIN, OUTPUT);
+
     digitalWrite(ENABLE_PIN, LOW); // Enable motor
 }
 /**
@@ -72,6 +73,7 @@ void Motor::start(float velocity, uint16_t Steps, Share<bool> &stopFlag)
 {
     stopFlag.put(false); // Start motor
 
+    // Check and set motor direction
     if (velocity > 0)
     {
         digitalWrite(DIRECTION_PIN, HIGH);
@@ -82,6 +84,8 @@ void Motor::start(float velocity, uint16_t Steps, Share<bool> &stopFlag)
     }
 
     uint32_t delay_time;
+
+    // Ensure no division by zero
     if (velocity = 0)
     {
         delay_time = 1;
@@ -91,13 +95,14 @@ void Motor::start(float velocity, uint16_t Steps, Share<bool> &stopFlag)
         delay_time = 1000000 / abs(velocity);
     }
 
+    // Iterate through steps until the motor should stop
     for (int i = 0; i < 2 * Steps; i++)
     {
-        if (stopFlag.get() == true)
+        if (stopFlag.get() == true) // Check if the motor should stop
         {
-            break;
+            break; // Break out of loop to stop motor
         }
-        digitalWrite(STEP_PIN, !digitalRead(STEP_PIN));
+        digitalWrite(STEP_PIN, !digitalRead(STEP_PIN)); // Alternate step pin state
         delayMicroseconds(delay_time);
     }
     stopFlag.put(true); // Stop motor
