@@ -24,23 +24,18 @@ Controller::Controller(uint8_t SOLENOID_PIN, uint8_t SENSOR_PIN, Kinematics kine
     this->SOLENOID_PIN = SOLENOID_PIN;
     this->SENSOR_PIN = SENSOR_PIN;
     state = 0; // Start state = 0
-    xStep = 0;
-    yStep = 0;
-    omegaMax = 500; // steps per second
-    xOrigin = -5;   // mm to origin of square x-direction
-    yOrigin = -5;   // mm to origin of square y-direction
     stepLength = .1;
-    xCoordinateFrom = 0;
-    yCoordinateFrom = 0;
-    xCoordinateTo = 0;
-    yCoordinateTo = 0;
-    takePiece = 0;
-    moveTake = 0;
-    xPieceGraveyard = 520;
-    yPieceGraveyard = 522.5 - 180;
-    sensorOffset = 18.25;
+    xCoordinateFrom = 0; // Define x coordinate of the piece to be moved
+    yCoordinateFrom = 0; // Define y coordinate of the piece to be moved
+    xCoordinateTo = 0; // Define x coordinate of the piece to be moved to
+    yCoordinateTo = 0; // Define y coordinate of the piece to be moved to
+    takePiece = 0; // If takePiece = 1, then a piece needs to be taken
+    moveTake = 0; // If moveTake = 1, then a move to the piece is needed (for FSM control)
+    xPieceGraveyard = 520; // x coordinate of the piece graveyard
+    yPieceGraveyard = 522.5 - 180; // y coordinate of the piece graveyard
+    sensorOffset = 18.25; // Offset for the IR sensor to the actuator magnet
 
-    beginMove.put(false);
+    beginMove.put(false); // Ensure that no moves have started
     uint8_t count = 0;
 
     stateFlag2 = false;

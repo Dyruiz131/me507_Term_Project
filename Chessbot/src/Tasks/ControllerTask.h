@@ -21,18 +21,13 @@ class Controller
 {
 private:
     uint8_t state;
-    uint16_t xStep;
-    uint16_t yStep;
     uint8_t SOLENOID_PIN;
     uint8_t SENSOR_PIN;
-    float omegaMax;   // steps per second
     float stepLength; // deg/step
     float xCoordinateFrom;
     float yCoordinateFrom;
     float xCoordinateTo;
     float yCoordinateTo;
-    float xOrigin;
-    float yOrigin;
     float takePiece;
     float xPieceGraveyard;
     float yPieceGraveyard;

@@ -55,7 +55,7 @@ void FetchMove::run()
     {
         switch (state)
         {
-        case 0:
+        case 0: // Check if new game
         {
             if (api.isNewGame())
             {
@@ -67,7 +67,7 @@ void FetchMove::run()
             }
             break;
         }
-        case 1:
+        case 1: // Set new game
         {
             api.newGame(); // Send new game request
             state = 0;
