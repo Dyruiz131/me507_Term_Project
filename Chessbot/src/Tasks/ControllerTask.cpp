@@ -194,7 +194,7 @@ void Controller::run() // Method for FSM
     case 9: // Move to grid before moving along gridlines (along x)
     {
         centerToGrid();
-        state = 10;
+        state = 1;
         stateFlag10 = true;
         break;
     }
@@ -277,8 +277,8 @@ void Controller::origin_x()
     steps2.put(10000);
     dirMotor1.put(1);
     dirMotor2.put(1);
-    startMaxMotor1.put(true);
-    startMaxMotor2.put(true);
+    startMotor1.put(2);
+    startMotor2.put(2);
 }
 
 /**
@@ -291,8 +291,8 @@ void Controller::origin_y()
     steps2.put(10000);
     dirMotor1.put(1);
     dirMotor2.put(-1);
-    startMaxMotor1.put(true);
-    startMaxMotor2.put(true);
+    startMotor1.put(2);
+    startMotor2.put(2);
 }
 
 /**
@@ -314,9 +314,12 @@ void Controller::movePiece(float moveFromX, float moveFromY, float moveToX, floa
 
     steps1.put(stepsMotor1);
     steps2.put(stepsMotor2);
+    aVel1.put(velocityMotor1);
+    aVel2.put(velocityMotor2);
 
-    startMotor1.put(true);
-    startMotor2.put(true);
+
+    startMotor1.put(1);
+    startMotor2.put(1);
 }
 
 /**
@@ -385,15 +388,15 @@ void Controller::xGridMove(uint16_t xFrom, uint16_t xTo) // State 5
         steps2.put(numSteps);
         dirMotor1.put(direction);
         dirMotor2.put(direction);
-        startMaxMotor1.put(true);
-        startMaxMotor2.put(true);
+        startMotor1.put(2);
+        startMotor2.put(2);
     }
 }
 /**
  * @brief Move the piece along the y grid
  *
- * @param yTo Starting y grid coordinate
- * @param yFrom Destination y grid coordinate
+ * @param yFrom Starting y grid coordinate
+ * @param yTo Destination y grid coordinate
  */
 void Controller::yGridMove(uint16_t yTo, uint16_t yFrom) // State 6
 {
@@ -422,8 +425,8 @@ void Controller::yGridMove(uint16_t yTo, uint16_t yFrom) // State 6
         steps2.put(numSteps);
         dirMotor1.put(direction1);
         dirMotor2.put(direction2);
-        startMaxMotor1.put(true);
-        startMaxMotor2.put(true);
+        startMotor1.put(2);
+        startMotor2.put(2);
     }
 }
 
